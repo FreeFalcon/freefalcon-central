@@ -1762,6 +1762,11 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer,
     float projs[4 * 16];
     for (int i = 0; i < 4 * 16; ++i)
         projs[i] = (i % 17 == 0) ? 1.0f : 0.0f;
+    // Artscout - 2026: STEREO takes the per-view off-axis too -- a symmetric
+    // pair splits by twice the eye's off-axis and never fuses.
+    extern bool g_bVrStereoOffAxis, g_bVrStereoSkyOffAxis;
+    const bool offAxis = g_bVrStereoOffAxis;
+    int perViewProj = 0;
     for (int localV = 0; localV < 2; ++localV)
     {
         const int gv = 2 * group + localV;
@@ -1774,7 +1779,7 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer,
         worldOffs[localV * 3 + 0] = wv.x;
         worldOffs[localV * 3 + 1] = wv.y;
         worldOffs[localV * 3 + 2] = wv.z;
-        if (quad)
+        if (quad or offAxis)
         {
             float fl, fr, fu, fd;
             if (g_pOpenXRBackend->GetEyeFovAngles(gv, &fl, &fr, &fu, &fd))
@@ -1785,6 +1790,7 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer,
                 memcpy(projs + localV * 16,
                        (const float*)&CDXEngine::GetObjProjection(),
                        16 * sizeof(float));
+                ++perViewProj;
             }
         }
     }
@@ -1796,6 +1802,12 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer,
         g_pOpenXRBackend->GetEyeFovAngles(gv0, &fl0, &fr0, &fu0, &fd0);
     if (haveF0)
         hf = fr0 - fl0;
+    if (perViewProj >= 2)
+    {
+        // Off-axis views are placed by the fov they were drawn with.
+        g_pOpenXRBackend->ClearSubmitFov();
+    }
+    else
     {
         float vf =
             (ew > 0) ?
@@ -1812,11 +1824,17 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer,
     extern bool g_bVrPerEyeSky;
     if (g_bVrPerEyeSky && quad && haveF0 && group == 1)
         renderer->SetVRFrustum(fl0, fr0, fu0, fd0);
+    // Artscout - 2026: stereo off-axis -- the eyes' horizontal off-axis is
+    // mirrored (one shared projection can't carry both), but the VERTICAL one
+    // is shared, so the CPU sky takes it or the horizon leaves the ground.
+    else if (!quad && perViewProj >= 2 && haveF0 && g_bVrStereoSkyOffAxis)
+        renderer->SetVRFrustum(-hf * 0.5f, hf * 0.5f, fu0, fd0);
     else
         renderer->SetFOV(hf);
 #ifdef _WIN32 // D3D12 view-instancing renderer is Windows-only; Vulkan multiview is a separate path
     g_pD3D12Renderer->SetViewInstancingParams(nV, worldOffs,
-                                              quad ? projs : NULL);
+                                              (perViewProj >= 2) ? projs
+                                                                 : NULL);
     g_pD3D12Renderer->SetViewInstancing(true);
 #endif // _WIN32
 
@@ -2009,6 +2027,10 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
         float projs[2 * 16];
         for (int i = 0; i < 2 * 16; ++i)
             projs[i] = (i % 17 == 0) ? 1.0f : 0.0f;
+        // Artscout - 2026: STEREO takes the per-view off-axis too -- a
+        // symmetric pair splits by twice the eye's off-axis and never fuses.
+        extern bool g_bVrStereoOffAxis, g_bVrStereoSkyOffAxis;
+        int perViewProj = 0;
         for (int localV = 0; localV < 2; ++localV)
         {
             const int gv = gv0 + localV;
@@ -2027,7 +2049,7 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
             worldOffs[localV * 3 + 0] = wv.x;
             worldOffs[localV * 3 + 1] = wv.y;
             worldOffs[localV * 3 + 2] = wv.z;
-            if (quad)
+            if (quad or g_bVrStereoOffAxis)
             {
                 float fl, fr, fu, fd;
                 if (g_pOpenXRBackend->GetEyeFovAngles(gv, &fl, &fr, &fu, &fd))
@@ -2036,6 +2058,7 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
                     memcpy(projs + localV * 16,
                            (const float*)&CDXEngine::GetObjProjection(),
                            16 * sizeof(float));
+                    ++perViewProj;
                 }
             }
         }
@@ -2045,6 +2068,12 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
             g_pOpenXRBackend->GetEyeFovAngles(gv0, &fl0, &fr0, &fu0, &fd0);
         if (haveF0)
             hf = fr0 - fl0;
+        if (perViewProj >= 2)
+        {
+            // Off-axis views are placed by the fov they were drawn with.
+            g_pOpenXRBackend->ClearSubmitFov();
+        }
+        else
         {
             float vf = (gW > 0) ? 2.0f * (float)atan(tan(hf * 0.5f) *
                                                      (double)gH / (double)gW) :
@@ -2054,11 +2083,16 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
         // Focus group (heavily gaze-canted) folds its off-axis into the CPU sky projection; periphery stays symmetric.
         if (g_bVrPerEyeSky && quad && haveF0 && g == 1)
             renderer->SetVRFrustum(fl0, fr0, fu0, fd0);
+        // Stereo off-axis: the horizontal half is mirrored between the eyes and
+        // can't go in a shared projection; the vertical is shared, and the CPU
+        // sky needs it or the horizon leaves the ground.
+        else if (!quad && perViewProj >= 2 && haveF0 && g_bVrStereoSkyOffAxis)
+            renderer->SetVRFrustum(-hf * 0.5f, hf * 0.5f, fu0, fd0);
         else
             renderer->SetFOV(hf);
 
-        g_pVulkanRenderer->SetViewInstancingParams(2, worldOffs,
-                                                   quad ? projs : NULL);
+        g_pVulkanRenderer->SetViewInstancingParams(
+            2, worldOffs, (perViewProj >= 2) ? projs : NULL);
         g_pVulkanRenderer->SetViewInstancing(true);
 
         // Open this group's 2-layer multiview pass and draw the world + 3D cockpit ONCE into both layers (gl_ViewIndex
@@ -3260,12 +3294,17 @@ void OTWDriverClass::RenderFrame()
                 // projected with a symmetric FOV and the cockpit garbles. IsQuadViews() = what the session really is.
                 const bool sessionQuad =
                     g_pOpenXRBackend && g_pOpenXRBackend->IsQuadViews();
-                if (sessionQuad and haveFov)
+                // Artscout - 2026: STEREO too. A Quest 3 eye is off-axis by 7
+                // degrees, mirrored -- symmetric renders split by 14 and never
+                // fuse. See VrStereoOffAxis.
+                extern bool g_bVrStereoOffAxis;
+                if ((sessionQuad or g_bVrStereoOffAxis) and haveFov)
                 {
                     // Quad-views: render each view with its TRUE off-axis (asymmetric) frustum matching
                     // the runtime's per-view fov, and submit the RAW per-view fov (no SetSubmitFov ->
                     // EndEye uses views[eye].fov) so the foveated compositor's blend regions line up.
                     renderer->SetVRFrustum(fl, fr, fu, fd);
+                    g_pOpenXRBackend->ClearSubmitFov();
                 }
                 else
                 {

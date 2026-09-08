@@ -2,6 +2,12 @@
 build/
 pkg/
 obj/
+Falcon4___Win32_Debug/
+Falcon4___Win32_Release/
+Falcon4___x64_Debug/
+Falcon4___x64_Release/
+**/falcon4___x64_release/
+**/falcon4___x64_debug/
 
 # Build artifacts
 *.ipch
@@ -15,3 +21,46 @@ obj/
 *.bak
 *.user
 *.tmp
+*.asm
+
+# Artscout - 2026: Visual Studio local state (never source)
+.vs/
+
+# Artscout - 2026: build outputs / IDE local state -- never source
+x64/
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.tlog/
+*.log
+*.lastbuildstate
+*.FileListAbsolute.txt
+*.asm
+
+# #13 volumetric clouds: baked model library (344 MB) and source VDBs -- DATA, never committed
+tools/cloudlib.bin
+logs/clouds/
+*.vdb
+
+# NuGet packages -- restored from packages.config, never committed (OpenXR, DXC, ...)
+packages/
+
+# Runtime logs / capture artifacts -- never source
+logs/
+
+# CMake/Linux build directories -- generated, never source
+src/build-linux/
+src/build-linux-xr/
+.claude/worktrees/
+
+# Local working notes (not part of the source tree)
+docs/
+*.spv
+__pycache__/
+
+# Artscout - 2026 (#78): DXC output (bytecode headers), regenerated every build
+src/graphics/shaders/generated/
+
+# Artscout - 2026: vcpkg manifest-mode install tree -- fetched by the build
+vcpkg_installed/

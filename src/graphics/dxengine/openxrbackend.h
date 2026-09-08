@@ -163,6 +163,9 @@ public:
     // The fov the engine actually rendered with (symmetric). Submitted in the projection
     // layer so the compositor maps the image undistorted (must match what was rendered).
     void SetSubmitFov(float hFovRad, float vFovRad);
+    // Artscout - 2026: drop it, so the submit falls back to the runtime's raw
+    // per-view fov -- what an OFF-AXIS rendered view has to be placed by.
+    void ClearSubmitFov();
 
     void SetClipPlanes(float nearZ, float farZ);
 

@@ -73,6 +73,15 @@ int g_nTileActivatePerFrame = 16;
 int g_nTileActivateBudget = 0; // live countdown, reset by TerrainGpu_Render
 float g_fVrSubQuadX = 0.35f;
 float g_fVrSubQuadY = 0.25f;
+// Artscout - 2026: measure the eye offset along the HEAD's right axis instead of the raw appSpace X (which decays as
+// cos(yaw) and flips sign past 90 degrees). Off = the shipped appSpace-X behaviour.
+bool g_bVrEyeLatHeadFrame = false;
+// Artscout - 2026: render/submit STEREO views with the runtime's true off-axis fov (as quad-views already does). A
+// Quest 3 eye is 7 degrees off-axis, mirrored -- a symmetric pair splits by 14 and never fuses. 0 = old symmetric.
+bool g_bVrStereoOffAxis = true;
+// Artscout - 2026: put the eyes' SHARED vertical off-axis into the base (CPU sky / 2D-screen) projection under stereo
+// off-axis. 0 = base stays symmetric -- use it if the HUD/RTT symbology sits vertically off.
+bool g_bVrStereoSkyOffAxis = true;
 // IPD sign for the per-eye view matrices built for the VI pass (headset-tuned: flip to -1 if the eyes swap).
 float g_fVrViewInstIpdSign = 1.0f;
 // #DX12 п.5: intermediate VR sky fix under VI -- give the QUAD FOCUS group its off-axis for the 2D-screen sky so it
@@ -1748,6 +1757,12 @@ static ConfigOption<bool> BoolOpts[] = {
     {"AnimPilotHead", &g_bAnimPilotHead}, // Cobra - Animate the pilot's head
     {"UseQuadViews",
      &g_bUseQuadViews}, // Artscout - 2026 (VR): 4-view quad (foveated) config -- experimental
+    {"VrEyeLatHeadFrame",
+     &g_bVrEyeLatHeadFrame}, // Artscout - 2026: eye offset along the head axis, not appSpace X
+    {"VrStereoOffAxis",
+     &g_bVrStereoOffAxis}, // Artscout - 2026: true per-view off-axis fov in stereo (0 = old symmetric)
+    {"VrStereoSkyOffAxis",
+     &g_bVrStereoSkyOffAxis}, // Artscout - 2026: shared vertical off-axis in the base (CPU sky) projection
     {"VrViewInstancing",
      &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
     {"VrVulkanMultiview",

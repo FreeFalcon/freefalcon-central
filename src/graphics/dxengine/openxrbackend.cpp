@@ -3223,6 +3223,11 @@ void OpenXRBackend::SetSubmitFov(float h, float v)
     m_impl->haveSubmitFov = true;
 }
 
+void OpenXRBackend::ClearSubmitFov()
+{
+    m_impl->haveSubmitFov = false;
+}
+
 // Returns: -1 = session not running (don't drive XR; render mono);
 //           0 = frame begun but shouldRender false (render nothing; EndStereoFrame still required);
 //           n = render n eyes.
@@ -3365,13 +3370,111 @@ int OpenXRBackend::BeginStereoFrame()
     }
 
     // Per-eye lateral offset (IPD), meters -> feet, relative to the head centre.
-    float cx = 0.0f;
+    // Artscout - 2026: appSpace X decays as cos(yaw) and CHANGES SIGN past 90
+    // degrees (eyes swap); the head-frame value below is the knob's answer.
+    float cx = 0.0f, cy = 0.0f, cz = 0.0f;
     for (int e = 0; e < n; ++e)
+    {
         cx += p->views[e].pose.position.x;
+        cy += p->views[e].pose.position.y;
+        cz += p->views[e].pose.position.z;
+    }
     if (n)
+    {
         cx /= (float)n;
+        cy /= (float)n;
+        cz /= (float)n;
+    }
+
+    // Conjugate of the head orientation: appSpace delta -> head frame.
+    XrQuaternionf hq = {0.0f, 0.0f, 0.0f, 1.0f};
+    if (p->haveHeadPose)
+        hq = p->lastHeadPose.orientation;
+    const float hcx = -hq.x, hcy = -hq.y, hcz = -hq.z, hcw = hq.w;
+
+    // Artscout - 2026: knob, because the two render paths disagree on the axis
+    // they spend it along (multiview = seat, per-eye = head).
+    extern bool g_bVrEyeLatHeadFrame;
+    float latHead[8] = {0.0f};
+
     for (int e = 0; e < n && e < 8; ++e)
-        p->eyeLatFeet[e] = (p->views[e].pose.position.x - cx) * 3.28084f;
+    {
+        const float dx = p->views[e].pose.position.x - cx;
+        const float dy = p->views[e].pose.position.y - cy;
+        const float dz = p->views[e].pose.position.z - cz;
+
+        // v' = v + w*t + qv x t, with t = 2*(qv x v). Only x is wanted.
+        const float tx = 2.0f * (hcy * dz - hcz * dy);
+        const float ty = 2.0f * (hcz * dx - hcx * dz);
+        const float tz = 2.0f * (hcx * dy - hcy * dx);
+
+        latHead[e] = (dx + hcw * tx + (hcy * tz - hcz * ty)) * 3.28084f;
+        p->eyeLatFeet[e] = g_bVrEyeLatHeadFrame ? latHead[e] : (dx * 3.28084f);
+    }
+
+    // Artscout - 2026: eye geometry ON A CLOCK -- head-frame offset next to the
+    // raw appSpace one, so a swap reads straight off the pair.
+    {
+        static std::chrono::steady_clock::time_point s_last;
+        static bool s_first = true;
+        const std::chrono::steady_clock::time_point now =
+            std::chrono::steady_clock::now();
+
+        if (s_first ||
+            std::chrono::duration_cast<std::chrono::milliseconds>(now - s_last)
+                    .count() >= 3000)
+        {
+            s_first = false;
+            s_last = now;
+
+            const float rtd = 57.29578f;
+            XrDbg("OpenXR: [eyegeom] views=%d head yaw/pit/rol %.1f %.1f %.1f\n",
+                  n, p->lastYaw * rtd, p->lastPitch * rtd, p->lastRoll * rtd);
+
+            for (int e = 0; e < n && e < 8; ++e)
+            {
+                const XrFovf& f = p->views[e].fov;
+                const XrVector3f& pos = p->views[e].pose.position;
+                const XrQuaternionf& q = p->views[e].pose.orientation;
+
+                XrDbg("OpenXR: [eyegeom] v%d fov L%.2f R%.2f U%.2f D%.2f deg\n",
+                      e, f.angleLeft * rtd, f.angleRight * rtd,
+                      f.angleUp * rtd, f.angleDown * rtd);
+                XrDbg("OpenXR: [eyegeom] v%d pos %.4f %.4f %.4f m\n", e, pos.x,
+                      pos.y, pos.z);
+                XrDbg("OpenXR: [eyegeom] v%d quat %.4f %.4f %.4f %.4f\n", e,
+                      q.x, q.y, q.z, q.w);
+                XrDbg("OpenXR: [eyegeom] v%d lat head %.4f appX %.4f used "
+                      "%.4f ft\n",
+                      e, latHead[e],
+                      (p->views[e].pose.position.x - cx) * 3.28084f,
+                      p->eyeLatFeet[e]);
+            }
+
+            if (n >= 2)
+            {
+                const float ix =
+                    p->views[1].pose.position.x - p->views[0].pose.position.x;
+                const float iy =
+                    p->views[1].pose.position.y - p->views[0].pose.position.y;
+                const float iz =
+                    p->views[1].pose.position.z - p->views[0].pose.position.z;
+
+                XrDbg("OpenXR: [eyegeom] ipd %.4f m submitFov=%d quad=%d\n",
+                      sqrtf(ix * ix + iy * iy + iz * iz),
+                      (int)p->haveSubmitFov, (int)(n > 2));
+
+                if (p->haveSubmitFov)
+                {
+                    const XrFovf& s = p->submitFov;
+                    XrDbg("OpenXR: [eyegeom] submit L%.2f R%.2f U%.2f D%.2f "
+                          "deg\n",
+                          s.angleLeft * rtd, s.angleRight * rtd,
+                          s.angleUp * rtd, s.angleDown * rtd);
+                }
+            }
+        }
+    }
 
     p->projViews.resize(n);
     p->eyeAcquired.assign(n,
