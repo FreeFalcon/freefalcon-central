@@ -82,6 +82,23 @@ bool g_bVrStereoOffAxis = true;
 // Artscout - 2026: put the eyes' SHARED vertical off-axis into the base (CPU sky / 2D-screen) projection under stereo
 // off-axis. 0 = base stays symmetric -- use it if the HUD/RTT symbology sits vertically off.
 bool g_bVrStereoSkyOffAxis = true;
+// Apply the per-eye IPD along the HEAD's right axis rather than the airframe's. The eyes are separated across the
+// skull, so that separation rotates with the head; the old path added it to body-right and rotated by ownshipRot
+// (the JET's orientation, which holds no head rotation), so it was only correct looking straight ahead and drifted
+// as the head turned. Companion to VrEyeLatHeadFrame: that one fixes the MAGNITUDE, this one the AXIS. 0 = legacy.
+bool g_bVrHeadRelIpd = true;
+// Same fix applied to the VR mouse cursor's per-eye stereo offset, which also lived on the airframe's right axis
+// (measured ~634px of eye-to-eye cursor split aiming at the lower-left panel vs ~226px near centre). 0 = legacy.
+bool g_bVrHeadRelCursorIpd = true;
+// And the same for the RTT display panels' per-eye offset, which went onto Pan.y (body right). This one is driven by
+// g_fVrDisplayIpd on its own code path, so neither VrHeadRelIpd nor VrViewInstIpdSign affects it -- it shows up as the
+// MFDs/aux consoles going cross-eyed as the head turns while the rest of the pit converges. 0 = legacy body axis.
+bool g_bVrHeadRelDisplayIpd = true;
+// Vulkan multiview only: rotate the per-view IPD (worldOffs) by cameraRot rather than ownshipRot. Unlike the per-eye
+// path, one worldOffs serves both the stage-1 world/cockpit and the stage-2 RTT tail, so this is a genuine trade --
+// on = correct convergence as the head turns; off = the flat-canvas RTT panel error stays head-independent. Default
+// off, i.e. the shipped behaviour. Has no effect on D3D12 or the per-eye path.
+bool g_bVrVulkanHeadRelIpd = false;
 // IPD sign for the per-eye view matrices built for the VI pass (headset-tuned: flip to -1 if the eyes swap).
 float g_fVrViewInstIpdSign = 1.0f;
 // #DX12 п.5: intermediate VR sky fix under VI -- give the QUAD FOCUS group its off-axis for the 2D-screen sky so it
@@ -213,7 +230,12 @@ bool g_bVrControllers = true; // master on/off. FFViper.cfg "VrControllers".
 float g_fVrRayRadius =
     2.0f; // hit radius = button.dist * this (button units). FFViper.cfg "VrRayRadius".
 float g_fVrRayReach =
-    300.0f; // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+    814.0f; // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+// 814 = the F-16 panel plane at the default seat position. This is the depth the free-aim cursor sits at with
+// nothing under it, so it wants to be ON the panel: at the previous 300 the cursor floated well in front of the
+// pit, carrying stereo disparity for a depth nothing occupies, and visibly split in two. It also re-centres the
+// dPt acceptance window in VCock_Exec ([0.6x, 1.6x] = [488, 1302], which brackets the panel; [180, 480] did not).
+// Controller users who want a shorter free ray can set it back in FFViper.cfg.
 // Artscout - 2026 (#58 true 3D mouse): sign/scale of the mouse ray's horizontal/vertical NDC->frustum-tangent
 // mapping. 1 = direct; -1 flips that axis if the cursor moves mirrored in-headset. Tune in FFViper.cfg then bake.
 float g_fVrMouseRayX = 1.0f;
@@ -1763,6 +1785,14 @@ static ConfigOption<bool> BoolOpts[] = {
      &g_bVrStereoOffAxis}, // Artscout - 2026: true per-view off-axis fov in stereo (0 = old symmetric)
     {"VrStereoSkyOffAxis",
      &g_bVrStereoSkyOffAxis}, // Artscout - 2026: shared vertical off-axis in the base (CPU sky) projection
+    {"VrHeadRelIpd",
+     &g_bVrHeadRelIpd}, // per-eye IPD along the head's right axis, not the airframe's
+    {"VrHeadRelCursorIpd",
+     &g_bVrHeadRelCursorIpd}, // VR cursor stereo offset along the head's right axis, not the airframe's
+    {"VrHeadRelDisplayIpd",
+     &g_bVrHeadRelDisplayIpd}, // RTT display panel stereo offset along the head's right axis, not the airframe's
+    {"VrVulkanHeadRelIpd",
+     &g_bVrVulkanHeadRelIpd}, // Vulkan multiview: per-view IPD by cameraRot, not ownshipRot (default off)
     {"VrViewInstancing",
      &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
     {"VrVulkanMultiview",

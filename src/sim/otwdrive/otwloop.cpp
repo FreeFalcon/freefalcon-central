@@ -2040,12 +2040,21 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
             // with head yaw/pitch -> the flat-canvas error rotates too -> the panels drift under head motion (absent in
             // the per-eye path, which puts the IPD in headOrigin via ownshipRot*eyeLatFeet). Both the multiview world/
             // cockpit AND this composite use worldOffs, so keeping them body-frame fixes the drift AND keeps them fused.
+            // The per-eye path this comment cites as the body-frame precedent now rotates its IPD by cameraRot
+            // (VrHeadRelIpd, vcock.cpp): the eyes are separated across the SKULL, so body-frame is only correct
+            // looking straight ahead and goes cross-eyed as the head turns -- ipd * 2sin(t/2), ~75% of the eye
+            // offset at 45 degrees of gaze. That path can have it both ways because the world camera IPD
+            // (headOrigin) and the RTT panel IPD (Pan.y * g_fVrDisplayIpd, in VCock_Exec) are SEPARATE values;
+            // here one worldOffs feeds both the stage-1 world/cockpit and the stage-2 RTT tail, so it is a real
+            // trade: head-frame fixes the gaze cross-eye, body-frame keeps the flat-canvas panel error stable.
+            // Knob so it can be measured on hardware. Default OFF = the shipped body-frame behaviour.
+            extern bool g_bVrVulkanHeadRelIpd;
             Tpoint bv;
             bv.x = 0.0f;
             bv.y = sgn * g_pOpenXRBackend->GetEyeLateralOffsetFeet(gv);
             bv.z = 0.0f;
             Tpoint wv;
-            MatrixMult(&ownshipRot, &bv, &wv);
+            MatrixMult(g_bVrVulkanHeadRelIpd ? camRot : &ownshipRot, &bv, &wv);
             worldOffs[localV * 3 + 0] = wv.x;
             worldOffs[localV * 3 + 1] = wv.y;
             worldOffs[localV * 3 + 2] = wv.z;
@@ -2158,8 +2167,15 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
                 renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
                 g_pVulkanBackend->SetGScreenSize(gW, gH);
                 float efl, efr, efu, efd;
-                if (quad and g_pOpenXRBackend->GetEyeFovAngles(gv, &efl, &efr,
-                                                               &efu, &efd))
+                // The stage-1 multiview pass draws the world and the 3D cockpit with the runtime's TRUE
+                // off-axis per-view projection under VrStereoOffAxis, not just under quad-views. This tail
+                // pass must match it, or the RTT displays and 2D overlays are projected with a symmetric
+                // frustum onto a scene drawn off-axis -- each eye's 2D layer lands ~7 degrees out, mirrored,
+                // and the MFDs/HUD duplicate and sit away from their panels. Same class as the cursor/hit-test
+                // mismatch in vcock.cpp: whatever the 3D was drawn with, the 2D on top has to use too.
+                if ((quad or g_bVrStereoOffAxis) and
+                    g_pOpenXRBackend->GetEyeFovAngles(gv, &efl, &efr, &efu,
+                                                      &efd))
                     renderer->SetVRFrustum(efl, efr, efu, efd);
                 else
                     renderer->SetFOV(hf);

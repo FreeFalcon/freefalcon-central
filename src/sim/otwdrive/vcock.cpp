@@ -1735,18 +1735,45 @@ void OTWDriverClass::VCock_HeadCalc(void)
                 posHead.y += hpr;
                 posHead.z += hpd;
             }
-            Tpoint posCam = posHead; // camera also gets the IPD
-            if (xeye >= 0)
-                posCam.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(
-                    xeye); // IPD on body right axis
             headPan.x += posHead.x;
             headPan.y += posHead.y;
             headPan.z += posHead.z; // displays: lean only
+            // Head LEAN is a body-frame 6DOF translation -> ownshipRot, as before.
             Tpoint posW;
-            MatrixMult(&OTWDriver.ownshipRot, &posCam, &posW);
+            MatrixMult(&OTWDriver.ownshipRot, &posHead, &posW);
             headOrigin.x += posW.x;
             headOrigin.y += posW.y;
-            headOrigin.z += posW.z; // camera: lean + IPD
+            headOrigin.z += posW.z;
+            // Artscout - 2026 (gaze-dependent stereo fix): the per-eye IPD must be applied along the HEAD's
+            // right axis, NOT the aircraft's. The eyes are separated across the skull, so that separation
+            // rotates with the head; the old code added it to posCam.y (body right) and rotated by ownshipRot
+            // (the JET's orientation, which contains no head rotation). With the head aligned to the airframe
+            // body-right == head-right, so looking straight ahead was correct -- but any head yaw/pitch left
+            // the eye offset pointing the wrong way in world space, and the error grew with how far the head
+            // had turned (reported as: converges fine forward, misaligns when looking down-left/down-right at
+            // the aux panels). cameraRot = ownshipRot * headMatrix, so rotating the offset by IT gives the
+            // true world-space eye separation for the CURRENT gaze. This also makes the per-eye path agree
+            // with RenderWorldViewInstanced, which already rotates its eye offset by camRot (otwloop.cpp).
+            // g_bVrHeadRelIpd (default ON) reverts to the old body-frame behaviour if 0.
+            extern bool g_bVrHeadRelIpd;
+            if (xeye >= 0)
+            {
+                extern float g_fVrViewInstIpdSign;
+                const float ipd = g_fVrViewInstIpdSign *
+                                  g_pOpenXRBackend->GetEyeLateralOffsetFeet(
+                                      xeye);
+                Tpoint bv;
+                bv.x = 0.0f;
+                bv.y = ipd; // lateral (right) in the chosen frame
+                bv.z = 0.0f;
+                Tpoint wv;
+                MatrixMult(g_bVrHeadRelIpd ? &cameraRot :
+                                             &OTWDriver.ownshipRot,
+                           &bv, &wv);
+                headOrigin.x += wv.x;
+                headOrigin.y += wv.y;
+                headOrigin.z += wv.z; // camera: + per-eye IPD
+            }
         }
     }
 }
@@ -4581,8 +4608,33 @@ void OTWDriverClass::VCock_Exec(void)
                         g_pOpenXRBackend->CurrentEye() :
                         -1;
         if (dxeye >= 0)
-            Pan.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(dxeye) *
-                     g_fVrDisplayIpd;
+        {
+            const float ipdY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(
+                                   dxeye) *
+                               g_fVrDisplayIpd;
+            // Same defect as VrHeadRelIpd (world camera) and VrHeadRelCursorIpd (cursor anchor), a third time:
+            // Pan.y is the BODY-right axis, but the eyes are separated across the SKULL, so their separation
+            // rotates with the head. Body-right and head-right coincide only looking straight ahead, so the
+            // panels converge dead ahead and go cross-eyed as the head turns -- worst on the closest panels,
+            // i.e. the lower-left/lower-right consoles. Independent of g_fVrViewInstIpdSign and VrHeadRelIpd
+            // (different variable, different code path), which is why neither of those knobs moved it.
+            // Pan is cockpit/body space, so rotate the head-frame offset into it by headMatrix.
+            extern bool g_bVrHeadRelDisplayIpd;
+            if (g_bVrHeadRelDisplayIpd)
+            {
+                Tpoint bv;
+                bv.x = 0.0f;
+                bv.y = ipdY;
+                bv.z = 0.0f;
+                Tpoint wv;
+                MatrixMult(&headMatrix, &bv, &wv);
+                Pan.x += wv.x;
+                Pan.y += wv.y;
+                Pan.z += wv.z;
+            }
+            else
+                Pan.y += ipdY;
+        }
     }
     // Artscout - 2026 (VR #61): world-frame RTT panels. Draw the RTT quads with the SAME camera as the
     // BSP cockpit (headOrigin) and let DrawRttQuad map the canvas into the real cockpit world
@@ -5242,8 +5294,23 @@ void OTWDriverClass::VCock_Exec(void)
             // left-eye stereo cant shifts the cockpit ~330px sideways), but SYMMETRIZE the vertical (offY=0):
             // [VRICP] showed the cockpit's vertical is ~symmetric, so a symmetric vertical matches best while
             // preserving the true VFOV (height tanU-tanD unchanged: angU'=-angD'=atan((tanU-tanD)/2)).
-            float vh = (float)atan((tan(cfu) - tan(cfd)) * 0.5f);
-            renderer->SetVRFrustum(cfl, cfr, vh, -vh);
+            // Artscout - 2026 (stereo off-axis fix): the hit-test MUST project with the same frustum the
+            // eye was RENDERED with, or the projected buttons sit somewhere the drawn cockpit does not.
+            // The symmetrized vertical below was correct while the per-eye path rendered a symmetric
+            // SetFOV; with g_bVrStereoOffAxis the render now uses the runtime's true, vertically-canted
+            // frustum (Quest 3: U=+44 D=-55, ~5.5 deg down), so symmetrizing here left the buttons ~10%
+            // of screen height above where they are drawn -- the "cursor is way off on Y" report. Track
+            // whatever the render actually used.
+            extern bool g_bVrStereoOffAxis;
+            if (g_bVrStereoOffAxis)
+            {
+                renderer->SetVRFrustum(cfl, cfr, cfu, cfd);
+            }
+            else
+            {
+                float vh = (float)atan((tan(cfu) - tan(cfd)) * 0.5f);
+                renderer->SetVRFrustum(cfl, cfr, vh, -vh);
+            }
         }
         renderer->SetCamera(&headOrigin, &headMatrix);
     }
@@ -5576,6 +5643,11 @@ void OTWDriverClass::VCock_Exec(void)
                 renderer->UnprojectNdc(ndcx, ndcy, &rD);
                 // DIAG confirmed: the Button3DList frame's forward is -x vs the unproject's +x (engine looks down
                 // -Z; UnTransformPoint's sz=+1 comes out reversed for our button compare). Negate so t>0.
+                // NOTE: this is a point reflection, not a frame rotation, so it mirrors right/up as well as
+                // forward -- but the DRAW path is mirrored identically, so the two cancel and the cursor
+                // tracks the mouse correctly. (Flipping only the forward axis here inverts mouse->cursor
+                // motion; tested and reverted. The off-axis aim error that looked like a mirror was in fact
+                // the cursor's stereo offset -- see the head-relative ipdOfs below.)
                 rD.x = -rD.x;
                 rD.y = -rD.y;
                 rD.z = -rD.z;
@@ -5634,15 +5706,21 @@ void OTWDriverClass::VCock_Exec(void)
                     }
                 }
 
-                // Cursor depth along the ray: on a hit -> the button depth; free-aim -> the NEAREST button's
-                // depth (dPt) so the cursor sits at the panel the user looks at. A fixed g_fVrRayReach put the
-                // free cursor CLOSER than the panel -> the two eyes saw it at different positions (per-eye
-                // disparity for the wrong depth) so it "doubled" until it snapped onto a button. Reach is only
-                // the fallback when no button is anywhere near the ray.
-                float anchorT =
-                    (bestAny >= 0) ?
-                        bestAnyT :
-                        ((dPi >= 0 and dPt > 1.0f) ? dPt : g_fVrRayReach);
+                // Artscout - 2026 (free-cursor split fix): on a HIT use the button's own depth (correct by
+                // construction). With no hit, the old code used dPt -- the nearest button's projection ALONG
+                // the ray (t = dist*cos(angle)). Aimed away from the panel that cosine collapses, so the
+                // anchor landed far nearer than the panel, giving the cursor stereo disparity for a depth
+                // nothing is at -> it split in two mid-screen (and g_fVrRayReach, the knob meant for exactly
+                // this, never applied because SOME button is always "nearest"). Use dPt only when it is
+                // actually near the panel plane; otherwise sit at the tuned reach so free-aim converges.
+                float anchorT;
+                if (bestAny >= 0)
+                    anchorT = bestAnyT;
+                else if (dPi >= 0 and dPt > g_fVrRayReach * 0.6f and
+                         dPt < g_fVrRayReach * 1.6f)
+                    anchorT = dPt;
+                else
+                    anchorT = g_fVrRayReach;
                 g_vrCursorAnchor.x = rO.x + rD.x * anchorT;
                 g_vrCursorAnchor.y = rO.y + rD.y * anchorT;
                 g_vrCursorAnchor.z = rO.z + rD.z * anchorT;
@@ -5696,7 +5774,13 @@ void OTWDriverClass::VCock_Exec(void)
             // separation comes from the camera position). But SetFOV derives the VERTICAL fov from the CURRENT
             // xRes/yRes (~16:9 during VCock_Exec), not the near-square eye the BSP was drawn into -> reproduce it
             // with the EYE aspect. QUAD: the BSP genuinely uses the off-axis per-view frustum -> pass it through.
-            if (sessionQuad)
+            // Artscout - 2026 (stereo off-axis fix): the cursor must be DRAWN through the same projection the
+            // cockpit was RENDERED with, or it lands somewhere the cockpit isn't (reported as: cursor over the
+            // left MFD, but the pick fires on the ICP). The symmetric branch below was correct while plain
+            // stereo rendered SetFOV(); with g_bVrStereoOffAxis the BSP now uses the runtime's true off-axis
+            // per-eye frustum, so mirror that here exactly as the hit-test projection already does.
+            extern bool g_bVrStereoOffAxis;
+            if (sessionQuad or g_bVrStereoOffAxis)
                 renderer->SetVRFrustum(efl, efr, efu, efd);
             else
             {
@@ -5751,10 +5835,38 @@ void OTWDriverClass::VCock_Exec(void)
         // onto them reads as "stuck / off" ("прилипание"); keeping it on the beam shows exactly where the
         // controller points. g_vrCursorAnchor already sits at the hit depth when over a button (bestAnyT),
         // else at the free reach. g_vrHitValid only picks the glyph (ring = a clickable is under the beam).
+        // Artscout - 2026 (cursor edge-accuracy fix): the eyes are separated along the HEAD's right axis, but
+        // the anchor lives in the cockpit/body frame, so adding ipdY straight onto .y offsets along the
+        // AIRFRAME's right instead. Those coincide only while the head faces forward; look down-left/down-right
+        // and the disparity is applied in the wrong direction, so the two eyes' cursors disagree by more and
+        // more the further off-axis you aim (measured: 634px apart in the lower-left corner vs ~226px centred).
+        // Rotate the lateral offset by the head orientation -- the same frame this projection is drawn with
+        // (VrSetEyeCam does SetCamera(headOrigin, headMatrix)) -- exactly as the VCock_HeadCalc camera fix does.
+        // g_bVrHeadRelCursorIpd (default ON) reverts to the body-axis behaviour if 0.
+        extern bool g_bVrHeadRelCursorIpd;
+        Tpoint ipdOfs;
+        if (g_bVrHeadRelCursorIpd)
+        {
+            Tpoint bv;
+            bv.x = 0.0f;
+            bv.y = ipdY;
+            bv.z = 0.0f;
+            MatrixMult(&headMatrix, &bv, &ipdOfs);
+        }
+        else
+        {
+            ipdOfs.x = 0.0f;
+            ipdOfs.y = ipdY;
+            ipdOfs.z = 0.0f;
+        }
         Tpoint aE = g_vrCursorAnchor;
-        aE.y += ipdY;
+        aE.x += ipdOfs.x;
+        aE.y += ipdOfs.y;
+        aE.z += ipdOfs.z;
         Tpoint oE = g_vrRayOrigin;
-        oE.y += ipdY;
+        oE.x += ipdOfs.x;
+        oE.y += ipdOfs.y;
+        oE.z += ipdOfs.z;
         ThreeDVertex tA, tO;
         renderer->TransformCameraCentricPoint(&aE, &tA);
         if (tA.csZ < -30.0f)
