@@ -221,7 +221,12 @@ bool g_bVrControllers = true; // master on/off. FFViper.cfg "VrControllers".
 float g_fVrRayRadius =
     2.0f; // hit radius = button.dist * this (button units). FFViper.cfg "VrRayRadius".
 float g_fVrRayReach =
-    300.0f; // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+    814.0f; // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+// 814 = the F-16 panel plane at the default seat position. This is the depth the free-aim cursor sits at with
+// nothing under it, so it wants to be ON the panel: at the previous 300 the cursor floated well in front of the
+// pit, carrying stereo disparity for a depth nothing occupies, and visibly split in two. It also re-centres the
+// dPt acceptance window in VCock_Exec ([0.6x, 1.6x] = [488, 1302], which brackets the panel; [180, 480] did not).
+// Controller users who want a shorter free ray can set it back in FFViper.cfg.
 // Artscout - 2026 (#58 true 3D mouse): sign/scale of the mouse ray's horizontal/vertical NDC->frustum-tangent
 // mapping. 1 = direct; -1 flips that axis if the cursor moves mirrored in-headset. Tune in FFViper.cfg then bake.
 float g_fVrMouseRayX = 1.0f;
