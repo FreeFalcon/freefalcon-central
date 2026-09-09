@@ -90,6 +90,10 @@ bool g_bVrHeadRelIpd = true;
 // Same fix applied to the VR mouse cursor's per-eye stereo offset, which also lived on the airframe's right axis
 // (measured ~634px of eye-to-eye cursor split aiming at the lower-left panel vs ~226px near centre). 0 = legacy.
 bool g_bVrHeadRelCursorIpd = true;
+// And the same for the RTT display panels' per-eye offset, which went onto Pan.y (body right). This one is driven by
+// g_fVrDisplayIpd on its own code path, so neither VrHeadRelIpd nor VrViewInstIpdSign affects it -- it shows up as the
+// MFDs/aux consoles going cross-eyed as the head turns while the rest of the pit converges. 0 = legacy body axis.
+bool g_bVrHeadRelDisplayIpd = true;
 // Vulkan multiview only: rotate the per-view IPD (worldOffs) by cameraRot rather than ownshipRot. Unlike the per-eye
 // path, one worldOffs serves both the stage-1 world/cockpit and the stage-2 RTT tail, so this is a genuine trade --
 // on = correct convergence as the head turns; off = the flat-canvas RTT panel error stays head-independent. Default
@@ -1785,6 +1789,8 @@ static ConfigOption<bool> BoolOpts[] = {
      &g_bVrHeadRelIpd}, // per-eye IPD along the head's right axis, not the airframe's
     {"VrHeadRelCursorIpd",
      &g_bVrHeadRelCursorIpd}, // VR cursor stereo offset along the head's right axis, not the airframe's
+    {"VrHeadRelDisplayIpd",
+     &g_bVrHeadRelDisplayIpd}, // RTT display panel stereo offset along the head's right axis, not the airframe's
     {"VrVulkanHeadRelIpd",
      &g_bVrVulkanHeadRelIpd}, // Vulkan multiview: per-view IPD by cameraRot, not ownshipRot (default off)
     {"VrViewInstancing",

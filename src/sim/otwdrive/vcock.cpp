@@ -4608,8 +4608,33 @@ void OTWDriverClass::VCock_Exec(void)
                         g_pOpenXRBackend->CurrentEye() :
                         -1;
         if (dxeye >= 0)
-            Pan.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(dxeye) *
-                     g_fVrDisplayIpd;
+        {
+            const float ipdY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(
+                                   dxeye) *
+                               g_fVrDisplayIpd;
+            // Same defect as VrHeadRelIpd (world camera) and VrHeadRelCursorIpd (cursor anchor), a third time:
+            // Pan.y is the BODY-right axis, but the eyes are separated across the SKULL, so their separation
+            // rotates with the head. Body-right and head-right coincide only looking straight ahead, so the
+            // panels converge dead ahead and go cross-eyed as the head turns -- worst on the closest panels,
+            // i.e. the lower-left/lower-right consoles. Independent of g_fVrViewInstIpdSign and VrHeadRelIpd
+            // (different variable, different code path), which is why neither of those knobs moved it.
+            // Pan is cockpit/body space, so rotate the head-frame offset into it by headMatrix.
+            extern bool g_bVrHeadRelDisplayIpd;
+            if (g_bVrHeadRelDisplayIpd)
+            {
+                Tpoint bv;
+                bv.x = 0.0f;
+                bv.y = ipdY;
+                bv.z = 0.0f;
+                Tpoint wv;
+                MatrixMult(&headMatrix, &bv, &wv);
+                Pan.x += wv.x;
+                Pan.y += wv.y;
+                Pan.z += wv.z;
+            }
+            else
+                Pan.y += ipdY;
+        }
     }
     // Artscout - 2026 (VR #61): world-frame RTT panels. Draw the RTT quads with the SAME camera as the
     // BSP cockpit (headOrigin) and let DrawRttQuad map the canvas into the real cockpit world
