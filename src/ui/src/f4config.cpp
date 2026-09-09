@@ -82,6 +82,14 @@ bool g_bVrStereoOffAxis = true;
 // Artscout - 2026: put the eyes' SHARED vertical off-axis into the base (CPU sky / 2D-screen) projection under stereo
 // off-axis. 0 = base stays symmetric -- use it if the HUD/RTT symbology sits vertically off.
 bool g_bVrStereoSkyOffAxis = true;
+// Apply the per-eye IPD along the HEAD's right axis rather than the airframe's. The eyes are separated across the
+// skull, so that separation rotates with the head; the old path added it to body-right and rotated by ownshipRot
+// (the JET's orientation, which holds no head rotation), so it was only correct looking straight ahead and drifted
+// as the head turned. Companion to VrEyeLatHeadFrame: that one fixes the MAGNITUDE, this one the AXIS. 0 = legacy.
+bool g_bVrHeadRelIpd = true;
+// Same fix applied to the VR mouse cursor's per-eye stereo offset, which also lived on the airframe's right axis
+// (measured ~634px of eye-to-eye cursor split aiming at the lower-left panel vs ~226px near centre). 0 = legacy.
+bool g_bVrHeadRelCursorIpd = true;
 // IPD sign for the per-eye view matrices built for the VI pass (headset-tuned: flip to -1 if the eyes swap).
 float g_fVrViewInstIpdSign = 1.0f;
 // #DX12 п.5: intermediate VR sky fix under VI -- give the QUAD FOCUS group its off-axis for the 2D-screen sky so it
@@ -1763,6 +1771,10 @@ static ConfigOption<bool> BoolOpts[] = {
      &g_bVrStereoOffAxis}, // Artscout - 2026: true per-view off-axis fov in stereo (0 = old symmetric)
     {"VrStereoSkyOffAxis",
      &g_bVrStereoSkyOffAxis}, // Artscout - 2026: shared vertical off-axis in the base (CPU sky) projection
+    {"VrHeadRelIpd",
+     &g_bVrHeadRelIpd}, // per-eye IPD along the head's right axis, not the airframe's
+    {"VrHeadRelCursorIpd",
+     &g_bVrHeadRelCursorIpd}, // VR cursor stereo offset along the head's right axis, not the airframe's
     {"VrViewInstancing",
      &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
     {"VrVulkanMultiview",
