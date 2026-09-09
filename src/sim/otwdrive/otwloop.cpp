@@ -2040,12 +2040,21 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
             // with head yaw/pitch -> the flat-canvas error rotates too -> the panels drift under head motion (absent in
             // the per-eye path, which puts the IPD in headOrigin via ownshipRot*eyeLatFeet). Both the multiview world/
             // cockpit AND this composite use worldOffs, so keeping them body-frame fixes the drift AND keeps them fused.
+            // The per-eye path this comment cites as the body-frame precedent now rotates its IPD by cameraRot
+            // (VrHeadRelIpd, vcock.cpp): the eyes are separated across the SKULL, so body-frame is only correct
+            // looking straight ahead and goes cross-eyed as the head turns -- ipd * 2sin(t/2), ~75% of the eye
+            // offset at 45 degrees of gaze. That path can have it both ways because the world camera IPD
+            // (headOrigin) and the RTT panel IPD (Pan.y * g_fVrDisplayIpd, in VCock_Exec) are SEPARATE values;
+            // here one worldOffs feeds both the stage-1 world/cockpit and the stage-2 RTT tail, so it is a real
+            // trade: head-frame fixes the gaze cross-eye, body-frame keeps the flat-canvas panel error stable.
+            // Knob so it can be measured on hardware. Default OFF = the shipped body-frame behaviour.
+            extern bool g_bVrVulkanHeadRelIpd;
             Tpoint bv;
             bv.x = 0.0f;
             bv.y = sgn * g_pOpenXRBackend->GetEyeLateralOffsetFeet(gv);
             bv.z = 0.0f;
             Tpoint wv;
-            MatrixMult(&ownshipRot, &bv, &wv);
+            MatrixMult(g_bVrVulkanHeadRelIpd ? camRot : &ownshipRot, &bv, &wv);
             worldOffs[localV * 3 + 0] = wv.x;
             worldOffs[localV * 3 + 1] = wv.y;
             worldOffs[localV * 3 + 2] = wv.z;

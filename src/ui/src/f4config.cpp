@@ -90,6 +90,11 @@ bool g_bVrHeadRelIpd = true;
 // Same fix applied to the VR mouse cursor's per-eye stereo offset, which also lived on the airframe's right axis
 // (measured ~634px of eye-to-eye cursor split aiming at the lower-left panel vs ~226px near centre). 0 = legacy.
 bool g_bVrHeadRelCursorIpd = true;
+// Vulkan multiview only: rotate the per-view IPD (worldOffs) by cameraRot rather than ownshipRot. Unlike the per-eye
+// path, one worldOffs serves both the stage-1 world/cockpit and the stage-2 RTT tail, so this is a genuine trade --
+// on = correct convergence as the head turns; off = the flat-canvas RTT panel error stays head-independent. Default
+// off, i.e. the shipped behaviour. Has no effect on D3D12 or the per-eye path.
+bool g_bVrVulkanHeadRelIpd = false;
 // IPD sign for the per-eye view matrices built for the VI pass (headset-tuned: flip to -1 if the eyes swap).
 float g_fVrViewInstIpdSign = 1.0f;
 // #DX12 п.5: intermediate VR sky fix under VI -- give the QUAD FOCUS group its off-axis for the 2D-screen sky so it
@@ -1780,6 +1785,8 @@ static ConfigOption<bool> BoolOpts[] = {
      &g_bVrHeadRelIpd}, // per-eye IPD along the head's right axis, not the airframe's
     {"VrHeadRelCursorIpd",
      &g_bVrHeadRelCursorIpd}, // VR cursor stereo offset along the head's right axis, not the airframe's
+    {"VrVulkanHeadRelIpd",
+     &g_bVrVulkanHeadRelIpd}, // Vulkan multiview: per-view IPD by cameraRot, not ownshipRot (default off)
     {"VrViewInstancing",
      &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
     {"VrVulkanMultiview",
