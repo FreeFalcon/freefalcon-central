@@ -2158,8 +2158,15 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
                 renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
                 g_pVulkanBackend->SetGScreenSize(gW, gH);
                 float efl, efr, efu, efd;
-                if (quad and g_pOpenXRBackend->GetEyeFovAngles(gv, &efl, &efr,
-                                                               &efu, &efd))
+                // The stage-1 multiview pass draws the world and the 3D cockpit with the runtime's TRUE
+                // off-axis per-view projection under VrStereoOffAxis, not just under quad-views. This tail
+                // pass must match it, or the RTT displays and 2D overlays are projected with a symmetric
+                // frustum onto a scene drawn off-axis -- each eye's 2D layer lands ~7 degrees out, mirrored,
+                // and the MFDs/HUD duplicate and sit away from their panels. Same class as the cursor/hit-test
+                // mismatch in vcock.cpp: whatever the 3D was drawn with, the 2D on top has to use too.
+                if ((quad or g_bVrStereoOffAxis) and
+                    g_pOpenXRBackend->GetEyeFovAngles(gv, &efl, &efr, &efu,
+                                                      &efd))
                     renderer->SetVRFrustum(efl, efr, efu, efd);
                 else
                     renderer->SetFOV(hf);
