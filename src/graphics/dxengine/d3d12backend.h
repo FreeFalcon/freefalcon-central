@@ -213,6 +213,11 @@ public:
     void EnsureFpsRtt(int w, int h);
     void BindFpsRtt(bool clear);
     void* FpsRttTex();
+    // Artscout - 2026: the same trio for the radio-subtitle quad. Its own RTT, not a share of the FPS one: both can
+    // be live at once and they are different sizes. See OpenXRBackend::SubmitSubtitleQuad.
+    void EnsureSubRtt(int w, int h);
+    void BindSubRtt(bool clear);
+    void* SubRttTex();
     // Fixed formats the renderer bakes into its PSOs (must match the swap chain / depth buffer).
     static int BackBufferFormat(); // DXGI_FORMAT_R8G8B8A8_UNORM
     static int
@@ -380,6 +385,8 @@ private:
     D3D12Texture*
         m_pFpsRtt; // #DX12 п.5 -- small VR FPS quad color RTT (owned; no depth)
     int m_fpsRttW, m_fpsRttH;
+    D3D12Texture* m_pSubRtt; // radio-subtitle quad color RTT (owned; no depth)
+    int m_subRttW, m_subRttH;
     ID3D12Resource* m_pBackBuffer[kFrameCount];
     ID3D12CommandAllocator* m_pAlloc[kFrameCount];
     ID3D12GraphicsCommandList* m_pList;

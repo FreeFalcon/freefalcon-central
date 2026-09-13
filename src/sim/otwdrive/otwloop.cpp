@@ -734,6 +734,11 @@ void OTWDriverClass::ToggleSubTitles() // Retro 20Dec2003
 }
 
 /* RETRO RADIOMESS LABELS */
+// Artscout - 2026: set when the head-locked subtitle QUAD carried the subtitles this frame, so the per-eye
+// in-eye draw below stands down. Drawing them into each eye image doubles them; the quad is one image the
+// runtime composites for both eyes, so it cannot.
+bool g_bVrSubQuadDrewThisFrame = false;
+
 void OTWDriverClass::DrawSubTitles(void) // Retro 16Dec2003 (all)
 {
     Prof(DrawSubTitles);
@@ -1569,10 +1574,16 @@ void OTWDriverClass::DisplayFrontText(void)
 
 #endif
 
-    if (drawSubTitles)
+    // Artscout - 2026: in VR the subtitles come from their own head-locked quad (one image, composited into both
+    // eyes). Drawing them here as well would put a second copy in each eye image.
     {
-        // Retro 16Dec2003
-        DrawSubTitles(); // Retro 16Dec2003
+        extern bool g_bVrFrameActive;
+        if (drawSubTitles and
+            not(g_bVrFrameActive and g_bVrSubQuadDrewThisFrame))
+        {
+            // Retro 16Dec2003
+            DrawSubTitles(); // Retro 16Dec2003
+        }
     }
 
 #ifdef Prof_ENABLED
@@ -4064,6 +4075,63 @@ void OTWDriverClass::RenderFrame()
                                 if (vkFps)
                                     VR_BIND_EYE(); // return to the eye
 #ifdef _WIN32 // D3D12 backbuffer rebind is Windows-only
+                                else if (g_pD3D12Backend)
+                                    g_pD3D12Backend->BindBackBufferRTV();
+#endif // _WIN32
+                            }
+                        }
+                    }
+
+                    // ---- SUBTITLES as a HEAD-LOCKED QUAD (Artscout - 2026) ----
+                    // Drawn ONCE into a small transparent RTT and composited by the runtime, exactly like the FPS
+                    // quad above and the comms menu. The in-eye draw inside DisplayFrontText stands down when this
+                    // succeeds (g_bVrSubQuadDrewThisFrame): rendering the text into each eye image gives two copies.
+                    if (xrEye == 0)
+                    {
+                        extern bool g_bUseVulkan;
+                        g_bVrSubQuadDrewThisFrame = false;
+                        const bool vkSub =
+                            (g_bUseVulkan and g_pVulkanBackend != NULL);
+                        if (drawSubTitles and g_pOpenXRBackend and
+                            (g_bUseD3D12 or vkSub))
+                        {
+                            const int sw = 1024, sh = 320;
+                            void* subTex = NULL;
+                            if (vkSub)
+                            {
+                                g_pVulkanBackend->EnsureSubRtt(sw, sh);
+                                subTex = g_pVulkanBackend->SubRttTex();
+                                if (subTex)
+                                    g_pVulkanBackend->BindSubRtt(true);
+                            }
+#ifdef _WIN32
+                            else if (g_pD3D12Backend)
+                            {
+                                g_pD3D12Backend->EnsureSubRtt(sw, sh);
+                                subTex = g_pD3D12Backend->SubRttTex();
+                                if (subTex)
+                                    g_pD3D12Backend->BindSubRtt(true);
+                            }
+#endif // _WIN32
+                            if (subTex)
+                            {
+                                renderer->VR_SetRes(sw, sh);
+                                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                                VR_GSCREEN(sw, sh);
+                                // Inside the panel the cfg placement is panel-relative; where the panel itself
+                                // floats is VrSubQuadX/VrSubQuadY.
+                                DrawSubTitles();
+                                renderer->context.FlushPending();
+                                if (vkSub)
+                                    g_pVulkanBackend->UnbindSceneRtt(subTex);
+                                if (g_pOpenXRBackend->SubmitSubtitleQuad(
+                                        subTex, sw, sh))
+                                    g_bVrSubQuadDrewThisFrame = true;
+                                renderer->VR_SetRes(ew, eh);
+                                VR_GSCREEN(ew, eh);
+                                if (vkSub)
+                                    VR_BIND_EYE();
+#ifdef _WIN32
                                 else if (g_pD3D12Backend)
                                     g_pD3D12Backend->BindBackBufferRTV();
 #endif // _WIN32

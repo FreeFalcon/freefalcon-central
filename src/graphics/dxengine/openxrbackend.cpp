@@ -331,9 +331,16 @@ struct OpenXRBackend::Impl
 #endif
     bool fpsQuadPending;
     XrCompositionLayerQuad fpsQuad;
-    // #59 subtitle quad (per Albert): clone of the FPS-quad plumbing (Vulkan path; D3D12 MV can adopt later)
+    // #59 subtitle quad (per Albert): clone of the FPS-quad plumbing. Artscout - 2026: D3D12 adopted -- without it
+    // the D3D12 per-eye path fell back to drawing the subtitles into EACH eye image, and at identical screen
+    // coordinates under per-eye off-axis projections the two copies do not fuse: they read as doubled text.
     XrSwapchain subSwapchain = XR_NULL_HANDLE;
     std::vector<XrSwapchainImageVulkanKHR> subImagesVk;
+#ifdef _WIN32
+    std::vector<XrSwapchainImageD3D12KHR> subImages12;
+    void* subTexD3D12 =
+        NULL; // D3D12Texture* staged by SubmitSubtitleQuad, copied in EndStereoFrame
+#endif
     int subW = 0, subH = 0;
     XrCompositionLayerQuad subQuad;
     bool subQuadPending = false;
@@ -4384,6 +4391,9 @@ bool OpenXRBackend::EnsureSubQuadSwapchain(int w, int h)
         p->subSwapchain = XR_NULL_HANDLE;
     }
     p->subImagesVk.clear();
+#ifdef _WIN32
+    p->subImages12.clear();
+#endif
 
     XrSwapchainCreateInfo ci = {XR_TYPE_SWAPCHAIN_CREATE_INFO};
     ci.usageFlags = XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT |
@@ -4416,6 +4426,20 @@ bool OpenXRBackend::EnsureSubQuadSwapchain(int w, int h)
             p->subSwapchain, imgCount, &imgCount,
             (XrSwapchainImageBaseHeader*)p->subImagesVk.data());
     }
+#ifdef _WIN32
+    else if (p->useD3D12)
+    {
+        p->subImages12.resize(imgCount);
+        for (uint32_t i = 0; i < imgCount; ++i)
+        {
+            p->subImages12[i].type = XR_TYPE_SWAPCHAIN_IMAGE_D3D12_KHR;
+            p->subImages12[i].next = NULL;
+        }
+        xrEnumerateSwapchainImages(
+            p->subSwapchain, imgCount, &imgCount,
+            (XrSwapchainImageBaseHeader*)p->subImages12.data());
+    }
+#endif
     p->subW = w;
     p->subH = h;
     return true;
@@ -4430,23 +4454,32 @@ bool OpenXRBackend::SubmitSubtitleQuad(void* tex, int w, int h)
         return false;
     if (p->viewSpace == XR_NULL_HANDLE)
         return false;
-    if (!p->useVulkan || !g_pVulkanBackend)
-        return false; // D3D12 MV adoption later (needs the staged-copy machinery)
     if (!EnsureSubQuadSwapchain(w, h))
         return false;
 
-    uint32_t idx = 0;
-    XrSwapchainImageAcquireInfo ai = {XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO};
-    if (XR_FAILED(xrAcquireSwapchainImage(p->subSwapchain, &ai, &idx)))
-        return false;
-    XrSwapchainImageWaitInfo wi = {XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO};
-    wi.timeout = XR_INFINITE_DURATION;
-    if (XR_SUCCEEDED(xrWaitSwapchainImage(p->subSwapchain, &wi)) &&
-        idx < p->subImagesVk.size())
-        g_pVulkanBackend->BlitTexToXrImage((void*)p->subImagesVk[idx].image,
-                                           tex, w, h);
-    XrSwapchainImageReleaseInfo ri = {XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};
-    xrReleaseSwapchainImage(p->subSwapchain, &ri);
+#ifdef _WIN32
+    // D3D12: the subtitle RTT was drawn on the EYE command list, which has not been executed yet, so the copy
+    // cannot happen here. Stage the texture and let EndStereoFrame do it once that list is executed and fenced --
+    // exactly how SubmitFpsQuad and the menu quad work.
+    if (p->useD3D12)
+        p->subTexD3D12 = tex;
+#endif
+    // Vulkan: the RTT is already finalized (UnbindSceneRtt), so copy eagerly.
+    if (p->useVulkan && g_pVulkanBackend)
+    {
+        uint32_t idx = 0;
+        XrSwapchainImageAcquireInfo ai = {XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO};
+        if (XR_FAILED(xrAcquireSwapchainImage(p->subSwapchain, &ai, &idx)))
+            return false;
+        XrSwapchainImageWaitInfo wi = {XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO};
+        wi.timeout = XR_INFINITE_DURATION;
+        if (XR_SUCCEEDED(xrWaitSwapchainImage(p->subSwapchain, &wi)) &&
+            idx < p->subImagesVk.size())
+            g_pVulkanBackend->BlitTexToXrImage((void*)p->subImagesVk[idx].image,
+                                               tex, w, h);
+        XrSwapchainImageReleaseInfo ri = {XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};
+        xrReleaseSwapchainImage(p->subSwapchain, &ri);
+    }
 
     const float aspect = (float)w / (float)h;
     const float heightM = 0.34f; // readable multi-line panel
@@ -4609,7 +4642,37 @@ void OpenXRBackend::EndStereoFrame()
         }
         p->fpsTexD3D12 = NULL;
     }
-#endif // _WIN32 (D3D12 deferred menu/FPS quad copies)
+
+    // Artscout - 2026: and the same deferred copy for the subtitle quad.
+    if (p->useD3D12 && p->subQuadPending && p->subTexD3D12 &&
+        p->subSwapchain != XR_NULL_HANDLE)
+    {
+        D3D12Texture* st = (D3D12Texture*)p->subTexD3D12;
+        if (st && st->tex)
+        {
+            uint32_t idx = 0;
+            XrSwapchainImageAcquireInfo ai = {
+                XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO};
+            if (XR_SUCCEEDED(
+                    xrAcquireSwapchainImage(p->subSwapchain, &ai, &idx)))
+            {
+                XrSwapchainImageWaitInfo wi = {
+                    XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO};
+                wi.timeout = XR_INFINITE_DURATION;
+                if (XR_SUCCEEDED(xrWaitSwapchainImage(p->subSwapchain, &wi)) &&
+                    idx < p->subImages12.size())
+                    XrCopyD3D12TexToUiImage(
+                        p->alloc12, p->list12, p->d3d12Queue, p->fence12,
+                        p->fenceEvt12, &p->fenceVal12, st->tex, st->rtState,
+                        p->subImages12[idx].texture);
+                XrSwapchainImageReleaseInfo ri = {
+                    XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};
+                xrReleaseSwapchainImage(p->subSwapchain, &ri);
+            }
+        }
+        p->subTexD3D12 = NULL;
+    }
+#endif // _WIN32 (D3D12 deferred menu/FPS/subtitle quad copies)
 
     XrCompositionLayerProjection layer = {XR_TYPE_COMPOSITION_LAYER_PROJECTION};
     const bool haveLayer = !p->projViews.empty();

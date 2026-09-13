@@ -85,6 +85,7 @@ D3D12Backend::D3D12Backend()
       m_eyeDepthH(0), m_eyeDepthCur(0), m_viColorCur(0), m_viTier(-1),
       m_pList1(0), m_pMenuRtt(0), m_pMenuDepthTex(0), m_pMenuDsvHeap(0),
       m_menuRttW(0), m_menuRttH(0), m_pFpsRtt(0), m_fpsRttW(0), m_fpsRttH(0),
+      m_pSubRtt(0), m_subRttW(0), m_subRttH(0),
       m_pMsaaColorTex(0), m_pMsaaRtvHeap(0), m_pMsaaDepthTex(0),
       m_pMsaaDsvHeap(0), m_msaaSamples(1), m_msaaW(0), m_msaaH(0),
       m_curSampleCount(1), m_pEyeResolveImg(0), m_curRtvPtr(0),
@@ -2355,6 +2356,84 @@ void* D3D12Backend::FpsRttTex()
     return (m_pFpsRtt && m_pFpsRtt->tex) ? (void*)m_pFpsRtt : NULL;
 }
 
+// Artscout - 2026: radio-subtitle quad RTT -- a straight copy of the FPS trio above, kept separate because the two
+// quads are live at the same time and at different sizes, so sharing one RTT would thrash it every frame.
+void D3D12Backend::EnsureSubRtt(int w, int h)
+{
+    if (!m_pDevice || w <= 0 || h <= 0)
+        return;
+    if (m_pSubRtt && m_pSubRtt->tex && m_subRttW == w && m_subRttH == h)
+        return; // already at size
+    if (m_pSubRtt)
+    {
+        if (g_pD3D12TextureManager)
+            g_pD3D12TextureManager->Destroy(*m_pSubRtt);
+        delete m_pSubRtt;
+        m_pSubRtt = 0;
+    }
+    m_subRttW = m_subRttH = 0;
+    if (!g_pD3D12TextureManager)
+        return;
+    m_pSubRtt = new D3D12Texture();
+    if (!g_pD3D12TextureManager->CreateRenderTarget(*m_pSubRtt, w, h))
+    {
+        delete m_pSubRtt;
+        m_pSubRtt = 0;
+        return;
+    }
+    m_subRttW = w;
+    m_subRttH = h;
+}
+
+void D3D12Backend::BindSubRtt(bool clear)
+{
+    if (!m_pList || !m_bRecording || !m_pSubRtt || !m_pSubRtt->tex)
+        return;
+    if (m_pSubRtt->rtState != (unsigned)D3D12_RESOURCE_STATE_RENDER_TARGET)
+    {
+        D3D12_RESOURCE_BARRIER b;
+        ZeroMemory(&b, sizeof(b));
+        b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        b.Transition.pResource = m_pSubRtt->tex;
+        b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+        b.Transition.StateBefore = (D3D12_RESOURCE_STATES)m_pSubRtt->rtState;
+        b.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+        m_pList->ResourceBarrier(1, &b);
+        m_pSubRtt->rtState = (unsigned)D3D12_RESOURCE_STATE_RENDER_TARGET;
+    }
+    D3D12_CPU_DESCRIPTOR_HANDLE rtv;
+    rtv.ptr = (SIZE_T)m_pSubRtt->rtvCpuPtr;
+    m_curRtvPtr = (unsigned __int64)rtv.ptr;
+    m_curSampleCount = 1;
+    m_pList->OMSetRenderTargets(1, &rtv, FALSE, NULL); // no depth for 2D text
+    if (g_pD3D12Renderer)
+        g_pD3D12Renderer->SetDepthTargetBound(false);
+    D3D12_VIEWPORT vp;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    vp.Width = (FLOAT)m_subRttW;
+    vp.Height = (FLOAT)m_subRttH;
+    vp.MinDepth = 0;
+    vp.MaxDepth = 1;
+    D3D12_RECT sc;
+    sc.left = 0;
+    sc.top = 0;
+    sc.right = m_subRttW;
+    sc.bottom = m_subRttH;
+    m_pList->RSSetViewports(1, &vp);
+    m_pList->RSSetScissorRects(1, &sc);
+    if (clear)
+    {
+        const float z[4] = {0, 0, 0, 0};
+        m_pList->ClearRenderTargetView(rtv, z, 0, NULL);
+    } // transparent canvas
+}
+
+void* D3D12Backend::SubRttTex()
+{
+    return (m_pSubRtt && m_pSubRtt->tex) ? (void*)m_pSubRtt : NULL;
+}
+
 // #DX12 п.5 (VR): open a command list rendering INTO an XR eye image (bind eye RTV + VR depth, clear both).
 void D3D12Backend::BeginEyeFrame(void* eyeImg, unsigned __int64 eyeRtvPtr,
                                  int w, int h)
@@ -2873,6 +2952,13 @@ void D3D12Backend::Release()
             g_pD3D12TextureManager->Destroy(*m_pFpsRtt);
         delete m_pFpsRtt;
         m_pFpsRtt = 0;
+    }
+    if (m_pSubRtt)
+    {
+        if (g_pD3D12TextureManager)
+            g_pD3D12TextureManager->Destroy(*m_pSubRtt);
+        delete m_pSubRtt;
+        m_pSubRtt = 0;
     }
     D12_RELEASE(m_pMenuDepthTex);
     D12_RELEASE(m_pMenuDsvHeap);
