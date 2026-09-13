@@ -641,7 +641,21 @@ void D3D12Backend::Present(bool bVSync)
         m_bRecording = false;
     }
 
-    m_pSwapChain->Present(bVSync ? 1 : 0, 0);
+    // Artscout - 2026: while a VR session is presenting, the DESKTOP MIRROR must not vsync. Every caller asks for
+    // vsync (correct on a monitor), but in VR the headset compositor already paces the loop through xrWaitFrame --
+    // and the mirror's SyncInterval=1 then caps the WHOLE frame loop at the desktop's refresh, which has nothing to
+    // do with the headset's. Measured: a 60 Hz desktop pinned CPU_FRAME at 16.58ms with only 1.8ms of CPU work, so
+    // the headset ran permanently reprojected -- head-locked content smooth, world-locked terrain and buildings
+    // juddering. Nobody is looking at the mirror; let it tear.
+    bool vsync = bVSync;
+    {
+        extern bool g_bVrFrameActive;   // presenting stereo this frame
+        extern bool g_bVsyncVrMirror;   // cfg escape hatch, default off
+        if (g_bVrFrameActive && !g_bVsyncVrMirror)
+            vsync = false;
+    }
+
+    m_pSwapChain->Present(vsync ? 1 : 0, 0);
     MoveToNextFrame();
 }
 
