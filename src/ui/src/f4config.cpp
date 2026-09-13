@@ -746,6 +746,27 @@ int g_nTileActivateMeshPerFrame =
     24; // Artscout - 2026: #78 -- tile activations per frame for the MESH terrain path. Its own budget because the mesh path costs one DispatchMesh no matter how many tiles are live, so the per-tile draw calls that forced the legacy budget (3) are gone; too low and posts keep the "no tile" answer for whole re-scan cycles (brown underlay).
 bool g_bTerrainMeshDebugTint =
     false; // Artscout - 2026: #78 -- flat per-LOD tint on the mesh terrain, bypassing tiles and lighting. Tells "no geometry" apart from "geometry drawn black": if the tint shows, the grid is there and the problem is the texture/light path.
+bool g_bVsyncVrMirror =
+    false; // Artscout - 2026: vsync the DESKTOP MIRROR during a VR session. Off: the mirror presents untorn-be-damned and the headset compositor alone paces the frame (xrWaitFrame). On (the old behaviour) the mirror's vsync caps the entire loop at the DESKTOP's refresh -- a 60 Hz monitor holds the app to 60 fps no matter what the headset is running at, so the runtime reprojects every frame and world-locked geometry judders while the cockpit stays smooth. Only set this if the untorn mirror matters more than headset smoothness (e.g. recording the mirror window).
+// Artscout - 2026: radio subtitle placement (OTWDriverClass::DrawSubTitles). Viewport NDC: x -1 = left edge,
+// y +1 = top edge. The stock spot (-0.95, 0.84) was chosen for a 4:3 monitor and sits far too high in a headset,
+// where the vertical FOV is much larger -- the lines land above the natural gaze line and read badly.
+float g_fSubtitleX = -0.75f; // stock -0.95; larger = further right
+float g_fSubtitleY = 0.68f;  // stock  0.84; smaller = further down
+// Line pitch as a multiple of the CURRENT font's height, so the lines stay clear of each other at any font size
+// (the stock 0.03 was a fixed NDC step tuned for one font, and overlapped as soon as the font grew).
+float g_fSubtitleLineSpacing = 1.25f;
+// The font set is NOT a four-step size ladder: 0 = 6x4, 1 = 8x6, 2 = 10x7, and 3 = warn_font -- the caution-panel
+// typeface, with its own metrics meant for short all-caps labels. Picking 3 for flowing radio text gets you a much
+// larger face AND its unrelated letter spacing. 2 is the largest real size; go past it with the scale below.
+int g_nSubtitleFont = 2;
+// Continuous size on top of the chosen font: scales the glyph quads and the advance together, so letter spacing
+// stays proportional. 1.0 = the font's native size.
+float g_fSubtitleScale = 1.35f;
+int g_nTerrainMorphPosts =
+    10; // Artscout - 2026: #78 -- width, in posts, of the geomorph band at each LOD ring's outer edge. The ring box snaps to EVEN posts, so it jumps 2 posts at a time as the camera crosses a post; every post in this band then steps its blend weight by 2/width AT ONCE, which is a discrete height pop on a whole ring of ground. Wider = smaller step (gentler) but more of the fine ring dragged onto the coarse surface. 0 or 1 = morph off except the boundary row (still watertight) -- the bisect case for "is the stutter the morph?".
+int g_nTerrainRingRadius =
+    0; // Artscout - 2026: #78 -- force every LOD ring to this radius in posts instead of tracking GetAvailablePostRange(), which shrinks whenever a terrain block is still streaming and grows back when it lands, so the rings BREATHE frame to frame. 0 = auto (stock). The bisect case for "is the stutter the rings resizing?"; capped by the clipmap window either way.
 bool g_bVrWindowsCursor =
     true; // Artscout - 2026: draw a copy of the LIVE Windows cursor (captured from the OS shape) instead of the theater's cursor bitmap. The OS never composites its cursor into the headset, so VR showed the crosshair; 0 = keep the old bitmap.
 bool g_bTerrainMeshCull =
@@ -1440,6 +1461,8 @@ bool g_bUse_DX_Engine = true;
 static ConfigOption<bool> BoolOpts[] = {
     {"EnableBindless", &g_bEnableBindless}, // textures by index from one resident heap (both backends)
     {"SensorSceneVulkan", &g_bSensorSceneVulkan}, // TGP/MAV/FLIR video in the MFD under Vulkan
+    {"VsyncVrMirror",
+     &g_bVsyncVrMirror}, // Artscout - 2026: vsync the desktop mirror in VR (off = headset paces the loop)
     {"VrHandTracking", &g_bVrHandTracking}, // skeletal gloves from XR hand tracking (fallback: controller morph)
     {"VrSkinSwapHands", &g_bVrSkinSwapHands}, // swap which mesh each tracked hand wears
     {"VrHandDump", &g_bVrHandDump}, // dump raw XR joint geometry (diag: inferred clench vs skinning bug)
@@ -1799,6 +1822,12 @@ static ConfigOption<int> IntOpts[] = {
      &g_nTileActivatePerFrame}, // #107: terrain texture activations per render (spike budget)
     {"TileActivateMeshPerFrame",
      &g_nTileActivateMeshPerFrame}, // Artscout - 2026: #78 -- same budget for the mesh-shader terrain (no per-tile draws there, so it can afford more).
+    {"SubtitleFont",
+     &g_nSubtitleFont}, // Artscout - 2026: radio subtitle font index (bigger = larger glyphs)
+    {"TerrainMorphPosts",
+     &g_nTerrainMorphPosts}, // Artscout - 2026: #78 -- geomorph band width in posts (0/1 = off but watertight).
+    {"TerrainRingRadius",
+     &g_nTerrainRingRadius}, // Artscout - 2026: #78 -- fixed LOD ring radius in posts; 0 = track the streamed range.
     {"VrRayToggle",
      &g_nVrRayToggle}, // Artscout - 2026 (VR hands): -1 auto(by profile) / 0 hold / 1 toggle grip activation
 
@@ -1933,6 +1962,14 @@ static ConfigOption<char> StringOpts[] = {
 
 static ConfigOption<float> FloatOpts[] = {
     {"MipLodBias", &g_fMipLodBias},
+    {"SubtitleX",
+     &g_fSubtitleX}, // Artscout - 2026: radio subtitle left edge, viewport NDC (+ = right)
+    {"SubtitleY",
+     &g_fSubtitleY}, // Artscout - 2026: radio subtitle first line, viewport NDC (+ = up)
+    {"SubtitleLineSpacing",
+     &g_fSubtitleLineSpacing}, // Artscout - 2026: line pitch, multiples of the font height
+    {"SubtitleScale",
+     &g_fSubtitleScale}, // Artscout - 2026: subtitle glyph scale, 1.0 = the font's native size
     {"VrSubQuadX",
      &g_fVrSubQuadX}, // #59: subtitle quad horizontal offset (m, + = right)
     {"VrSubQuadY",
