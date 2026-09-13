@@ -1485,10 +1485,15 @@ void VirtualDisplay::SetFont(int newfont)
 {
     ShiAssert(newfont >= 0 and newfont < NUM_FONT_RESOLUTIONS);
 
+    // Artscout - 2026: clamp AND apply. The old form computed the clamped index and then threw it away -- the
+    // assignment sat in the else branch -- so asking for a font the loaded set does not have silently kept
+    // whatever font was current instead of falling back to the largest one. A dead store either way.
     if (newfont >= pFontSet->totalFont)
         newfont = pFontSet->totalFont - 1;
-    else
-        pFontSet->fontNum = newfont;
+    if (newfont < 0)
+        newfont = 0;
+
+    pFontSet->fontNum = newfont;
 }
 // ASSO: BEGIN ---------------------------------------------------------------------------------------------
 bool VirtualDisplay::SetupRttTarget(int tXres_, int tYres_, int tBpp_)

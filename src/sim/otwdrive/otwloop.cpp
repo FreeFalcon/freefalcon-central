@@ -747,14 +747,35 @@ void OTWDriverClass::DrawSubTitles(void) // Retro 16Dec2003 (all)
         {
             int i = 0;
 
+            // Artscout - 2026: placement and size from cfg. The stock spot was tuned for a 4:3 monitor and sits
+            // near the top of a headset's much taller FOV, above where the eye naturally rests. Set the font
+            // explicitly too -- this function never did, so the subtitles rendered in whatever font the previous
+            // 2D caller happened to leave current.
+            extern float g_fSubtitleX, g_fSubtitleY, g_fSubtitleLineSpacing,
+                g_fSubtitleScale;
+            extern int g_nSubtitleFont;
+            extern float g_fTextScaleOverride;
+            VirtualDisplay::SetFont(g_nSubtitleFont);
+
+            const float subScale =
+                (g_fSubtitleScale > 0.0f) ? g_fSubtitleScale : 1.0f;
+            // Pitch from the live font height, so a bigger font spreads the lines instead of stacking them.
+            // TextHeight() reports the font's NATIVE height and knows nothing about the glyph scale below, so
+            // fold the scale in here too -- otherwise enlarged text overlaps the line beneath it.
+            float lineStep =
+                g_fSubtitleLineSpacing * renderer->TextHeight() * subScale;
+            if (lineStep <= 0.0f)
+                lineStep = 0.03f; // font metrics unavailable -- the stock step
+
+            const float savedTextScale = g_fTextScaleOverride;
+            g_fTextScaleOverride = subScale;
+
             while (theLabels[i])
             {
                 if (theLabels[i]->theString)
                 {
                     renderer->SetColor(theLabels[i]->theColour);
-                    // renderer->TextLeft(-0.95F,  (0.90F-i*0.03F), theLabels[i]->theString);
-                    // Retro 10Jan2004 - lower so that they don�t collide with LEF/TEF display
-                    renderer->TextLeft(-0.95F, (0.84F - i * 0.03F),
+                    renderer->TextLeft(g_fSubtitleX, g_fSubtitleY - i * lineStep,
                                        theLabels[i]->theString);
                 }
 
@@ -762,6 +783,9 @@ void OTWDriverClass::DrawSubTitles(void) // Retro 16Dec2003 (all)
                 theLabels[i] = 0;
                 i++;
             }
+
+            // Global state, not a stack -- hand it back before anything else draws text.
+            g_fTextScaleOverride = savedTextScale;
 
             free(theLabels);
             theLabels = 0;
