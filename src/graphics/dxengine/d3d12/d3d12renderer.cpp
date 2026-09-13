@@ -54,6 +54,7 @@
 #include <string>
 
 #include "d3d12renderer.h"
+#include "graphics/include/fflog.h" // mirror the debug stream into FFDebug.log
 #include "graphics/dxengine/d3d12backend.h" // g_pD3D12Backend (device + command list)
 #include "graphics/dxengine/embeddedshader.h" // Artscout - 2026: FFEmu.hlsl from external file or embedded RCDATA
 #include "graphics/shaders/ffshaderblobs.h" // #78: DXIL for the mesh-shader terrain
@@ -72,7 +73,7 @@ static void R12Log(const char* fmt, ...)
     _vsnprintf(buf, sizeof(buf) - 1, fmt, ap);
     va_end(ap);
     buf[sizeof(buf) - 1] = 0;
-    OutputDebugStringA(buf);
+    FFDebugLog(buf);
 }
 #define R12_RELEASE(p)                                                         \
     do                                                                         \

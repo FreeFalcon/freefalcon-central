@@ -31,6 +31,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono> // #107 PERF: frame profiler timing
+#include "../include/fflog.h" // mirror the debug stream into FFDebug.log
 #include <map>
 #include <mutex>
 #include <string>
@@ -159,7 +160,7 @@ static void VkbLog(const char* fmt, ...)
     _vsnprintf(buf, sizeof(buf) - 1, fmt, ap);
     va_end(ap);
     buf[sizeof(buf) - 1] = 0;
-    OutputDebugStringA(buf);
+    FFDebugLog(buf); // debugger stream + FFDebug.log
     fputs(buf, stderr);
 }
 #define VKB_LOG(...) VkbLog("[Vulkan] " __VA_ARGS__)
