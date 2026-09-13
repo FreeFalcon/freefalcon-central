@@ -13,13 +13,15 @@
 #include "dispopts.h" // DisplayOptions -- screen size for the NVG vignette
 #include "graphics/dxengine/dxengine.h"
 #include "graphics/dxengine/common/irenderer.h"
+#include "graphics/include/fflog.h" // mirror the debug stream into FFDebug.log
 #include <stdio.h>
 #include <stdarg.h>
 #include "terrainclipmap.h"
 
 // Same radius cap the legacy path uses, so both cover the same ground.
 static const int TCLIP_MAX_RADIUS = 96;
-static const int TCLIP_MORPH_POSTS = 10;
+// The morph band width now comes from cfg (g_nTerrainMorphPosts); this is the
+// default that knob ships with.
 
 // Artscout - 2026: the debugger stream, same one R12Log uses -- MonoPrint in FF
 // goes somewhere else entirely and never reaches the log.
@@ -31,7 +33,7 @@ static void TClipLog(const char* fmt, ...)
     _vsnprintf(buf, sizeof(buf) - 1, fmt, ap);
     va_end(ap);
     buf[sizeof(buf) - 1] = 0;
-    OutputDebugStringA(buf);
+    FFDebugLog(buf);
 }
 
 // Post info bits -- must match the PI_* defines in ffterrain.hlsl.
@@ -52,6 +54,8 @@ static const unsigned int TF_NVG = (1u << 5);
 extern bool g_bTerrainMeshShader;
 extern bool g_bTerrainMeshDebugTint; // flat per-LOD tint, for bring-up
 extern int g_terrainRadiusCap; // #DX12 A5: sensor pass shrinks its rings
+extern int g_nTerrainMorphPosts;  // cfg: geomorph band width, in posts
+extern int g_nTerrainRingRadius;  // cfg: fixed ring radius; 0 = streamed range
 
 namespace
 {
@@ -67,7 +71,7 @@ struct Level
     int lod;      // theater LOD this slice holds
     int originRow; // absolute level post mapped to texel row 0
     int originCol;
-    int refreshRow; // rolling re-scan cursor (tiles stream in late)
+    int refreshRow; // rolling re-scan cursor, an ABSOLUTE level post row
     // The band actually drawn (ring + margin), in absolute level posts. Only
     // this is streamed: the ring is a fraction of the window, and every post
     // outside it would burn a GetPost plus a tile activation for nothing.
@@ -132,6 +136,13 @@ int RingRange(RViewPoint* vp, int lod, bool applyCap)
         return 0;
 
     int range = availSafe;
+    // Stock: the ring reaches as far as the theater has streamed. That range
+    // DROPS whenever a block in the area of interest is still loading and comes
+    // back when it lands (TBlockList::ComputeAvailableRange), so the rings --
+    // and with them the LOD/texture boundaries and the geomorph band -- resize
+    // from frame to frame. Pinning the radius takes that out of the picture.
+    if (g_nTerrainRingRadius > 0 && range > g_nTerrainRingRadius)
+        range = g_nTerrainRingRadius;
     if (range > TCLIP_MAX_RADIUS)
         range = TCLIP_MAX_RADIUS;
 
@@ -341,12 +352,20 @@ int TerrainClipmap_ChunkCount()
 }
 
 bool TerrainClipmap_Update(RViewPoint* vp, const float camPos[3],
-                           float dayNight)
+                           const float eyePos[3], float dayNight)
 {
     if (!g_bTerrainMeshShader || !vp || !camPos)
         return false;
     if (!g_pRenderer || !g_pRenderer->MeshTerrainAvailable())
         return false;
+
+    // The vertices are pre-translated by the camera and the view matrix is
+    // rotation-only, so this MUST be the position the view matrix was built
+    // for -- the same one every object is pre-translated by. camPos is the
+    // viewpoint, which trails it by the head lean / 6DOF / turbulence offset;
+    // pre-translating by that instead slides the whole ground against the
+    // cockpit and the objects every time the head or the airframe moves.
+    const float* eye = eyePos ? eyePos : camPos;
 
     // Sensor pass (cap > 0) shares every static here with the main view, so
     // its share of the counters is taken as a delta over this call.
@@ -490,19 +509,26 @@ bool TerrainClipmap_Update(RViewPoint* vp, const float camPos[3],
             // Rolling re-scan over the BAND: a tile activates long after its
             // post was uploaded (the budget is a few per frame), so the band is
             // re-read a few rows at a time until every post has found its tile.
+            // The cursor is an ABSOLUTE post row, not an offset into the band:
+            // the band's origin walks with the camera, so an offset advancing
+            // by REFRESH_ROWS while the origin advances by one post skips a row
+            // per step -- whole rows that never get re-read, and whose posts
+            // keep "no tile" for as long as the drift keeps the same phase.
+            // That is the untextured striping that only resolves on a refill.
             const int REFRESH_ROWS = 8;
-            const int bandRows = lv.actR1 - lv.actR0;
-            if (bandRows > 0)
+            if (lv.actR1 > lv.actR0)
             {
-                if (lv.refreshRow >= bandRows)
-                    lv.refreshRow = 0;
-                const int rr = lv.actR0 + lv.refreshRow;
-                FillRect(vp, lv, i, rr, rr + REFRESH_ROWS, lv.actC0, lv.actC1,
+                if (lv.refreshRow < lv.actR0 || lv.refreshRow >= lv.actR1)
+                    lv.refreshRow = lv.actR0;
+                int rr1 = lv.refreshRow + REFRESH_ROWS;
+                if (rr1 > lv.actR1)
+                    rr1 = lv.actR1;
+                FillRect(vp, lv, i, lv.refreshRow, rr1, lv.actC0, lv.actC1,
                          centerRow, centerCol, availSafe, useTex);
-                lv.refreshRow += REFRESH_ROWS;
-                if (lv.refreshRow >= bandRows)
+                lv.refreshRow = rr1;
+                if (lv.refreshRow >= lv.actR1)
                 {
-                    lv.refreshRow = 0;
+                    lv.refreshRow = lv.actR0;
                     boundsDirty = true;
                     RecomputeBounds(lv, i);
                 }
@@ -616,13 +642,17 @@ bool TerrainClipmap_Update(RViewPoint* vp, const float camPos[3],
                sizeof(s_cb.proj[v]));
     }
     const int viewsUsed = g_pRenderer->GetPerViewMatrices(s_cb.view, s_cb.proj);
-    s_cb.camPos[0] = camPos[0];
-    s_cb.camPos[1] = camPos[1];
-    s_cb.camPos[2] = camPos[2];
+    s_cb.camPos[0] = eye[0];
+    s_cb.camPos[1] = eye[1];
+    s_cb.camPos[2] = eye[2];
     s_cb.camPos[3] = 0.0f;
     s_cb.params[0] = FeetPerPost;
     s_cb.params[1] = dayNight;
-    s_cb.params[2] = (float)TCLIP_MORPH_POSTS;
+    // The shader clamps this to >= 1, and alpha hits 1 exactly on the ring's
+    // outer edge either way, so 0/1 leaves the seam watertight with no morph
+    // inboard of it. See g_nTerrainMorphPosts for why the width matters.
+    s_cb.params[2] = (float)((g_nTerrainMorphPosts > 0) ? g_nTerrainMorphPosts :
+                                                          1);
     s_cb.params[3] = (float)TCLIP_TEXELS;
     // The sun as SetLights delivered it -- the very lamp that lights the
     // cockpit. CDXEngine::TheSun is a leftover D3D7 light and stays a fallback.
