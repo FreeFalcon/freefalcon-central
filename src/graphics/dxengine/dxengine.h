@@ -434,7 +434,8 @@ public:
     void DX2D_Reset(void);
     void DX2D_InitLists(void);
     void DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
-                      D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle);
+                      D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle,
+                      bool Radial = false);
     void DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
                      D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle);
     void DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
@@ -449,7 +450,7 @@ public:
     void DX2D_SetupSquareCx(float y, float z);
     // void DX2D_TransformBB(D3DXVECTOR3 *Pos, D3DDYNVERTEX *Coord, D3DDYNVERTEX *Dest, DWORD Nr=1);
     void DX2D_TransformBB(XMMVector *Pos, XMMVector *Coord, D3DDYNVERTEX *Dest,
-                          DWORD Nr);
+                          DWORD Nr, bool Radial = false);
     void DX2D_TransformBB(XMMVector *Pos, D3DDYNVERTEX *Vertex, DWORD Nr);
     void DX2D_MakeCameraSpace(D3DXVECTOR3 *Result, D3DXVECTOR3 *Pos);
     void DX2D_ForceDistance(float Distance);

@@ -136,6 +136,12 @@ public:
     void SetItemLabel(long ID, _TCHAR *txt);
     void SetItemLabel(long ID, long textID);
     _TCHAR *GetItemLabel(long ID);
+    // Artscout - 2026: reach a C_TYPE_MENU item's own list. Every other accessor here
+    // goes through FindID, which recurses into submenus, so reading and writing an
+    // individual sub-item already works from the parent. What did not was emptying one:
+    // a caller that rebuilds a submenu's contents at runtime needs the list itself to
+    // call RemoveAllItems on, and SubMenu_ is private to the POPUPLIST node.
+    C_PopupList *GetSubMenu(long ID);
     C_Window *GetWindow()
     {
         return (Window_);

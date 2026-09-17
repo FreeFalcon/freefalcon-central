@@ -124,6 +124,7 @@ private:
     long NavalUnitMask_;
     long AirUnitMask_;
     long ThreatMask_;
+    long CampOverlay_; // Artscout - 2026: which campaign layer owns the raster overlay
 
     long MapID;
     C_ScaleBitmap *Map_; // 1536x2048 16 bit map
@@ -283,6 +284,25 @@ public:
     void HideNavalUnitType(long mask);
     void ShowThreatType(long mask);
     void HideThreatType(long mask);
+    // Artscout - 2026: campaign supply-model layers, drawn into the same raster overlay
+    // the threat rings use -- so they are mutually exclusive with those. See cmap.cpp.
+    enum
+    {
+        CAMP_OVERLAY_OFF = 0,
+        CAMP_OVERLAY_POWER, // production lost to the nearest power plant being down
+        CAMP_OVERLAY_SUPPLY, // supply and fuel actually moving through each road node
+        CAMP_OVERLAY_PRODUCTION, // who makes the supply, sized against the biggest
+        CAMP_OVERLAY_DAMAGE // how beaten up each objective is, without flying a recon
+    };
+    void ShowCampaignOverlay(long which);
+    // Artscout - 2026: the loaded map's pixel size, so callers stop hardcoding the painted
+    // bitmap's dimensions.
+    long GetMapWidth();
+    long GetMapHeight();
+    long GetCampaignOverlay()
+    {
+        return (CampOverlay_);
+    }
     void SetMapCenter(long x, long y);
     void MoveCenter(long x, long y);
     long GetMapCenterX()

@@ -1,0 +1,7 @@
+## Artscout - 2026: the FF4-style window skin FreeFalcon 6 ships but never loads.
+## WIN_PACKAGE, WIN_ADD_FLIGHT and the rest live only in art\uiskin\ff4\win_all; no
+## *_art.lst or *_res.lst names it, so every window asking for them drew with no
+## background. C_Resmgr::LoadIndex calls AddNewID for a record whose name is not
+## already in the ID table, so nothing needs a .id entry -- loading the resource
+## registers the names itself.
+[LOADRES] UISKIN_FF4_RESOURCE "art\uiskin\ff4\win_all"

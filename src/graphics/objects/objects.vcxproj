@@ -141,7 +141,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\Objects/Objects.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -172,11 +172,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\Objects/Objects.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)Objects.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -199,7 +199,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/Objects.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -223,10 +223,10 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/Objects.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Graphics\Objects/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)Objects.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -258,7 +258,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\Objects/Objects.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -289,11 +289,11 @@
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\Objects/Objects.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)Objects.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\Objects/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

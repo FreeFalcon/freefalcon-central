@@ -119,6 +119,11 @@ public:
     virtual void BeginObjectPass() = 0;
     virtual void BeginTerrainPass() = 0;
     virtual void SetTerrainRasterForLod(int level) = 0;
+    // Artscout - 2026: per-SURFACE depth bias for the object pass. BSP surfaces carry a dwzBias the D3D7
+    // engine pushed through D3DRENDERSTATE_ZBIAS; it is what separates coplanar detail (decals, panel
+    // plates, thin fins) from the surface it sits on. ~10% of the shipped models set it. Level is a small
+    // bucket, 0 = none. Default no-op: a backend that has not adopted it behaves exactly as before.
+    virtual void SetObjectDepthBias(int /*level*/) {}
     virtual void RebuildTerrainRasters() = 0;
     // Artscout - 2026: #96 3D skydome -- object-path pass for the sky dome: vertex-colour only (no lighting/fog),
     // depth OFF (drawn FIRST as the background; terrain/objects then draw over it). Default reuses BeginTerrainPass;

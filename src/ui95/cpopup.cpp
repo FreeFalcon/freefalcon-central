@@ -185,6 +185,13 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
     newitem->MenuIcon_ = NULL;
     newitem->CheckIcon_ = NULL;
     newitem->State_ = 0;
+    // Artscout - 2026: Group_ was the one field this constructor never set, so an item
+    // added in code carried whatever was in the heap. Process() hands it straight to
+    // ClearRadioGroup for any radio item, which walks the whole menu clearing state on a
+    // group id that was never chosen -- a garbage value that happened to match a real
+    // group would silently reset someone else's radio buttons. SetItemGroup still sets it
+    // properly; this just makes the default 'no group' rather than undefined.
+    newitem->Group_ = 0;
 
     if (Str and Type not_eq C_TYPE_NOTHING)
     {
@@ -285,6 +292,16 @@ void C_PopupList::RemoveAllItems()
         RemoveList(Root_);
         Root_ = NULL;
     }
+}
+
+C_PopupList *C_PopupList::GetSubMenu(long ID)
+{
+    POPUPLIST *cur = FindID(ID);
+
+    if (cur and cur->Type_ == C_TYPE_MENU)
+        return (cur->SubMenu_);
+
+    return (NULL);
 }
 
 POPUPLIST *C_PopupList::FindID(long pID)

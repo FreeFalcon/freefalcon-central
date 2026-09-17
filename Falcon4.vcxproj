@@ -156,7 +156,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
       <PrecompiledHeaderOutputFile>.\Falcon4___Win32_Debug/Falcon4.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Falcon4___Win32_Debug/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\Falcon4___Win32_Debug/</ObjectFileName>
       <ProgramDataBaseFileName>.\Falcon4___Win32_Debug/</ProgramDataBaseFileName>
       <BrowseInformation>false</BrowseInformation>
@@ -186,7 +186,7 @@
       <DataExecutionPrevention />
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"&#xD;&#xA;if exist "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" copy /Y "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" "$(OutDir)" &gt;nul</Command>
       <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -204,10 +204,10 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <StructMemberAlignment>Default</StructMemberAlignment>
-      <PrecompiledHeaderOutputFile>.\Falcon4___Win32_Debug/Falcon4.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Falcon4___Win32_Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Falcon4___Win32_Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Falcon4___Win32_Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)Falcon4.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -236,7 +236,7 @@
       </DataExecutionPrevention>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"&#xD;&#xA;if exist "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" copy /Y "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" "$(OutDir)" &gt;nul</Command>
       <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -264,7 +264,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\Falcon4___Win32_Release/Falcon4.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\Falcon4___Win32_Release/</ObjectFileName>
       <ProgramDataBaseFileName>.\Falcon4___Win32_Release/</ProgramDataBaseFileName>
       <BrowseInformation>false</BrowseInformation>
@@ -293,7 +293,7 @@
       <DataExecutionPrevention />
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"&#xD;&#xA;if exist "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" copy /Y "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" "$(OutDir)" &gt;nul</Command>
       <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -317,11 +317,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\Falcon4___Win32_Release/Falcon4.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)Falcon4.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\Falcon4___Win32_Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Falcon4___Win32_Release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -349,7 +349,7 @@
       </DataExecutionPrevention>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"&#xD;&#xA;if exist "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" copy /Y "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" "$(OutDir)" &gt;nul</Command>
       <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -377,7 +377,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\Falcon4___Win32_Release/Falcon4.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\Falcon4___Win32_Release/</ObjectFileName>
       <ProgramDataBaseFileName>.\Falcon4___Win32_Release/</ProgramDataBaseFileName>
       <BrowseInformation>false</BrowseInformation>
@@ -406,7 +406,7 @@
       <DataExecutionPrevention />
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"&#xD;&#xA;if exist "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" copy /Y "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" "$(OutDir)" &gt;nul</Command>
       <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -430,11 +430,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\Falcon4___Win32_Release/Falcon4.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)Falcon4.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\Falcon4___Win32_Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Falcon4___Win32_Release/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>false</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -462,7 +462,7 @@
       </DataExecutionPrevention>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"&#xD;&#xA;if exist "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" copy /Y "$(ProjectDir)src\tools\st80conv\bin\Release\st80conv.exe" "$(OutDir)" &gt;nul</Command>
       <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>

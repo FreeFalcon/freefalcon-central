@@ -141,7 +141,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/UITaceng.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -172,11 +172,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/UITaceng.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)UITaceng.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -199,7 +199,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/UITaceng.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
@@ -224,10 +224,10 @@
       <PreprocessorDefinitions>CAMPTOOL;_DEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/UITaceng.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\Falcon4___Win32_Debug\UI\TacEng/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)UITaceng.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -260,7 +260,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/UITaceng.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -291,11 +291,11 @@
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/UITaceng.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)UITaceng.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\..\Falcon4___Win32_Release\UI\TacEng/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

@@ -1999,6 +1999,18 @@ void OTWDriverClass::Enter(void)
     Tpoint viewPos;
     Trotation viewRotation;
     int i;
+
+    // Artscout - 2026: apply the config default for the frame-rate counter. Done on entry to
+    // the 3D world rather than at load, so it reasserts for every mission -- and deliberately
+    // only when the knob is set, so a counter turned off with the key during a flight is not
+    // forced back on by the next one.
+    {
+        extern int ShowFrameRate;
+        extern bool g_bShowFpsOnStart;
+
+        if (g_bShowFpsOnStart)
+            ShowFrameRate = 1;
+    }
     F4SoundEntering3d(); // MLR 12/13/2003 - Just inits some data for the sound code
 
     gOtwCameraLocation = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);

@@ -133,7 +133,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
@@ -158,10 +158,10 @@
       <PreprocessorDefinitions>USE_SMARTHEAP;_DEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Sim\SimInput/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)SimInput.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -194,7 +194,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -225,11 +225,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment><!-- Artscout-2026: x64 must match simlib/exe natural 8-byte alignment; /Zp4 here mis-strided AxisSetup[] -> Release-only startup crash -->
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)SimInput.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -261,7 +261,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -292,11 +292,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment><!-- Artscout-2026: x64 must match simlib/exe natural 8-byte alignment; /Zp4 here mis-strided AxisSetup[] -> Release-only startup crash -->
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Sim\SimInput/SimInput.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)SimInput.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Sim\SimInput/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

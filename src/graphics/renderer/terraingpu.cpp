@@ -252,8 +252,9 @@ static bool TgpuCoarseZ(RViewPoint* vp, int r, int c, int LOD1, int cR, int cC,
 // outer edge (odd posts have no coarse twin) is decimated onto the coarse segment by the geomorph -> watertight.
 // hasInner=false for the finest LOD (draws solid to the centre). Returns via outB; also *pOuterPost for legacy.
 static void DrawLodPatch(RViewPoint* vp, int LOD, int loLOD,
-                         const D3DVECTOR& cp, const int inB[4], bool hasInner,
-                         int outB[4], int* pOuterPost)
+                         const D3DVECTOR& cp, const D3DVECTOR& eye,
+                         const int inB[4], bool hasInner, int outB[4],
+                         int* pOuterPost)
 {
     const int avail = vp->GetAvailablePostRange(LOD);
     if (avail <=
@@ -361,8 +362,11 @@ static void DrawLodPatch(RViewPoint* vp, int LOD, int loLOD,
                 {
                     const int r = br - 1 + gi, c = bc - 1 + gj;
                     GCell& g = grid[gi * GW + gj];
-                    g.x = (float)LEVEL_POST_TO_WORLD(r, LOD) - cp.x;
-                    g.y = (float)LEVEL_POST_TO_WORLD(c, LOD) - cp.y;
+                    // Pre-translate by the EYE, not the viewpoint: the view
+                    // matrix is rotation-only and every object is pre-translated
+                    // by this same camera (CDXEngine::DrawObject).
+                    g.x = (float)LEVEL_POST_TO_WORLD(r, LOD) - eye.x;
+                    g.y = (float)LEVEL_POST_TO_WORLD(c, LOD) - eye.y;
 
                     const int dr =
                         (r >= centerRow) ? (r - centerRow) : (centerRow - r);
@@ -404,7 +408,7 @@ static void DrawLodPatch(RViewPoint* vp, int LOD, int loLOD,
                     }
                     g.z =
                         g.za -
-                        cp.z; // provisional (no morph); real cells overwrite below
+                        eye.z; // provisional (no morph); real cells overwrite below
                 }
             }
 
@@ -476,7 +480,7 @@ static void DrawLodPatch(RViewPoint* vp, int LOD, int loLOD,
                         }
                     }
                     // Single-layer box tiling: no LOD overlap, so no depth-push needed (nothing coplanar to fight).
-                    g.z = cz - cp.z;
+                    g.z = cz - eye.z;
                 }
             }
 
@@ -684,6 +688,19 @@ void TerrainGpu_Render(RViewPoint* vp)
     cp.y = pos.y;
     cp.z = pos.z;
 
+    // Artscout - 2026: the ground is pre-translated by the camera and drawn
+    // with a ROTATION-ONLY view matrix, so the point it is pre-translated by IS
+    // the camera. That camera is CDXEngine::GetObjCameraPos() -- what DrawScene
+    // handed SetCamera, and what every object is offset by in DrawObject. The
+    // viewpoint (cp) trails it by the head offset: head lean / TrackIR / VR
+    // 6DOF head position / per-eye IPD, plus the airframe turbulence shake, all
+    // of which are folded into headOrigin and change EVERY frame. Using cp here
+    // slid the whole ground against the cockpit and the world objects by that
+    // offset each frame -- the ground juddering under a fluid cockpit and sky.
+    // cp still drives the post/LOD grid: the theater's block lists are centred
+    // on the viewpoint, so that is what decides which posts exist.
+    const D3DVECTOR& eye = CDXEngine::GetObjCameraPos();
+
     // Day/night: the sun's diffuse level (updated per-frame from the time of day). Luminance -> [floor..1]. The
     // terrain vertex colours below multiply by this.
     // Artscout - 2026: #97 -- the night FLOOR is now driven by the ACTUAL moon, not a fixed constant. Old code
@@ -757,7 +774,8 @@ void TerrainGpu_Render(RViewPoint* vp)
                 g_nTileActivateBudget = (budget > 0) ? budget : 0x7FFFFFFF;
             }
             const float cam[3] = {cp.x, cp.y, cp.z};
-            if (TerrainClipmap_Update(vp, cam, s_terrainDayNight))
+            const float eyeArr[3] = {eye.x, eye.y, eye.z};
+            if (TerrainClipmap_Update(vp, cam, eyeArr, s_terrainDayNight))
             {
                 const TerrainClipConstants& cb = TerrainClipmap_Constants();
                 g_pRenderer->DrawTerrainMeshShader(
@@ -770,7 +788,7 @@ void TerrainGpu_Render(RViewPoint* vp)
     g_pRenderer->BeginTerrainPass();
     g_pRenderer->SetProj((const float*)&CDXEngine::GetObjProjection());
     g_pRenderer->SetView((const float*)&CDXEngine::GetObjView());
-    g_pRenderer->SetCameraPos(cp.x, cp.y, cp.z);
+    g_pRenderer->SetCameraPos(eye.x, eye.y, eye.z);
 
     const int hiLOD = vp->GetHighLOD();
     const int loLOD = vp->GetLowLOD();
@@ -812,7 +830,8 @@ void TerrainGpu_Render(RViewPoint* vp)
         g_pRenderer->SetTerrainRasterForLod(
             LOD - hiLOD); // #78 per-LOD depth bias (0 = finest)
         int outB[4], outerPost;
-        DrawLodPatch(vp, LOD, loLOD, cp, inB, hasInner, outB, &outerPost);
+        DrawLodPatch(vp, LOD, loLOD, cp, eye, inB, hasInner, outB,
+                     &outerPost);
         // coarser LOD's posts are 2x wider -> its inner box is this outer box halved (even edges -> exact)
         inB[0] = outB[0] >> 1;
         inB[1] = outB[1] >> 1;

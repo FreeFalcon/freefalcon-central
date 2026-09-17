@@ -191,6 +191,8 @@ public:
     BOOL AddToView(long ID);
     BOOL AddAllToView();
     BOOL View3d(long ID);
+    // Artscout - 2026: read this viewer's off-screen RTT back into the menu's 2D surface.
+    void StampRttIntoMenu();
     BOOL ViewOTW();
     BOOL ViewGreyOTW();
     BSPLIST *Find(long ID);

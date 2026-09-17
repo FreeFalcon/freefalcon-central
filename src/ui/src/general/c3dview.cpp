@@ -22,6 +22,7 @@
 extern C_Handler *gMainHandler;
 
 #include "graphics/dxengine/dxvbmanager.h"
+#include "graphics/include/fflog.h" // Artscout - 2026: menu texture diagnostic
 extern bool g_bUse_DX_Engine;
 
 extern bool g_bReconLatLong; //Wombat778 11-3-2003
@@ -97,6 +98,11 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
             m_pRTT = new ImageBuffer;
             m_pRTT->Setup(gMainHandler->GetFront()->GetDisplayDevice(), rw, rh,
                           SystemMem, None);
+            // Artscout - 2026: this RTT holds a 3D MODEL, so it needs depth. The RTT bind
+            // path was written for the 2D display panels and binds no DSV, which forces
+            // depth-off PSOs -- every triangle in submission order, far surfaces over near
+            // ones. That is what made the aircraft look see-through.
+            m_pRTT->SetRttWantsDepth(true);
             target = m_pRTT;
         }
 
@@ -113,7 +119,19 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
 
     // rend3d_->SetHazeMode(PlayerOptions.HazingOn());
     // rend3d_->SetFilteringMode( PlayerOptions.FilteringOn() );
-    rend3d_->SetObjectDetail(PlayerOptions.ObjectDetailLevel());
+    // Artscout - 2026: this is one static model on a menu, not a sky full of them, so it has
+    // no reason to inherit the sim's object-detail compromise. Higher = finer (the scaler
+    // becomes a LOD bias, and LODRange = range * 1/bias, so raising it makes the model read
+    // as nearer and the BSP picks a finer LOD). MenuModelDetail 1.0 restores the old
+    // behaviour of following PlayerOptions.ObjectDetailLevel().
+    {
+        extern float g_fMenuModelDetail;
+        const float d = (g_fMenuModelDetail > 0.0f) ?
+                            g_fMenuModelDetail *
+                                PlayerOptions.ObjectDetailLevel() :
+                            PlayerOptions.ObjectDetailLevel();
+        rend3d_->SetObjectDetail(d);
+    }
     // rend3d_->SetAlphaMode(PlayerOptions.AlphaOn());
     rend3d_->SetObjectTextureState(TRUE); //PlayerOptions.ObjectTexturesOn());
 
@@ -143,7 +161,40 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
 
     viewPoint_->Setup(ViewDistance_, MinTexture_, MaxTexture_,
                       DisplayOptions.bZBuffering);
-    rendOTW_->Setup(gMainHandler->GetFront(), viewPoint_);
+
+    // Artscout - 2026: recon into an off-screen RTT, the route the model viewer takes.
+    //
+    // Second attempt. The first crashed, and two things have changed since. The Cleanup ordering
+    // it exposed is fixed -- m_pRTT now outlives BOTH renderers, where it used to be freed between
+    // them and left rendOTW_->Cleanup() running against a deleted ImageBuffer. And the RTT bind
+    // path now attaches a DEPTH buffer on request, which it never did: it was written for the 2D
+    // display panels and bound no DSV, forcing depth-off pipeline states. For one aircraft that was
+    // a see-through model; for a full terrain scene with streamed LOD blocks it is a far bigger
+    // problem, and a plausible second cause of the crash.
+    //
+    // Worth the retry because the back-buffer alternative cannot really be made right: the 2D is
+    // composited OVER the terrain with black keyed out, so the pane shows whatever UI95 last left
+    // in that rect, and clearing the rect ourselves wipes the target list with it (74575126).
+    //
+    // Knob-gated: ReconRtt 0 returns to the back-buffer path without a rebuild.
+    {
+        extern bool g_bUseGpu;
+        extern bool g_bReconRtt;
+        ImageBuffer *target = gMainHandler->GetFront();
+
+        if (g_bUseGpu and g_bReconRtt)
+        {
+            const int rw = gMainHandler->GetFront()->targetXres();
+            const int rh = gMainHandler->GetFront()->targetYres();
+            m_pRTT = new ImageBuffer;
+            m_pRTT->Setup(gMainHandler->GetFront()->GetDisplayDevice(), rw, rh,
+                          SystemMem, None);
+            m_pRTT->SetRttWantsDepth(true); // a terrain scene, not 2D symbology
+            target = m_pRTT;
+        }
+
+        rendOTW_->Setup(target, viewPoint_);
+    }
 
     rendOTW_->SetViewport(l, t, r, b);
 
@@ -207,19 +258,23 @@ BOOL C_3dViewer::Cleanup()
         rend3d_ = NULL;
     }
 
-    // Artscout - 2026 (#34): off-screen RTT (rend3d_ above held it via context.m_pIB; free after it).
-    if (m_pRTT)
-    {
-        m_pRTT->Cleanup();
-        delete m_pRTT;
-        m_pRTT = NULL;
-    }
-
     if (rendOTW_)
     {
         rendOTW_->Cleanup();
         delete rendOTW_;
         rendOTW_ = NULL;
+    }
+
+    // Artscout - 2026 (#34): off-screen RTT. BOTH renderers hold it as their target via
+    // context.m_pIB, so it has to outlive BOTH -- this used to sit between them, which was fine
+    // while only rend3d_ used the RTT and rendOTW_ drew to the front buffer. Once recon moved onto
+    // the RTT as well, freeing here meant rendOTW_->Cleanup() ran against a deleted ImageBuffer.
+    // That was the recon crash.
+    if (m_pRTT)
+    {
+        m_pRTT->Cleanup();
+        delete m_pRTT;
+        m_pRTT = NULL;
     }
 
     //JAM 19Nov03
@@ -452,6 +507,76 @@ BOOL C_3dViewer::AddAllToView()
     return (TRUE);
 }
 
+// Artscout - 2026: the two menu 3D viewers do NOT render the same way, and ImageBuffer::PresentGpu
+// has to composite differently for each.
+//
+//   Init3d  (loadout aircraft, tactical reference) renders into an OFF-SCREEN RTT, and View3d reads
+//           it back into the menu's 2D surface -- so by present time the model is part of the 565
+//           image and the right thing to do is blit that opaquely.
+//   InitOTW (recon) hands rendOTW_ the FRONT buffer, so its terrain goes to the back buffer and is
+//           not in the 565 at all -- an opaque blit would paint straight over it. That one needs the
+//           2D composited on top, black keyed out.
+//
+// This says which happened, for the frame about to be presented. PresentGpu clears it.
+bool g_bMenuViewerToBackBuffer = false;
+
+// Open a GPU frame before a viewer renders, or the off-screen RTT bind is silently skipped and the
+// model never reaches the texture that gets read back. See D3D12_EnsureMenuFrame.
+static void EnsureMenuGpuFrame()
+{
+#ifdef _WIN32
+    extern bool g_bUseD3D12;
+    extern bool D3D12_EnsureMenuFrame();
+
+    if (g_bUseD3D12)
+        D3D12_EnsureMenuFrame();
+
+#endif // _WIN32
+}
+
+// Artscout - 2026: pull the viewer's off-screen RTT into the menu's 2D surface. Shared by the model
+// viewer and both recon views -- they used to differ here, which is how recon ended up on a path of
+// its own. 1-frame latent by design (ReadbackRttTo565 converts the PREVIOUS frame's copy and records
+// this one), so a still image settles immediately and a rotating one trails by a frame, which is not
+// noticeable and costs no GPU stall.
+void C_3dViewer::StampRttIntoMenu()
+{
+    extern bool g_bUseGpu;
+
+    if (not g_bUseGpu or not m_pRTT)
+        return;
+
+    ImageBuffer *front = gMainHandler->GetFront();
+
+    if (not front)
+        return;
+
+    unsigned short *dst = (unsigned short *)front->Lock();
+
+    if (not dst)
+        return;
+
+    m_pRTT->BlitRttTo565(dst, front->targetXres(), front->targetYres(),
+                         viewport.left, viewport.top,
+                         viewport.right - viewport.left,
+                         viewport.bottom - viewport.top);
+    front->Unlock();
+
+    // Artscout - 2026: the stamp writes straight into the shared 2D surface, so it covers anything
+    // another window had already drawn in that rect. On the recon screen the target list is its own
+    // window (RECON_LIST_WIN) sitting over the viewer's client area, so it was being painted over
+    // every frame and only came back when UI95 happened to mark it dirty -- under the cursor.
+    //
+    // RefreshAll is UI95's own answer to this: mark the rect dirty on every visible window so each
+    // redraws its part of it. Windows later in the handler's list draw ON TOP (the same ordering
+    // ClearHiddenRects relies on), and the list window is later than the viewer's, so it lands back
+    // over the stamp in the same pass rather than a frame behind it.
+    //
+    // Cheap enough here: this is a menu, the rect is one viewer pane, and only windows that actually
+    // overlap it do any work.
+    gMainHandler->RefreshAll(&viewport);
+}
+
 BOOL C_3dViewer::View3d(long ID)
 {
     BSPLIST *obj;
@@ -463,6 +588,31 @@ BOOL C_3dViewer::View3d(long ID)
         if (obj)
         {
             gMainHandler->Unlock();
+            {
+                extern bool g_bMenuViewerToBackBuffer;
+                g_bMenuViewerToBackBuffer = false; // RTT path: model ends up in the 2D surface
+            }
+            EnsureMenuGpuFrame();
+
+            // Artscout - 2026: mark the whole draw, not just the Draw() call. DrawableBSP::Draw
+            // BATCHES into the context poly list; the surfaces only reach
+            // CDXEngine::SelectTexture when that list is flushed, which is FlushPolyLists /
+            // EndDraw / FinishFrame below. Bracketing Draw() alone logged nothing, which was the
+            // first useful thing the diagnostic told us.
+            {
+                extern bool g_bMenuViewerDrawing;
+                extern bool g_bLogMenuTextures;
+                g_bMenuViewerDrawing = true;
+
+                if (g_bLogMenuTextures)
+                {
+                    char b[128];
+                    sprintf(b, "[MENUTEX] viewer draw begin, zbuf=%d\n",
+                            (int)DisplayOptions.bZBuffering);
+                    FFDebugLog(b);
+                }
+            }
+
             rend3d_->SetCamera(&currentPos_, &currentRot_);
             // rend3d_->SetTime(Time_+(GetCurrentTime() % 60000l));
 
@@ -488,39 +638,21 @@ BOOL C_3dViewer::View3d(long ID)
             // CLose the Frame
             rend3d_->context.FinishFrame(NULL);
 
-            // Artscout - 2026 (#34): pull the model out of the off-screen RTT into the menu's 2D
-            // surface (the viewport rect), then clear g_bGpuDraw so Present does a normal full
-            // 2D blit (menu + embedded model) instead of the chroma path that blacks out the menu.
             {
-                extern bool g_bUseGpu;
-                extern bool g_bGpuDraw;
+                extern bool g_bMenuViewerDrawing;
+                extern bool g_bLogMenuTextures;
 
-                if ((g_bUseGpu) && m_pRTT)
-                {
-                    ImageBuffer *front = gMainHandler->GetFront();
-                    unsigned short *dst = (unsigned short *)front->Lock();
+                if (g_bLogMenuTextures)
+                    FFDebugLog("[MENUTEX] viewer draw end\n");
 
-                    if (dst)
-                    {
-                        m_pRTT->BlitRttTo565(dst, front->targetXres(),
-                                             front->targetYres(), viewport.left,
-                                             viewport.top,
-                                             viewport.right - viewport.left,
-                                             viewport.bottom - viewport.top);
-                        front->Unlock();
-                    }
-
-                    // Artscout - 2026: #DX12 A5 -- under D3D11 (immediate) clear g_bGpuDraw so Present does a
-                    // full 2D blit of the menu (with the embedded model). Under D3D12 the viewer opened a real
-                    // command frame holding the model draws + the deferred readback COPY; a fresh BeginFrame would
-                    // RESET that list and discard the copy (readback never completes). So keep g_bGpuDraw set
-                    // -> PresentGpu composites the 2D menu (with the 1-frame-latent model) over the viewer's
-                    // frame and PRESENTS it, preserving the copy.
-                    // Artscout - 2026 (D3D11 purge): the D3D11-only `g_bGpuDraw = false` (full 2D blit
-                    // of the menu) is gone. Under D3D12 we KEEP g_bGpuDraw set so PresentGpu composites
-                    // the 2D menu (with the 1-frame-latent model) over the viewer's frame and preserves the copy.
-                }
+                g_bMenuViewerDrawing = false;
             }
+
+            // Pull the model out of the RTT into the menu's 2D surface. g_bGpuDraw stays SET on
+            // purpose: the viewer opened a real command frame holding the model draws and the
+            // deferred readback copy, and a fresh BeginFrame would reset that list and throw the
+            // copy away. PresentGpu blits the 2D surface onto that same frame instead.
+            StampRttIntoMenu();
 
             gMainHandler->Lock();
             return (TRUE);
@@ -536,6 +668,14 @@ BOOL C_3dViewer::ViewOTW()
     {
         viewPoint_->Update(&currentPos_);
         gMainHandler->Unlock();
+        {
+            extern bool g_bMenuViewerToBackBuffer;
+            // With the RTT the terrain ends up in the 2D surface (StampRttIntoMenu
+            // below) and PresentGpu blits that opaquely; without it the terrain is on
+            // the back buffer and the 2D has to be composited over it instead.
+            g_bMenuViewerToBackBuffer = (m_pRTT == NULL);
+        }
+        EnsureMenuGpuFrame();
 
         //JAM 16Dec03
         if (DisplayOptions.bZBuffering)
@@ -550,6 +690,7 @@ BOOL C_3dViewer::ViewOTW()
 
         rendOTW_->EndDraw();
         rendOTW_->context.FinishFrame(NULL);
+        StampRttIntoMenu();
         //JAM
 
         gMainHandler->Lock();
@@ -568,6 +709,14 @@ BOOL C_3dViewer::ViewGreyOTW()
     {
         viewPoint_->Update(&currentPos_);
         gMainHandler->Unlock();
+        {
+            extern bool g_bMenuViewerToBackBuffer;
+            // With the RTT the terrain ends up in the 2D surface (StampRttIntoMenu
+            // below) and PresentGpu blits that opaquely; without it the terrain is on
+            // the back buffer and the 2D has to be composited over it instead.
+            g_bMenuViewerToBackBuffer = (m_pRTT == NULL);
+        }
+        EnsureMenuGpuFrame();
 
         rendOTW_->context.SetZBuffering(TRUE);
 
@@ -581,6 +730,9 @@ BOOL C_3dViewer::ViewGreyOTW()
         rendOTW_->context.FlushPolyLists();
         rendOTW_->EndDraw();
         rendOTW_->context.FinishFrame(NULL);
+        // Artscout - 2026: recon's view goes through here, not ViewOTW -- it needs the same
+        // read-back into the menu surface or the RTT is rendered and then thrown away.
+        StampRttIntoMenu();
 
         /* // now wait for Loader to end it's work
          TheLoader.WaitForLoader();

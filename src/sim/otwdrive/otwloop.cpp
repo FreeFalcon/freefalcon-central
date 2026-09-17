@@ -734,6 +734,11 @@ void OTWDriverClass::ToggleSubTitles() // Retro 20Dec2003
 }
 
 /* RETRO RADIOMESS LABELS */
+// Artscout - 2026: set when the head-locked subtitle QUAD carried the subtitles this frame, so the per-eye
+// in-eye draw below stands down. Drawing them into each eye image doubles them; the quad is one image the
+// runtime composites for both eyes, so it cannot.
+bool g_bVrSubQuadDrewThisFrame = false;
+
 void OTWDriverClass::DrawSubTitles(void) // Retro 16Dec2003 (all)
 {
     Prof(DrawSubTitles);
@@ -747,14 +752,35 @@ void OTWDriverClass::DrawSubTitles(void) // Retro 16Dec2003 (all)
         {
             int i = 0;
 
+            // Artscout - 2026: placement and size from cfg. The stock spot was tuned for a 4:3 monitor and sits
+            // near the top of a headset's much taller FOV, above where the eye naturally rests. Set the font
+            // explicitly too -- this function never did, so the subtitles rendered in whatever font the previous
+            // 2D caller happened to leave current.
+            extern float g_fSubtitleX, g_fSubtitleY, g_fSubtitleLineSpacing,
+                g_fSubtitleScale;
+            extern int g_nSubtitleFont;
+            extern float g_fTextScaleOverride;
+            VirtualDisplay::SetFont(g_nSubtitleFont);
+
+            const float subScale =
+                (g_fSubtitleScale > 0.0f) ? g_fSubtitleScale : 1.0f;
+            // Pitch from the live font height, so a bigger font spreads the lines instead of stacking them.
+            // TextHeight() reports the font's NATIVE height and knows nothing about the glyph scale below, so
+            // fold the scale in here too -- otherwise enlarged text overlaps the line beneath it.
+            float lineStep =
+                g_fSubtitleLineSpacing * renderer->TextHeight() * subScale;
+            if (lineStep <= 0.0f)
+                lineStep = 0.03f; // font metrics unavailable -- the stock step
+
+            const float savedTextScale = g_fTextScaleOverride;
+            g_fTextScaleOverride = subScale;
+
             while (theLabels[i])
             {
                 if (theLabels[i]->theString)
                 {
                     renderer->SetColor(theLabels[i]->theColour);
-                    // renderer->TextLeft(-0.95F,  (0.90F-i*0.03F), theLabels[i]->theString);
-                    // Retro 10Jan2004 - lower so that they don�t collide with LEF/TEF display
-                    renderer->TextLeft(-0.95F, (0.84F - i * 0.03F),
+                    renderer->TextLeft(g_fSubtitleX, g_fSubtitleY - i * lineStep,
                                        theLabels[i]->theString);
                 }
 
@@ -762,6 +788,9 @@ void OTWDriverClass::DrawSubTitles(void) // Retro 16Dec2003 (all)
                 theLabels[i] = 0;
                 i++;
             }
+
+            // Global state, not a stack -- hand it back before anything else draws text.
+            g_fTextScaleOverride = savedTextScale;
 
             free(theLabels);
             theLabels = 0;
@@ -1545,10 +1574,16 @@ void OTWDriverClass::DisplayFrontText(void)
 
 #endif
 
-    if (drawSubTitles)
+    // Artscout - 2026: in VR the subtitles come from their own head-locked quad (one image, composited into both
+    // eyes). Drawing them here as well would put a second copy in each eye image.
     {
-        // Retro 16Dec2003
-        DrawSubTitles(); // Retro 16Dec2003
+        extern bool g_bVrFrameActive;
+        if (drawSubTitles and
+            not(g_bVrFrameActive and g_bVrSubQuadDrewThisFrame))
+        {
+            // Retro 16Dec2003
+            DrawSubTitles(); // Retro 16Dec2003
+        }
     }
 
 #ifdef Prof_ENABLED
@@ -2040,12 +2075,21 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
             // with head yaw/pitch -> the flat-canvas error rotates too -> the panels drift under head motion (absent in
             // the per-eye path, which puts the IPD in headOrigin via ownshipRot*eyeLatFeet). Both the multiview world/
             // cockpit AND this composite use worldOffs, so keeping them body-frame fixes the drift AND keeps them fused.
+            // The per-eye path this comment cites as the body-frame precedent now rotates its IPD by cameraRot
+            // (VrHeadRelIpd, vcock.cpp): the eyes are separated across the SKULL, so body-frame is only correct
+            // looking straight ahead and goes cross-eyed as the head turns -- ipd * 2sin(t/2), ~75% of the eye
+            // offset at 45 degrees of gaze. That path can have it both ways because the world camera IPD
+            // (headOrigin) and the RTT panel IPD (Pan.y * g_fVrDisplayIpd, in VCock_Exec) are SEPARATE values;
+            // here one worldOffs feeds both the stage-1 world/cockpit and the stage-2 RTT tail, so it is a real
+            // trade: head-frame fixes the gaze cross-eye, body-frame keeps the flat-canvas panel error stable.
+            // Knob so it can be measured on hardware. Default OFF = the shipped body-frame behaviour.
+            extern bool g_bVrVulkanHeadRelIpd;
             Tpoint bv;
             bv.x = 0.0f;
             bv.y = sgn * g_pOpenXRBackend->GetEyeLateralOffsetFeet(gv);
             bv.z = 0.0f;
             Tpoint wv;
-            MatrixMult(&ownshipRot, &bv, &wv);
+            MatrixMult(g_bVrVulkanHeadRelIpd ? camRot : &ownshipRot, &bv, &wv);
             worldOffs[localV * 3 + 0] = wv.x;
             worldOffs[localV * 3 + 1] = wv.y;
             worldOffs[localV * 3 + 2] = wv.z;
@@ -2158,8 +2202,15 @@ void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
                 renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
                 g_pVulkanBackend->SetGScreenSize(gW, gH);
                 float efl, efr, efu, efd;
-                if (quad and g_pOpenXRBackend->GetEyeFovAngles(gv, &efl, &efr,
-                                                               &efu, &efd))
+                // The stage-1 multiview pass draws the world and the 3D cockpit with the runtime's TRUE
+                // off-axis per-view projection under VrStereoOffAxis, not just under quad-views. This tail
+                // pass must match it, or the RTT displays and 2D overlays are projected with a symmetric
+                // frustum onto a scene drawn off-axis -- each eye's 2D layer lands ~7 degrees out, mirrored,
+                // and the MFDs/HUD duplicate and sit away from their panels. Same class as the cursor/hit-test
+                // mismatch in vcock.cpp: whatever the 3D was drawn with, the 2D on top has to use too.
+                if ((quad or g_bVrStereoOffAxis) and
+                    g_pOpenXRBackend->GetEyeFovAngles(gv, &efl, &efr, &efu,
+                                                      &efd))
                     renderer->SetVRFrustum(efl, efr, efu, efd);
                 else
                     renderer->SetFOV(hf);
@@ -4040,6 +4091,63 @@ void OTWDriverClass::RenderFrame()
                                 if (vkFps)
                                     VR_BIND_EYE(); // return to the eye
 #ifdef _WIN32 // D3D12 backbuffer rebind is Windows-only
+                                else if (g_pD3D12Backend)
+                                    g_pD3D12Backend->BindBackBufferRTV();
+#endif // _WIN32
+                            }
+                        }
+                    }
+
+                    // ---- SUBTITLES as a HEAD-LOCKED QUAD (Artscout - 2026) ----
+                    // Drawn ONCE into a small transparent RTT and composited by the runtime, exactly like the FPS
+                    // quad above and the comms menu. The in-eye draw inside DisplayFrontText stands down when this
+                    // succeeds (g_bVrSubQuadDrewThisFrame): rendering the text into each eye image gives two copies.
+                    if (xrEye == 0)
+                    {
+                        extern bool g_bUseVulkan;
+                        g_bVrSubQuadDrewThisFrame = false;
+                        const bool vkSub =
+                            (g_bUseVulkan and g_pVulkanBackend != NULL);
+                        if (drawSubTitles and g_pOpenXRBackend and
+                            (g_bUseD3D12 or vkSub))
+                        {
+                            const int sw = 1024, sh = 320;
+                            void* subTex = NULL;
+                            if (vkSub)
+                            {
+                                g_pVulkanBackend->EnsureSubRtt(sw, sh);
+                                subTex = g_pVulkanBackend->SubRttTex();
+                                if (subTex)
+                                    g_pVulkanBackend->BindSubRtt(true);
+                            }
+#ifdef _WIN32
+                            else if (g_pD3D12Backend)
+                            {
+                                g_pD3D12Backend->EnsureSubRtt(sw, sh);
+                                subTex = g_pD3D12Backend->SubRttTex();
+                                if (subTex)
+                                    g_pD3D12Backend->BindSubRtt(true);
+                            }
+#endif // _WIN32
+                            if (subTex)
+                            {
+                                renderer->VR_SetRes(sw, sh);
+                                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                                VR_GSCREEN(sw, sh);
+                                // Inside the panel the cfg placement is panel-relative; where the panel itself
+                                // floats is VrSubQuadX/VrSubQuadY.
+                                DrawSubTitles();
+                                renderer->context.FlushPending();
+                                if (vkSub)
+                                    g_pVulkanBackend->UnbindSceneRtt(subTex);
+                                if (g_pOpenXRBackend->SubmitSubtitleQuad(
+                                        subTex, sw, sh))
+                                    g_bVrSubQuadDrewThisFrame = true;
+                                renderer->VR_SetRes(ew, eh);
+                                VR_GSCREEN(ew, eh);
+                                if (vkSub)
+                                    VR_BIND_EYE();
+#ifdef _WIN32
                                 else if (g_pD3D12Backend)
                                     g_pD3D12Backend->BindBackBufferRTV();
 #endif // _WIN32

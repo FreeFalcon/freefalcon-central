@@ -1,0 +1,69 @@
+THIRD-PARTY NOTICES
+===================
+
+This package contains FFViper.exe, built from the FreeFalcon source tree, plus the
+third-party runtime libraries that build requires. Each component's license is listed
+below. Full license texts for the copyleft/attribution components are in ./licenses/.
+
+
+FreeFalcon (FFViper.exe)
+------------------------
+BSD 2-Clause License. Copyright (c) 2013, FreeFalcon Open Source Project.
+Full text: licenses/FreeFalcon-BSD-2-Clause.md
+Source: https://github.com/FreeFalcon/freefalcon-central
+
+Per the BSD 2-Clause terms, this binary distribution reproduces the copyright notice,
+the list of conditions, and the disclaimer (see the license file above).
+
+
+OpenAL Soft (OpenAL32.dll)  -- v1.25.2
+--------------------------------------
+GNU Lesser General Public License, version 2.1.
+Full text: licenses/OpenAL-Soft-LGPL-2.1-COPYING.txt
+Source: https://github.com/kcat/openal-soft
+
+This library is used via dynamic linking and is redistributed unmodified. Under the
+LGPL, you may replace this DLL with your own build of OpenAL Soft. Corresponding
+source for the version shipped here is available from the upstream project above.
+
+
+OpenXR Loader (openxr_loader.dll)
+---------------------------------
+Apache License 2.0. Copyright (c) The Khronos Group Inc.
+Source and license: https://github.com/KhronosGroup/OpenXR-SDK
+  -> see that repository's LICENSE file (Apache-2.0) and NOTICE file.
+
+Full text: licenses/OpenXR-SDK-LICENSE-Apache-2.0.txt (verbatim from upstream).
+
+
+DirectX Shader Compiler (dxcompiler.dll, dxil.dll)
+--------------------------------------------------
+Copyright (c) Microsoft Corporation.
+dxcompiler.dll is open source under the LLVM Release License / MIT terms:
+  https://github.com/microsoft/DirectXShaderCompiler
+dxil.dll is Microsoft's signed DXIL validator, redistributable alongside an
+application that uses the compiler. It cannot be rebuilt from source.
+
+
+NVIDIA Texture Tools (nvtt30205.dll)  -- NVTT 3.2.5
+---------------------------------------------------
+Copyright (c) NVIDIA Corporation. Redistributed under the NVIDIA Texture Tools
+license/EULA that accompanies the NVTT 3 SDK:
+  https://developer.nvidia.com/gpu-accelerated-texture-compression
+Review those terms before redistributing this component.
+
+
+NOT INCLUDED (deliberately)
+---------------------------
+The following ship with stock FreeFalcon and are NOT part of this patch, so they are
+not redistributed here:
+
+  ST48W.dll, ST80W.dll  -- Lernout & Hauspie CELP speech codecs, (c) 1996 Lernout &
+                           Hauspie Speech Products. Proprietary; licensed to the
+                           original publisher. Keep your existing copies.
+  dbghelp.dll           -- Microsoft Debug Help Library (restricted redistribution).
+                           Windows supplies its own; the local copy is not required.
+
+Falcon 4.0 game data (art, campaign, terrain, sounds, TacRefDB.bin, etc.) is
+copyrighted by its original publisher and is NOT included or redistributable. This
+package is a patch for an existing, working FreeFalcon installation only.

@@ -2041,6 +2041,11 @@ enum
     SETUP_ADVANCED_BRAKE_RIGHT = 70268,
     SETUP_ADVANCED_REVERSE_BRAKE_LEFT = 70269,
     SETUP_ADVANCED_REVERSE_BRAKE_RIGHT = 70270,
+    // Artscout - 2026: invert buttons for the two throttles. Unlike the ones above
+    // these have no control in the window resource, so AdvancedControlCB clones them
+    // at runtime from the left-brake invert button -- see CloneAxisReverseButton.
+    SETUP_ADVANCED_REVERSE_THROTTLE = 70421,
+    SETUP_ADVANCED_REVERSE_THROTTLE2 = 70422,
     SETUP_ADVANCED_BRAKE_RIGHT_VAL =
         500009, // #57 right toe brake value bar (differential braking)
     SETUP_ADVANCED_SAT_BRAKERIGHT =
@@ -2275,6 +2280,35 @@ enum
     MID_CIRCLE_SAM_HIGH = 86046,
     MID_CIRCLE_RADAR_LOW = 86047,
     MID_CIRCLE_RADAR_HIGH = 86048,
+    // Artscout - 2026: campaign overlays. These items are not in the menu resource --
+    // HookupCampaignMenus adds them to MAP_POP at runtime. One radio group of their own
+    // (MID_CAMP_LAYER_GROUP) because, like the threat rings, only one can hold the map's
+    // blended palette at a time.
+    MID_CAMP_LAYERS = 86146,
+    MID_CAMP_LAYER_OFF = 86147,
+    MID_CAMP_LAYER_POWER = 86148,
+    MID_CAMP_LAYER_SUPPLY = 86149,
+    MID_CAMP_LAYER_PROD = 86150,
+    MID_CAMP_LAYER_DAMAGE = 86152,
+    MID_CAMP_LAYER_GROUP = 86151,
+    // Artscout - 2026: the FLOT is a TOGGLE, deliberately outside the layer radio group --
+    // the front line is a bearing you want kept while you look at something else, not an
+    // alternative to looking at something else.
+    MID_CAMP_FLOT = 86153,
+    // Artscout - 2026: "Build package" -- the squadron picker hung off the campaign
+    // right-click menus. Like the overlay items above, none of these are in the menu
+    // resource; the squadron entries in particular cannot be, because which squadrons
+    // are worth offering depends on the target that was right-clicked. The open
+    // callback rebuilds them each time the menu is raised, into the fixed slot range
+    // below -- fixed because a callback has to be attached per item ID, and a range
+    // known at compile time lets that happen once at hookup instead of on every open.
+    MID_CAMP_PACKAGE = 86153,
+    MID_CAMP_PKG_SIZE2 = 86154,
+    MID_CAMP_PKG_SIZE4 = 86155,
+    MID_CAMP_PKG_SIZE_GROUP = 86156,
+    MID_CAMP_PKG_SEP = 86157,
+    MID_CAMP_PKG_SQ_FIRST = 86160,
+    MID_CAMP_PKG_SQ_LAST = 86171,
     MID_UNITS_SQUAD_SQUADRON = 86049,
     MID_UNITS_SQUAD_PACKAGE = 86050,
     MID_OFF = 86100,

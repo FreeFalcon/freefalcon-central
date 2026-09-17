@@ -439,6 +439,111 @@ void initialize_variables(void)
 };
 
 
+// ============================================================================
+// Artscout - 2026: write a stack trace when the game crashes.
+//
+// src/crashhandler has had a full Bugslayer crash handler in it all along --
+// fault reason, registers, symbolised stack with source and line -- and
+// Falcon4.vcxproj links it. Nothing ever called SetCrashHandlerFilter, so the
+// whole facility has been dead weight in the binary and every crash report has
+// had to be "it crashes when I do X".
+//
+// Install a filter that writes FFCrash.log next to the exe. Release builds here
+// carry /Zi and ship FFViper.pdb, so the trace symbolises to function and line.
+//
+// Written with raw Win32 only -- no CRT, no allocation, no locks. The process is
+// already damaged by the time this runs; anything that could itself fault or
+// block turns a diagnosable crash into a hang.
+// ============================================================================
+// bugslayerutil.h first: it defines BUGSUTIL_DLLINTERFACE, which crashhandler.h decorates
+// every prototype with. Static-lib build here, so the macro expands to nothing.
+#include "../../crashhandler/bugslayerutil.h"
+#include "../../crashhandler/crashhandler.h"
+
+static void FFCrashWrite(HANDLE h, const char *s)
+{
+    if (h == INVALID_HANDLE_VALUE or not s)
+        return;
+
+    DWORD len = 0;
+
+    while (s[len])
+        len++;
+
+    DWORD wrote = 0;
+    WriteFile(h, s, len, &wrote, NULL);
+}
+
+static LONG __stdcall FFCrashFilter(EXCEPTION_POINTERS *pExPtrs)
+{
+    // Re-entrancy guard: a fault inside the handler must not recurse forever.
+    static LONG s_inCrash = 0;
+
+    if (InterlockedExchange(&s_inCrash, 1) not_eq 0)
+        return EXCEPTION_CONTINUE_SEARCH;
+
+    char path[MAX_PATH];
+    DWORD n = GetModuleFileNameA(NULL, path, MAX_PATH);
+
+    if (n == 0 or n >= MAX_PATH)
+        return EXCEPTION_CONTINUE_SEARCH;
+
+    while (n > 0 and path[n - 1] not_eq '\\' and path[n - 1] not_eq '/')
+        n--;
+
+    path[n] = 0;
+    lstrcatA(path, "FFCrash.log");
+
+    // Append, so a run that crashes twice keeps both.
+    HANDLE h = CreateFileA(path, FILE_APPEND_DATA, FILE_SHARE_READ, NULL,
+                           OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (h == INVALID_HANDLE_VALUE)
+        return EXCEPTION_CONTINUE_SEARCH;
+
+    SetFilePointer(h, 0, NULL, FILE_END);
+
+    FFCrashWrite(h, "\r\n==================== FFViper crash ====================\r\n");
+
+    {
+        SYSTEMTIME st;
+        GetLocalTime(&st);
+        char when[64];
+        wsprintfA(when, "time   : %04d-%02d-%02d %02d:%02d:%02d\r\n", st.wYear,
+                  st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+        FFCrashWrite(h, when);
+    }
+
+    FFCrashWrite(h, "reason : ");
+    FFCrashWrite(h, GetFaultReason(pExPtrs));
+    FFCrashWrite(h, "\r\n\r\nregisters:\r\n");
+    FFCrashWrite(h, GetRegisterString(pExPtrs));
+
+    // The part that matters: module, symbol, source file and line for each frame.
+    FFCrashWrite(h, "\r\nstack:\r\n");
+    {
+        const DWORD opts = GSTSO_MODULE bitor GSTSO_SYMBOL bitor GSTSO_SRCLINE;
+        LPCTSTR frame = GetFirstStackTraceString(opts, pExPtrs);
+        int guard = 0;
+
+        while (frame and guard++ < 256)
+        {
+            FFCrashWrite(h, "  ");
+            FFCrashWrite(h, frame);
+            FFCrashWrite(h, "\r\n");
+            frame = GetNextStackTraceString(opts, pExPtrs);
+        }
+    }
+
+    FFCrashWrite(h, "=======================================================\r\n");
+    FlushFileBuffers(h);
+    CloseHandle(h);
+
+    // Hand the exception back so the normal crash path (and any debugger) still
+    // sees it -- this is here to RECORD the crash, not to swallow it.
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
 signed int PASCAL handle_WinMain(HINSTANCE h_instance,
                                  HINSTANCE h_previous_instance,
                                  LPSTR command_line, signed int command_show)
@@ -447,6 +552,11 @@ signed int PASCAL handle_WinMain(HINSTANCE h_instance,
 #ifndef NDEBUG
     initialize_variables();
 #endif // NDEBUG
+
+    // Artscout - 2026: arm the crash logger before anything else can fault. See
+    // FFCrashFilter above -- the handler has been in the tree and linked all along with
+    // nothing switching it on.
+    SetCrashHandlerFilter(FFCrashFilter);
 
 #ifdef _WIN32
     // render-port: don't break/crash on CRT debug checks (invalid parameter, asserts).

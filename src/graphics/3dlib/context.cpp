@@ -68,6 +68,44 @@ static int bRenderStateHighlightReplaceTargetState = 0;
 
 #endif //_DEBUG
 
+// Artscout - 2026 (HUD occlusion): when armed, a screen primitive's depth is taken from its q
+// (= camera-space Z * Q_SCALE) and mapped for REVERSED-Z, instead of the fixed far-plane value the
+// 2D path normally writes.
+//
+// Both emit paths below need it, for different reasons. Without Z-buffering the path writes a flat
+// sz = 0.0, which under reversed-Z is the far plane -- correct for 2D that does not test, useless
+// for anything that does. With Z-buffering it writes gCX1 + gCX2/z, the STANDARD mapping (near 0,
+// far 1), which is upside down against a reversed-Z buffer; nothing caught it because every 2D
+// state has the depth test off, so the value was never compared.
+//
+// Armed only around the collimated HUD composite (DrawRttQuad), so no other screen primitive's
+// depth changes -- which matters, because several of them are meant to sit at the far plane.
+bool g_bScreenPrimDepthFromQ = false;
+
+// Reversed-Z depth for a camera-space Z. 1 - standard, i.e. near -> 1, far -> 0. The planes are
+// passed in because ZNEAR/ZFAR are ContextMPR members, not globals -- both call sites are inside
+// member functions, so they have them.
+static inline float ScreenPrimReversedZ(float q, float zn, float zf)
+{
+    if (q <= 0.0f or zf <= zn)
+        return 0.0f;
+
+    const float z = q / Q_SCALE;
+
+    if (z <= 0.0f)
+        return 0.0f;
+
+    const float std = zf / (zf - zn) + (zf * zn / (zn - zf)) / z;
+    float rev = 1.0f - std;
+
+    if (rev < 0.0f)
+        rev = 0.0f;
+    else if (rev > 1.0f)
+        rev = 1.0f;
+
+    return rev;
+}
+
 UInt ContextMPR::StateTable[MAXIMUM_MPR_STATE];
 ContextMPR::State ContextMPR::StateTableInternal[MAXIMUM_MPR_STATE];
 int ContextMPR::StateSetupCounter = 0;
@@ -2544,7 +2582,9 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts,
 
             // NOTE: HACK -- reversed-Z: 0.0 = far plane (was 1.0 under standard Z). 2D screen prims that don't
             // depth-test ignore it; ones that do now sit at the far plane as intended.
-            pVtx->sz = 0.0f;
+            pVtx->sz = g_bScreenPrimDepthFromQ ?
+                           ScreenPrimReversedZ(pData[i]->q, ZNEAR, ZFAR) :
+                           0.0f;
             pVtx->rhw =
                 pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
 
@@ -2622,7 +2662,9 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts,
             sVertex->sy = pData[i]->y;
 
             // NOTE: HACK
-            if (pData[i]->q)
+            if (g_bScreenPrimDepthFromQ)
+                sVertex->sz = ScreenPrimReversedZ(pData[i]->q, ZNEAR, ZFAR);
+            else if (pData[i]->q)
                 sVertex->sz = gCX1 + gCX2 / (pData[i]->q / Q_SCALE);
             else
                 sVertex->sz = 0.f;

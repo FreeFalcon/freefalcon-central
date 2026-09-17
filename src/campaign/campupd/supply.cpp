@@ -278,6 +278,53 @@ void AddSupply(Objective o, int supply, int fuel)
     o->static_data.local_data = MAKEWORD(s, f);
 }
 
+// Artscout - 2026: what a damaged node costs the supply run crossing it.
+//
+// Stock is a flat 2% per hop whether the bridge is standing or lying in the river. The field that
+// was meant to carry the difference -- obj_data.losses, read just below as
+// GetObjectiveSupplyLosses -- is dead twice over. Nothing in the tree ever writes it non-zero: the
+// only objSetLosses send sits inside the block comment at the foot of this file, in the legacy
+// SupplyUnits that was replaced. And the one live message that touches it, objSetSupply, resets it
+// to 0 (objectivemsg.cpp) -- on exactly the nodes a supply run just recorded traffic through. So the
+// field cannot be revived by writing to it; anything written would be cleared the same tick. The
+// value has to be derived where it is read, which is here.
+//
+// Derived from the objective's own status: the same 0-100 the production maths and the map's Damage
+// layer use, rolled up from per-feature damage by ObjectiveClass::CalcStatus. Taking it from there
+// rather than keeping a second number means repair unwinds this for free -- status climbs as
+// features are rebuilt and the route re-opens on its own, with no parallel mechanism to keep in
+// step, and no save-game field to migrate.
+//
+// A bridge bites harder than a road because that is what a bridge is: there is no going round one,
+// where a cratered road is a detour. The link costs themselves are still static -- LinkCampaignObjectives
+// computes them once at campaign build from the terrain and nothing rewrites them -- so a wrecked
+// bridge makes a route expensive to USE, not expensive to PLAN. Pathfinding will still choose it.
+// That is the remaining half of this feature and it is a bigger change; noted in
+// CAMPAIGN-SUPPLY-ENGINE.md rather than guessed at here.
+static int NodeSupplyLoss(Objective c, int type)
+{
+    extern int g_nSupplyInterdiction;
+
+    // Stock behaviour, and still the floor: the field is read in case anything ever does write it.
+    int l = c->GetObjectiveSupplyLosses() + 2; // Automatic loss rate of 2% per objective
+
+    if (g_nSupplyInterdiction <= 0)
+        return l;
+
+    const int status = c->GetObjectiveStatus();
+
+    if (status >= 100)
+        return l; // intact: costs what it always did
+
+    const int worst = (type == TYPE_BRIDGE) ? 50 : 15;
+    l += (worst * (100 - status) / 100) * g_nSupplyInterdiction / 100;
+
+    if (l > 95)
+        l = 95;
+
+    return l;
+}
+
 // This sends supply from s to d, subtracting from losses and adding to it's supply traffic field
 // Updates values to amount which actually made it. returns 0 if none made it.
 int SendSupply(Objective s, Objective d, int *supply, int *fuel)
@@ -306,8 +353,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
             type == TYPE_RAILROAD or type == TYPE_BRIDGE)
         {
             AddSupply(c, *supply / 10, *fuel / 10);
-            l = c->GetObjectiveSupplyLosses() +
-                2; // Automatic loss rate of 2% per objective
+            l = NodeSupplyLoss(c, type);
             *supply = *supply * (100 - l) / 100;
             *fuel = *fuel * (100 - l) / 100;
         }
@@ -704,11 +750,28 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                 supply = LOBYTE(o->static_data.local_data);
                 fuel = HIBYTE(o->static_data.local_data);
 
-                if (supply > 5 or fuel > 5)
-                {
+                // Artscout - 2026: split what gets RECORDED from what the AI acts on.
+                //
+                // The single threshold below used to gate both, and at 5 it hides most of the
+                // network: SendSupply deposits a TENTH of what passes at each node, so a segment
+                // needs ~50 units of supply crossing it in one tick to clear it. Only the heaviest
+                // junctions do, which is why a map of this data reads as a few isolated points
+                // rather than the chain it actually is.
+                //
+                // obj_data.supply is display-only -- nothing in the sim reads it back -- so
+                // recording more of it changes nothing but the dirty-data traffic. The interdiction
+                // requests further down are gameplay and keep the original 5 regardless.
+                extern int g_nSupplyMapThreshold;
+                const int recordAt =
+                    (g_nSupplyMapThreshold < 0) ? 5 : g_nSupplyMapThreshold;
+
+                if (supply > recordAt or fuel > recordAt)
                     o->SendObjMessage(o->Id(),
                                       FalconObjectiveMessage::objSetSupply,
                                       (short)(supply), (short)(fuel), 0);
+
+                if (supply > 5 or fuel > 5)
+                {
                     type = o->GetType();
 
                     if (type == TYPE_ROAD or type == TYPE_INTERSECT)

@@ -701,7 +701,8 @@ void ImageBuffer::BindD3D12RenderTarget(bool clear)
     // mismatch + VR xrEndFrame failure (black headset). Off-frame RTT binds are simply skipped.
     if (!g_pD3D12Backend->IsRecording())
         return;
-    g_pD3D12Backend->BindSceneRtt(m_pD3D12RTT, width, height, clear);
+    g_pD3D12Backend->BindSceneRtt(m_pD3D12RTT, width, height, clear,
+                                  m_bRttWantsDepth);
     extern IRenderer *g_pRenderer;
     if (g_pRenderer)
         g_pRenderer->SetViewportSize(width, height);
@@ -768,6 +769,31 @@ void ImageBuffer::CopyRttTo(void *destTex2D)
     }
 }
 
+// Artscout - 2026: PresentGpu is the UI95 path and ONLY the UI95 path -- C_Handler::CopyToPrimary is
+// its single caller. The sim presents through SwapBuffers below. That distinction is the whole fix
+// here, so it is worth stating before the code: these are menus, and menus are a 2D surface.
+//
+// A menu that holds a 3D viewer -- recon, the loadout aircraft, tactical reference -- was unusable:
+// the 2D furniture blanked and came back only under the mouse, and the model never appeared at all.
+//
+// The chain. C_3dViewer::View3d renders the model into an OFF-SCREEN RTT and BlitRttTo565 stamps the
+// result into m_pSysMem, the CPU 2D surface, so that (as the comment there says) "the model appears
+// in the normal full 2D blit". Under D3D11 it then cleared g_bGpuDraw to get that blit. Under D3D12
+// it cannot: a fresh BeginFrame resets the command list and would discard the deferred readback copy
+// the viewer just recorded. So it leaves g_bGpuDraw set, and these screens fall into the branch below
+// meant for the SIM -- composite the 2D layer over the 3D as an overlay, then zero it.
+//
+// Both halves of that are wrong for a menu. The zero is the visible one: the sim redraws its HUD
+// overlay from scratch every frame and must clear it or it ghosts, but UI95 paints a menu ONCE and
+// thereafter repaints only what changed, through the dirty-rectangle mechanism in chandler.cpp.
+// Wiping that surface throws the menu away and leaves whatever rectangles happened to be repainted
+// this frame -- in practice, wherever the cursor just moved. The model went with it, into the same
+// surface. The composite is the subtler one: it keys black out as transparent, which is right for a
+// HUD over terrain and wrong for a menu, where black is the background and there is nothing behind
+// it but an undefined back buffer.
+//
+// So do what the D3D11 path did -- an opaque full-screen blit of the 2D surface -- but record it onto
+// the list the viewer already opened rather than starting a new frame, which preserves the copy.
 void ImageBuffer::PresentGpu()
 {
     // Artscout - 2026: #DX12 -- present through D3D12. A GPU frame (3D scene recorded into the command list
@@ -787,13 +813,51 @@ void ImageBuffer::PresentGpu()
                 // layer afterwards so stale overlays don't ghost (overlays are redrawn each frame).
                 if (g_pD3D12Backend)
                     g_pD3D12Backend
-                        ->ResolveMsaaToBackBuffer(); // MSAA: resolve 3D into backbuffer BEFORE the UI composite
-                if (m_pSysMem && g_pRenderer)
-                    g_pRenderer->CompositeUISurface(m_pSysMem, width, height);
+                        ->ResolveMsaaToBackBuffer(); // MSAA: resolve 3D into backbuffer first
+
+                // Which way round depends on where the 3D went -- see the note in c3dview.cpp. The
+                // loadout and tactical-reference viewers render to an off-screen RTT and read it back
+                // into m_pSysMem, so the model is part of the 565 image and an OPAQUE blit is right.
+                // Recon renders its terrain straight to the back buffer, so the 2D has to be
+                // COMPOSITED over it instead, or the blit would paint over the scene.
+                //
+                // No wipe of m_pSysMem afterwards: that surface belongs to UI95, which
+                // repaints only dirty rectangles, and clearing it erases the menu. SwapBuffers below
+                // keeps its wipe, and is right to -- that is the sim, where the 2D is per-frame.
+                //
+                // BlitBitmap565 needs an open command list but does NOT call BeginFrame, so it records
+                // onto the frame the viewer opened and the readback copy in it survives. The back
+                // buffer is already the bound RTV (UnbindSceneRtt rebinds it on RTT release).
+                extern bool g_bMenuViewerToBackBuffer;
+
                 if (m_pSysMem)
-                    memset(m_pSysMem, 0, (size_t)width * height * 2);
+                {
+                    if (g_bMenuViewerToBackBuffer)
+                    {
+                        if (g_pRenderer)
+                            g_pRenderer->CompositeUISurface(m_pSysMem, width,
+                                                            height);
+                    }
+                    else
+                        g_pD3D12Backend->BlitBitmap565(m_pSysMem, width, height);
+                }
+
+                g_bMenuViewerToBackBuffer = false;
+
                 g_pD3D12Backend->Present(
-                    true); // 3D already recorded -> close/execute/present
+                    true); // close/execute/present the viewer's frame
+
+                // VR: feed the same surface to the XR menu pump. The 2D branch below has always done
+                // this; this branch never did, so in a headset a menu with a 3D viewer went to the
+                // quad panel as whatever was cached last -- the screens were blank there too.
+                extern bool g_bUseOpenXR;
+
+                if (g_bUseOpenXR && m_pSysMem)
+                {
+                    extern void OpenXR_CacheMenuSurface(const void *src565,
+                                                        int w, int h);
+                    OpenXR_CacheMenuSurface(m_pSysMem, width, height);
+                }
             }
             else
             {
@@ -841,6 +905,11 @@ void ImageBuffer::PresentGpu()
                 // per-frame HUD redrew on top. Zeroing makes undrawn regions black (transparent) again next frame.
                 if (m_pSysMem)
                     memset(m_pSysMem, 0, (size_t)width * height * 2);
+                // Artscout - 2026: deliberately NOT given the D3D12 branch's treatment above. Vulkan's
+                // BlitBitmap565 is self-contained -- it acquires a swapchain image, blits and PRESENTS --
+                // so it cannot be recorded into an already-open scene the way the D3D12 one can, and
+                // calling it here would present twice. Whether a Vulkan menu with a 3D viewer even
+                // reaches this branch is unverified; fix it once the D3D12 side is confirmed in game.
                 g_pVulkanBackend->PresentScene();
             }
             else if (g_bGpuDraw && g_pVulkanBackend->IsRecording())

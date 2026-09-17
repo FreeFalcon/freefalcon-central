@@ -31,6 +31,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono> // #107 PERF: frame profiler timing
+#include "../include/fflog.h" // mirror the debug stream into FFDebug.log
 #include <map>
 #include <mutex>
 #include <string>
@@ -159,7 +160,7 @@ static void VkbLog(const char* fmt, ...)
     _vsnprintf(buf, sizeof(buf) - 1, fmt, ap);
     va_end(ap);
     buf[sizeof(buf) - 1] = 0;
-    OutputDebugStringA(buf);
+    FFDebugLog(buf); // debugger stream + FFDebug.log
     fputs(buf, stderr);
 }
 #define VKB_LOG(...) VkbLog("[Vulkan] " __VA_ARGS__)
@@ -617,9 +618,23 @@ static bool CreateSwapchain(VulkanBackend::Impl* m,
         }
     m->scFormat = chosen.format;
 
-    // present mode: FIFO always available (vsync); MAILBOX if no-vsync requested and available
+    // present mode: FIFO always available (vsync); MAILBOX/IMMEDIATE if no-vsync is wanted and available.
     VkPresentModeKHR present = VK_PRESENT_MODE_FIFO_KHR;
-    if (!m->vsync)
+    bool noVsync = !m->vsync;
+
+    // Artscout - 2026: the desktop mirror must NOT vsync while a VR session is running. The headset
+    // compositor already paces the frame loop through xrWaitFrame; a FIFO mirror stacks a second,
+    // unrelated pacer on top and caps the WHOLE loop at the MONITOR's refresh, which has nothing to do
+    // with the headset's. Measured on the D3D12 peer (see D3D12Backend::Present): a 60 Hz desktop pinned
+    // the frame at 16.58ms with ~1.8ms of CPU work, so the headset ran permanently reprojected --
+    // head-locked content smooth, world-locked terrain juddering. Nobody watches the mirror; let it tear.
+    {
+        extern bool g_bUseOpenXR, g_bVsyncVrMirror;
+        if (g_bUseOpenXR && !g_bVsyncVrMirror)
+            noVsync = true;
+    }
+
+    if (noVsync)
     {
         uint32_t npm = 0;
         vkGetPhysicalDeviceSurfacePresentModesKHR(m->phys, m->surface, &npm,
@@ -627,13 +642,24 @@ static bool CreateSwapchain(VulkanBackend::Impl* m,
         std::vector<VkPresentModeKHR> pms(npm);
         vkGetPhysicalDeviceSurfacePresentModesKHR(m->phys, m->surface, &npm,
                                                   pms.data());
-        for (auto p : pms)
-            if (p == VK_PRESENT_MODE_MAILBOX_KHR)
-            {
-                present = p;
-                break;
-            }
+        // MAILBOX first (unthrottled and tear-free); IMMEDIATE as the fallback, since leaving this at
+        // FIFO would keep the very cap we are trying to remove. Only IMMEDIATE tears, and only on the
+        // mirror window.
+        bool haveMailbox = false, haveImmediate = false;
+        for (auto pm : pms)
+        {
+            if (pm == VK_PRESENT_MODE_MAILBOX_KHR)
+                haveMailbox = true;
+            else if (pm == VK_PRESENT_MODE_IMMEDIATE_KHR)
+                haveImmediate = true;
+        }
+        if (haveMailbox)
+            present = VK_PRESENT_MODE_MAILBOX_KHR;
+        else if (haveImmediate)
+            present = VK_PRESENT_MODE_IMMEDIATE_KHR;
     }
+    VKB_LOG("swapchain present mode = %d (0=IMMEDIATE 2=FIFO 1=MAILBOX), vsync=%d noVsync=%d\n",
+            (int)present, (int)m->vsync, (int)noVsync);
 
     VkExtent2D ext = caps.currentExtent;
     if (ext.width == 0xFFFFFFFF)

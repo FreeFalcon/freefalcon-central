@@ -153,7 +153,14 @@ public:
     // scene. BindRttTarget delegates here when g_bUseD3D12, so ContextMPR::StartFrame is untouched.
     bool EnsureD3D12RenderTarget();
     void BindD3D12RenderTarget(bool clear);
+    // Artscout - 2026: this off-screen buffer holds a 3D SCENE, not 2D symbology, so it
+    // needs a depth-stencil bound with it. Off by default -- the display panels do not.
+    void SetRttWantsDepth(bool want)
+    {
+        m_bRttWantsDepth = want;
+    }
     void UnbindD3D12RenderTarget();
+    bool m_bRttWantsDepth = false; // Artscout - 2026: see SetRttWantsDepth
     void *GetD3D12RTT() const
     {
         return m_pD3D12RTT;

@@ -82,6 +82,23 @@ bool g_bVrStereoOffAxis = true;
 // Artscout - 2026: put the eyes' SHARED vertical off-axis into the base (CPU sky / 2D-screen) projection under stereo
 // off-axis. 0 = base stays symmetric -- use it if the HUD/RTT symbology sits vertically off.
 bool g_bVrStereoSkyOffAxis = true;
+// Apply the per-eye IPD along the HEAD's right axis rather than the airframe's. The eyes are separated across the
+// skull, so that separation rotates with the head; the old path added it to body-right and rotated by ownshipRot
+// (the JET's orientation, which holds no head rotation), so it was only correct looking straight ahead and drifted
+// as the head turned. Companion to VrEyeLatHeadFrame: that one fixes the MAGNITUDE, this one the AXIS. 0 = legacy.
+bool g_bVrHeadRelIpd = true;
+// Same fix applied to the VR mouse cursor's per-eye stereo offset, which also lived on the airframe's right axis
+// (measured ~634px of eye-to-eye cursor split aiming at the lower-left panel vs ~226px near centre). 0 = legacy.
+bool g_bVrHeadRelCursorIpd = true;
+// And the same for the RTT display panels' per-eye offset, which went onto Pan.y (body right). This one is driven by
+// g_fVrDisplayIpd on its own code path, so neither VrHeadRelIpd nor VrViewInstIpdSign affects it -- it shows up as the
+// MFDs/aux consoles going cross-eyed as the head turns while the rest of the pit converges. 0 = legacy body axis.
+bool g_bVrHeadRelDisplayIpd = true;
+// Vulkan multiview only: rotate the per-view IPD (worldOffs) by cameraRot rather than ownshipRot. Unlike the per-eye
+// path, one worldOffs serves both the stage-1 world/cockpit and the stage-2 RTT tail, so this is a genuine trade --
+// on = correct convergence as the head turns; off = the flat-canvas RTT panel error stays head-independent. Default
+// off, i.e. the shipped behaviour. Has no effect on D3D12 or the per-eye path.
+bool g_bVrVulkanHeadRelIpd = false;
 // IPD sign for the per-eye view matrices built for the VI pass (headset-tuned: flip to -1 if the eyes swap).
 float g_fVrViewInstIpdSign = 1.0f;
 // #DX12 п.5: intermediate VR sky fix under VI -- give the QUAD FOCUS group its off-axis for the 2D-screen sky so it
@@ -213,7 +230,12 @@ bool g_bVrControllers = true; // master on/off. FFViper.cfg "VrControllers".
 float g_fVrRayRadius =
     2.0f; // hit radius = button.dist * this (button units). FFViper.cfg "VrRayRadius".
 float g_fVrRayReach =
-    300.0f; // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+    814.0f; // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+// 814 = the F-16 panel plane at the default seat position. This is the depth the free-aim cursor sits at with
+// nothing under it, so it wants to be ON the panel: at the previous 300 the cursor floated well in front of the
+// pit, carrying stereo disparity for a depth nothing occupies, and visibly split in two. It also re-centres the
+// dPt acceptance window in VCock_Exec ([0.6x, 1.6x] = [488, 1302], which brackets the panel; [180, 480] did not).
+// Controller users who want a shorter free ray can set it back in FFViper.cfg.
 // Artscout - 2026 (#58 true 3D mouse): sign/scale of the mouse ray's horizontal/vertical NDC->frustum-tangent
 // mapping. 1 = direct; -1 flips that axis if the cursor moves mirrored in-headset. Tune in FFViper.cfg then bake.
 float g_fVrMouseRayX = 1.0f;
@@ -746,6 +768,79 @@ int g_nTileActivateMeshPerFrame =
     24; // Artscout - 2026: #78 -- tile activations per frame for the MESH terrain path. Its own budget because the mesh path costs one DispatchMesh no matter how many tiles are live, so the per-tile draw calls that forced the legacy budget (3) are gone; too low and posts keep the "no tile" answer for whole re-scan cycles (brown underlay).
 bool g_bTerrainMeshDebugTint =
     false; // Artscout - 2026: #78 -- flat per-LOD tint on the mesh terrain, bypassing tiles and lighting. Tells "no geometry" apart from "geometry drawn black": if the tint shows, the grid is there and the problem is the texture/light path.
+bool g_bObjZBiasEnable =
+    true; // Artscout - 2026: honour each BSP surface's own dwzBias in the object pass. The models use it to lift coplanar detail (decals, panel plates, thin fins) off the surface underneath; D3D7 pushed it through D3DRENDERSTATE_ZBIAS and the port dropped it, so those surfaces z-fight and flicker as the camera moves. 0 = the old pass-wide bias only.
+int g_nObjZBiasStep =
+    60; // Artscout - 2026: depth-bias units added per dwzBias bucket (reversed-Z, so this pulls toward the camera). Bigger = more separation but more risk of detail floating visibly off curved surfaces; the pass-wide object bias is 100 for scale.
+bool g_bAutoBuildVoiceBank =
+    true; // Artscout - 2026: on first run, if sounds/falcon_pcm.tlk is absent, generate it from falcon.tlk by running the 32-bit helper st80conv.exe beside the exe. ST80 has no 64-bit build, so without the PCM bank radio chatter is silent on x64 and only subtitles come through. One-off, ~8s, and every failure path falls back to the old ST80 behaviour. 0 = never spawn the helper.
+bool g_bVsyncVrMirror =
+    false; // Artscout - 2026: vsync the DESKTOP MIRROR during a VR session. Off: the mirror presents untorn-be-damned and the headset compositor alone paces the frame (xrWaitFrame). On (the old behaviour) the mirror's vsync caps the entire loop at the DESKTOP's refresh -- a 60 Hz monitor holds the app to 60 fps no matter what the headset is running at, so the runtime reprojects every frame and world-locked geometry judders while the cockpit stays smooth. Only set this if the untorn mirror matters more than headset smoothness (e.g. recording the mirror window).
+// Artscout - 2026: radio subtitle placement (OTWDriverClass::DrawSubTitles). Viewport NDC: x -1 = left edge,
+// y +1 = top edge. The stock spot (-0.95, 0.84) was chosen for a 4:3 monitor and sits far too high in a headset,
+// where the vertical FOV is much larger -- the lines land above the natural gaze line and read badly.
+float g_fSubtitleX = -0.75f; // stock -0.95; larger = further right
+float g_fSubtitleY = 0.68f;  // stock  0.84; smaller = further down
+// Line pitch as a multiple of the CURRENT font's height, so the lines stay clear of each other at any font size
+// (the stock 0.03 was a fixed NDC step tuned for one font, and overlapped as soon as the font grew).
+float g_fSubtitleLineSpacing = 1.25f;
+// The font set is NOT a four-step size ladder: 0 = 6x4, 1 = 8x6, 2 = 10x7, and 3 = warn_font -- the caution-panel
+// typeface, with its own metrics meant for short all-caps labels. Picking 3 for flowing radio text gets you a much
+// larger face AND its unrelated letter spacing. 2 is the largest real size; go past it with the scale below.
+int g_nSubtitleFont = 2;
+// Continuous size on top of the chosen font: scales the glyph quads and the advance together, so letter spacing
+// stays proportional. 1.0 = the font's native size.
+float g_fSubtitleScale = 1.35f;
+float g_fTerrainCullPad =
+    0.18f; // Artscout - 2026: #78 -- how much WIDER than the drawn view the terrain chunk cull is, as a fraction of the field of view (0.18 = 18% wider). The amplification shader culls against the pose this frame's update ran with, but the headset displays at a later predicted time from a late-latched pose, so a head turn swings geometry in from the side that was never generated -- terrain popping in at the edge of vision while looking around. Costs some extra chunks (a wider box means more survive the cull); 0 = cull exactly to the drawn frustum, the old behaviour.
+int g_nTerrainMorphPosts =
+    10; // Artscout - 2026: #78 -- width, in posts, of the geomorph band at each LOD ring's outer edge. The ring box snaps to EVEN posts, so it jumps 2 posts at a time as the camera crosses a post; every post in this band then steps its blend weight by 2/width AT ONCE, which is a discrete height pop on a whole ring of ground. Wider = smaller step (gentler) but more of the fine ring dragged onto the coarse surface. 0 or 1 = morph off except the boundary row (still watertight) -- the bisect case for "is the stutter the morph?".
+int g_nTerrainRingRadius =
+    0; // Artscout - 2026: #78 -- force every LOD ring to this radius in posts instead of tracking GetAvailablePostRange(), which shrinks whenever a terrain block is still streaming and grows back when it lands, so the rings BREATHE frame to frame. 0 = auto (stock). The bisect case for "is the stutter the rings resizing?"; capped by the clipmap window either way.
+int g_nBillboardMode =
+    1; // Artscout - 2026: how the 2D engine orients billboard quads (clouds, smoke, particle sprites). The stock basis is ONE matrix per frame -- RotY(pitch) * RotZ(yaw) from Euler angles pulled back out of the camera matrix -- so every sprite in the scene is aimed at the middle of the view rather than at you, and the Euler pair is singular looking straight up, where the extracted yaw swings wildly and spins every sprite with it. Both errors scale with field of view, which is why they read as a 90s sprite wobble in a headset and as nothing much on a monitor. 1 = per-quad basis (aimed down the ray to each quad, so head rotation cannot enter it) for callers that ask -- today the cumulus clouds. 2 = per-quad for EVERY billboard, which also covers smoke trails and particle effects but can kink a smoke ribbon drawn close to the camera, since adjacent segments no longer share one basis. 0 = stock.
+bool g_bShowFpsOnStart =
+    false; // Artscout - 2026: start every mission with the frame-rate counter already up, instead of reaching for the toggle key each time. It is the same counter that key drives (ShowFrameRate), so the key still turns it off again mid-flight; this only sets where it starts. In VR it draws as its own head-locked composition layer, placed by the four knobs below. "ShowFpsOnStart".
+float g_fVrFpsQuadX =
+    0.0f; // Artscout - 2026: VR frame-rate quad, metres right of straight ahead.
+float g_fVrFpsQuadY =
+    0.30f; // Artscout - 2026: VR frame-rate quad, metres above straight ahead.
+float g_fVrFpsQuadDist =
+    1.4f; // Artscout - 2026: VR frame-rate quad, metres in front of the head. The quad is head-locked, so moving it nearer or further ALSO changes how big it looks and how much your eyes have to converge on it -- change the size knob instead unless you mean to move it in depth.
+float g_fVrFpsQuadSize =
+    0.33f; // Artscout - 2026: VR frame-rate quad height in metres at the distance above, so really an angular size (0.33 m at 1.4 m subtends ~13 deg). Width follows from the texture aspect. Smaller reads as less intrusive in the headset but turns to mush in a downscaled capture, which is the one job the counter has.
+bool g_bCampaignAddMission =
+    true; // Artscout - 2026: offer "Build package" when right-clicking in the CAMPAIGN, the way BMS does -- a submenu of the squadrons that could actually fly a mission against what you clicked, nearest first, with a two- or four-ship choice. Clicking one files the package there and then. This does NOT use the Tactical Engagement editor's windows: an earlier attempt simply un-hid the stock Add Flight / Add Package items, and those call tactical_add_package, which looks up PACKAGE_WIN and TAC_FLIGHT_WIN from te_scf.lst -- windows the campaign screen (cp_scf.lst) never loads, so the items came up and did nothing. The builder here talks to the campaign directly (campmenu.cpp), and the stock items are now kept hidden. (The reason those items did nothing turned out to be broader than the campaign: nothing in the source loads PACKAGE_WIN on ANY screen -- see CampaignPackageWindow.) Which squadrons are offered is the engine's own judgement, not a new rule: GetMissionFromTarget returns the role an airframe can bring against a target and 0 when it can bring none. Whether the sortie is flyable is left to BuildMission, the same call the TE editor makes, and its refusal is reported. The request carries REQF_TE_MISSION, so how a hand-built package sits alongside a running ATO is the part still worth watching. 0 hides the item. "CampaignAddMission".
+bool g_bHudCanopyOcclude =
+    true; // Artscout - 2026: let cockpit structure in front of the combiner -- the canopy bow, the rail -- occlude the HUD symbology, instead of the symbology drawing straight over it. The aperture stencil already clips the HUD to the combiner SHAPE, but a stencil cannot know what is standing between your eye and the glass, which is why sliding right in the seat used to paint the HUD over the frame. Needs the symbology depth-tested at the GLASS depth rather than the infinity its collimated projection implies -- see VirtualDisplay::DrawRttQuad. 0 = the old draw-over-everything behaviour. "HudCanopyOcclude".
+bool g_bCampMapFromTerrain =
+    true; // Artscout - 2026: draw the campaign map from the theater's OWN terrain instead of the painted bitmap. Every terrain post carries a colour index and TMap::ColorTable resolves it, so the map can be built at the theater's real post spacing -- finer than the shipped 2 px/km art, so zooming in reveals actual ground rather than magnified pixels. Falls back to the painted map if the terrain files cannot be read. "CampMapFromTerrain".
+int g_nCampMapTerrainLod =
+    0; // Artscout - 2026: which terrain LOD builds that map. 0 = finest (Korea: ~820 ft/post, roughly 4x the shipped map's linear resolution, ~17 MB of image plus the same again for the overlay buffer). 1 halves each axis and quarters the memory, 2 again, and so on. Raise this if the map screen feels heavy or the build at first open takes too long.
+bool g_bCampMapFlipNS =
+    true; // Artscout - 2026: flip the generated map north-south. Which way the terrain post grid runs against the map's north-up convention is the one thing that could not be settled by reading the code, so it is switchable -- if the generated map comes out mirrored, this is the line to change rather than a rebuild.
+bool g_bCampMapFlipEW =
+    false; // Artscout - 2026: the same, east-west.
+bool g_bLogMenuTextures =
+    false; // Artscout - 2026: log what the texture lookup returns while a MENU 3D viewer is drawing (tactical reference, loadout, recon), to FFDebug.log. The models in those screens have never been textured under D3D12 and three rounds of reading the code did not settle why, so this asks the running game instead. Each line is one surface: the bank index the BSP asked for, the handle the bank returned, and the GPU texture behind it -- which of those three is zero says whether the geometry is not requesting a texture, the bank has not loaded it, or it was loaded but never uploaded. Capped per viewer open, and off by default because it sits in the per-surface path. "LogMenuTextures".
+float g_fMenuModelDetail =
+    4.0f; // Artscout - 2026: object detail for the MENU 3D model viewer -- tactical reference and the loadout aircraft. It used to inherit PlayerOptions.ObjectDetailLevel(), which is a performance compromise for a sky full of aircraft and makes no sense for one static model on a menu. Higher is finer: Render3D::SetObjectDetail scales the LOD bias, StateStackClass halves it into LODBiasInv, and LODRange = range * LODBiasInv -- so a bigger number makes the model read as CLOSER and the BSP picks a finer LOD. 1.0 restores the old behaviour of following the sim setting; below 1 will make it coarser. Recon is untouched -- that is a whole streamed scene, not one model. "MenuModelDetail".
+bool g_bReconRtt =
+    true; // Artscout - 2026: render the RECON terrain into an off-screen RTT and read it back into the menu 2D surface, the same route the tactical-reference and loadout models take. The alternative -- drawing to the back buffer and compositing the 2D over it with black keyed out -- leaves the recon pane showing whatever the 2D surface already had there, because UI95 only repaints what changed. An earlier attempt at this crashed; the RTT had no depth buffer then, which for a full terrain scene is a far bigger problem than for one aircraft, and that has since been fixed. Set 0 to go back to the back-buffer path if it crashes again -- FFCrash.log will name the frame. "ReconRtt".
+int g_nSupplyMapThreshold =
+    0; // Artscout - 2026: how much traffic a road node must carry before the campaign RECORDS it (SupplyUnits, supply.cpp). Stock is 5, and that is why the supply overlay shows a couple of isolated rings instead of a route: SendSupply deposits only a TENTH of what passes at each node, so a segment needs roughly fifty units of supply crossing it in one tick to clear 5, which only the heaviest junctions ever do. The value is display-only -- nothing in the sim reads obj_data.supply back -- so lowering it costs some dirty-data messages and shows the whole chain. The AI's interdiction requests keep the original 5 regardless; that gate is gameplay and is not touched. 5 restores stock exactly. "SupplyMapThreshold".
+bool g_bLogCampProducers =
+    false; // Artscout - 2026: log a one-off census of everything ProduceSupplies treats as a producer -- count, total DataRate and total status per objective type -- to FFDebug.log when the Production overlay is built. Answers "do storage depots actually contribute supply?" from the theater's own class table rather than by reading the loop that mentions them. "LogCampProducers".
+bool g_bCampaignPackageWindow =
+    true; // Artscout - 2026: load art\taceng\package.scf (PACKAGE_WIN) and the FF4 window skin it needs into the CAMPAIGN screen. Neither has ever been loaded by anything: package.scf is named only by art\tenew_scf.lst, which appears nowhere in this source tree, and the skin it draws with (WIN_PACKAGE and the rest of "FF4 UI version 0.3") lives only in art\uiskin\ff4\win_all.idx/.rsc, which no image list names. So FindWindow(PACKAGE_WIN) returned NULL on every screen including Tactical Engagement, which is the real reason the stock Add Package item never did anything anywhere. Needs cp_uiskin.lst and cp_pkg_scf.lst in art\; without them the parser skips the load and the window stays absent, exactly as before. 0 to skip the load. "CampaignPackageWindow".
+bool g_bCampFlotLine =
+    false; // Artscout - 2026: whether the campaign map starts with the forward line of own troops drawn. The menu row (map right-click -> FLOT line) is always there either way; this is only the state it starts in. Off by default because the map is busy enough on opening and the front is usually obvious from the unit icons -- switch it on when you want the line itself. The data has always been there and live: RebuildFLOTList (camplib/camplist.cpp) takes the midpoint of every link between two frontline objectives on opposing teams and thins them to 30 km apart. It had only ever been read for distance-to-front arithmetic, and only ever been built as the player entered a vehicle, so the overlay rebuilds it before drawing. Note the list is sorted along one axis (FLOTSortDirection picks x or y) and RebuildFLOTList warns in its own comment that this looks wrong where a front doubles back on itself. Korea runs east-west and traces correctly. "CampFlotLine".
+bool g_bCampaignPackageTakeoffLock =
+    true; // Artscout - 2026: open the campaign's Add Package window pinned to TAKEOFF rather than to TIME ON TARGET. Both locks start off in package.scf and SetupPackageControls then turns the TOT one on, so the window has always opened demanding the flight be over the target at exactly the displayed second -- TYPE_EQ, the tightest request the planner takes, and the reason hand-built packages come back "no aircraft free" so often. It also means the Status dropdown does nothing, because tactical_make_flight consults gPackageTOT first and never reaches start_at. Locking takeoff instead asks for "airborne by then", which is what you want in a running campaign; the Tactical Engagement editor is untouched either way, since a scripted time on target is exactly what it is for. 0 restores the stock behaviour here too. "CampaignPackageTakeoffLock".
+bool g_bLogCampMenu =
+    false; // Artscout - 2026: log what the "Build package" submenu decided, every time a campaign popup opens -- which menu, what was right-clicked, how many squadrons the theater offered and why the rest were dropped, and whether the parent item ended up enabled. The item is a submenu, so a disabled parent and a parent nobody thought to hover over look identical from the outside, and the candidate filter is three separate rejections (wrong team, no airframes, no role against this target) that all end in the same silence. "LogCampMenu".
+int g_nSupplyInterdiction =
+    100; // Artscout - 2026: how much a DAMAGED road or bridge costs the supply run crossing it, as a percentage of the built-in curve (SendSupply, supply.cpp). Stock is a flat 2% per hop whether the bridge is standing or in the river, which leaves the campaign generating AMIS_INT and AMIS_INTSTRIKE sorties against a mechanism that was never wired up. At 100 a wrecked bridge costs the convoy half of what is crossing it and a cratered road about a sixth; both scale linearly with the objective status, so repair re-opens the route on its own. Above 100 for harsher interdiction -- the per-node loss is clamped at 95% so a closed route starves a front rather than erasing a convoy outright. 0 restores stock exactly. "SupplyInterdiction".
 bool g_bVrWindowsCursor =
     true; // Artscout - 2026: draw a copy of the LIVE Windows cursor (captured from the OS shape) instead of the theater's cursor bitmap. The OS never composites its cursor into the headset, so VR showed the crosshair; 0 = keep the old bitmap.
 bool g_bTerrainMeshCull =
@@ -1440,6 +1535,12 @@ bool g_bUse_DX_Engine = true;
 static ConfigOption<bool> BoolOpts[] = {
     {"EnableBindless", &g_bEnableBindless}, // textures by index from one resident heap (both backends)
     {"SensorSceneVulkan", &g_bSensorSceneVulkan}, // TGP/MAV/FLIR video in the MFD under Vulkan
+    {"VsyncVrMirror",
+     &g_bVsyncVrMirror}, // Artscout - 2026: vsync the desktop mirror in VR (off = headset paces the loop)
+    {"AutoBuildVoiceBank",
+     &g_bAutoBuildVoiceBank}, // Artscout - 2026: generate sounds/falcon_pcm.tlk on first run (radio chatter on x64)
+    {"ObjZBiasEnable",
+     &g_bObjZBiasEnable}, // Artscout - 2026: honour per-surface dwzBias in the object pass
     {"VrHandTracking", &g_bVrHandTracking}, // skeletal gloves from XR hand tracking (fallback: controller morph)
     {"VrSkinSwapHands", &g_bVrSkinSwapHands}, // swap which mesh each tracked hand wears
     {"VrHandDump", &g_bVrHandDump}, // dump raw XR joint geometry (diag: inferred clench vs skinning bug)
@@ -1482,6 +1583,29 @@ static ConfigOption<bool> BoolOpts[] = {
     {"MFDHighContrast", &g_bMFDHighContrast},
     {"IFlyMirage", &g_bIFlyMirage},
     {"PowerGrid", &g_bPowerGrid},
+    {"LogCampProducers",
+     &g_bLogCampProducers}, // Artscout - 2026: census the campaign's supply producers
+    {"LogCampMenu",
+     &g_bLogCampMenu}, // Artscout - 2026: trace the "Build package" submenu rebuild
+    {"CampFlotLine",
+     &g_bCampFlotLine}, // Artscout - 2026: draw the forward line of own troops
+    {"CampaignPackageTakeoffLock",
+     &g_bCampaignPackageTakeoffLock}, // Artscout - 2026: pin new campaign packages to takeoff, not TOT
+    {"CampaignPackageWindow",
+     &g_bCampaignPackageWindow}, // Artscout - 2026: load the never-wired Add Package window
+    {"ReconRtt", &g_bReconRtt}, // Artscout - 2026: recon terrain via off-screen RTT
+    {"LogMenuTextures",
+     &g_bLogMenuTextures}, // Artscout - 2026: diagnose untextured menu 3D models
+    {"CampMapFromTerrain",
+     &g_bCampMapFromTerrain}, // Artscout - 2026: build the campaign map from terrain posts
+    {"CampMapFlipNS", &g_bCampMapFlipNS}, // Artscout - 2026: mirror it north-south
+    {"CampMapFlipEW", &g_bCampMapFlipEW}, // Artscout - 2026: mirror it east-west
+    {"HudCanopyOcclude",
+     &g_bHudCanopyOcclude}, // Artscout - 2026: cockpit structure occludes the collimated HUD
+    {"CampaignAddMission",
+     &g_bCampaignAddMission}, // Artscout - 2026: right-click a target in campaign to build a flight/package
+    {"ShowFpsOnStart",
+     &g_bShowFpsOnStart}, // Artscout - 2026: frame-rate counter on from mission start
     {"UseMappedFiles", &g_bUseMappedFiles},
     // { "UserRadioVoice", &g_bUserRadioVoice },
     {"NewFm", &g_bNewFm},
@@ -1763,6 +1887,14 @@ static ConfigOption<bool> BoolOpts[] = {
      &g_bVrStereoOffAxis}, // Artscout - 2026: true per-view off-axis fov in stereo (0 = old symmetric)
     {"VrStereoSkyOffAxis",
      &g_bVrStereoSkyOffAxis}, // Artscout - 2026: shared vertical off-axis in the base (CPU sky) projection
+    {"VrHeadRelIpd",
+     &g_bVrHeadRelIpd}, // per-eye IPD along the head's right axis, not the airframe's
+    {"VrHeadRelCursorIpd",
+     &g_bVrHeadRelCursorIpd}, // VR cursor stereo offset along the head's right axis, not the airframe's
+    {"VrHeadRelDisplayIpd",
+     &g_bVrHeadRelDisplayIpd}, // RTT display panel stereo offset along the head's right axis, not the airframe's
+    {"VrVulkanHeadRelIpd",
+     &g_bVrVulkanHeadRelIpd}, // Vulkan multiview: per-view IPD by cameraRot, not ownshipRot (default off)
     {"VrViewInstancing",
      &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
     {"VrVulkanMultiview",
@@ -1799,6 +1931,22 @@ static ConfigOption<int> IntOpts[] = {
      &g_nTileActivatePerFrame}, // #107: terrain texture activations per render (spike budget)
     {"TileActivateMeshPerFrame",
      &g_nTileActivateMeshPerFrame}, // Artscout - 2026: #78 -- same budget for the mesh-shader terrain (no per-tile draws there, so it can afford more).
+    {"SubtitleFont",
+     &g_nSubtitleFont}, // Artscout - 2026: radio subtitle font index (bigger = larger glyphs)
+    {"ObjZBiasStep",
+     &g_nObjZBiasStep}, // Artscout - 2026: depth-bias units per dwzBias bucket
+    {"CampMapTerrainLod",
+     &g_nCampMapTerrainLod}, // Artscout - 2026: terrain LOD the campaign map is built from (0 = finest)
+    {"SupplyInterdiction",
+     &g_nSupplyInterdiction}, // Artscout - 2026: damage-scaled supply loss per node (0 = stock flat 2%)
+    {"SupplyMapThreshold",
+     &g_nSupplyMapThreshold}, // Artscout - 2026: traffic needed before a road node is recorded (stock 5)
+    {"TerrainMorphPosts",
+     &g_nTerrainMorphPosts}, // Artscout - 2026: #78 -- geomorph band width in posts (0/1 = off but watertight).
+    {"BillboardMode",
+     &g_nBillboardMode}, // Artscout - 2026: 0 = one camera-facing matrix for all sprites (stock), 1 = per-quad basis for clouds, 2 = per-quad for every billboard
+    {"TerrainRingRadius",
+     &g_nTerrainRingRadius}, // Artscout - 2026: #78 -- fixed LOD ring radius in posts; 0 = track the streamed range.
     {"VrRayToggle",
      &g_nVrRayToggle}, // Artscout - 2026 (VR hands): -1 auto(by profile) / 0 hold / 1 toggle grip activation
 
@@ -1933,6 +2081,24 @@ static ConfigOption<char> StringOpts[] = {
 
 static ConfigOption<float> FloatOpts[] = {
     {"MipLodBias", &g_fMipLodBias},
+    {"SubtitleX",
+     &g_fSubtitleX}, // Artscout - 2026: radio subtitle left edge, viewport NDC (+ = right)
+    {"SubtitleY",
+     &g_fSubtitleY}, // Artscout - 2026: radio subtitle first line, viewport NDC (+ = up)
+    {"SubtitleLineSpacing",
+     &g_fSubtitleLineSpacing}, // Artscout - 2026: line pitch, multiples of the font height
+    {"SubtitleScale",
+     &g_fSubtitleScale}, // Artscout - 2026: subtitle glyph scale, 1.0 = the font's native size
+    {"VrFpsQuadX", &g_fVrFpsQuadX}, // Artscout - 2026: VR fps quad, m right
+    {"VrFpsQuadY", &g_fVrFpsQuadY}, // Artscout - 2026: VR fps quad, m up
+    {"VrFpsQuadDist",
+     &g_fVrFpsQuadDist}, // Artscout - 2026: VR fps quad, m in front of the head
+    {"VrFpsQuadSize",
+     &g_fVrFpsQuadSize}, // Artscout - 2026: VR fps quad height in m at that distance
+    {"MenuModelDetail",
+     &g_fMenuModelDetail}, // Artscout - 2026: LOD detail for the tacref/loadout model viewer
+    {"TerrainCullPad",
+     &g_fTerrainCullPad}, // Artscout - 2026: #78 -- terrain cull frustum widened by this fraction of FOV (head-turn margin)
     {"VrSubQuadX",
      &g_fVrSubQuadX}, // #59: subtitle quad horizontal offset (m, + = right)
     {"VrSubQuadY",

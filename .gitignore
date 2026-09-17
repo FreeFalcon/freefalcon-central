@@ -64,3 +64,33 @@ src/graphics/shaders/generated/
 
 # Artscout - 2026: vcpkg manifest-mode install tree -- fetched by the build
 vcpkg_installed/
+
+# Artscout - 2026: OpenAL Soft -- track only what the build consumes.
+#
+# Falcon4.vcxproj links src\extlibs\openal\libs\win64\OpenAL32.lib in every configuration and
+# post-builds an UNCONDITIONAL copy of bin\win64\soft_oal.dll to OutDir\OpenAL32.dll, so those two
+# have to be in the tree or a fresh clone does not build. The licences go with them because the DLL
+# is redistributed. Everything below is upstream's distribution tooling that nothing references:
+#   alsoft-config  Qt configuration GUI (34 MB)
+#   router         the dsound/winmm compatibility router
+#   makemhr        HRTF data compiler, and hrtf_defs its .def inputs -- authoring, not runtime;
+#                  there is no hrtf\ directory, so soft_oal.dll uses its built-in default set
+#   presets        .ambdec ambisonic decoders, loaded only for speaker-array output
+#   cxx-modules    C++20 module interface units, unused by this build
+#   Win32          x64 only here, and every configuration links libs\win64
+src/extlibs/openal/alsoft-config/
+src/extlibs/openal/router/
+src/extlibs/openal/makemhr/
+src/extlibs/openal/hrtf_defs/
+src/extlibs/openal/presets/
+src/extlibs/openal/cxx-modules/
+src/extlibs/openal/openal-info32.exe
+src/extlibs/openal/bin/Win32/
+src/extlibs/openal/libs/Win32/
+
+# Artscout - 2026: st80conv build output. It builds from src\tools\st80conv\st80conv.vcxproj, and
+# Falcon4.vcxproj's copy of it is `if exist` guarded, so an absent exe degrades quietly.
+src/tools/st80conv/bin/
+
+# Artscout - 2026: release artifacts from tools\patchuild_patch_zip.ps1
+dist/

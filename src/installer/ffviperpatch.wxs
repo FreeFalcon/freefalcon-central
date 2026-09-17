@@ -48,6 +48,7 @@
           <Directory Id="dSetup" Name="setup" />
           <Directory Id="dMain" Name="main" />
           <Directory Id="dFonts" Name="fonts" />
+          <Directory Id="dResource" Name="resource" />   <!-- Artscout - 2026: campaign package window -->
           <Directory Id="dUiskin" Name="uiskin">
             <Directory Id="dFf4" Name="ff4" />
           </Directory>
@@ -85,6 +86,19 @@
       <Component Directory="INSTALLFOLDER">
         <File Source="$(GameDir)\st80w.dll" />
       </Component>
+      <!-- Artscout - 2026: OpenAL Soft, as OpenAL32.dll. The exe links OpenAL32.lib and the audio
+           path is OpenAL now, not DirectSound, so this is not optional: without it the game has no
+           sound at all. It was reaching the one machine that builds the exe, because Falcon4.vcxproj
+           post-builds a copy of src\extlibs\openal\bin\win64\soft_oal.dll next to it, and nowhere
+           else. Shipping the System32 router instead is not an alternative: it caps sources at 256
+           and cannot reach the HMD. LGPL, so COPYING travels with it. -->
+      <Component Directory="INSTALLFOLDER">
+        <File Source="$(GameDir)\OpenAL32.dll" />
+      </Component>
+      <Component Directory="INSTALLFOLDER">
+        <File Source="res\OpenAL-COPYING.txt" />
+      </Component>
+
       <!-- runtime DLLs the new exe links/loads: NVTT 3 (texture transcode) + OpenXR loader (VR). -->
       <Component Directory="INSTALLFOLDER">
         <File Source="$(GameDir)\nvtt30205.dll" />
@@ -92,17 +106,17 @@
       <Component Directory="INSTALLFOLDER">
         <File Source="$(GameDir)\openxr_loader.dll" />
       </Component>
-      <!-- Artscout - 2026: #DX12 п.5 -- DirectX Shader Compiler (DXC). The view-instanced single-pass stereo
+      <!-- Artscout - 2026: #DX12 п.5 - DirectX Shader Compiler (DXC). The view-instanced single-pass stereo
            shaders are SM6.1 (SV_ViewID), which FXC cannot emit; they are compiled at runtime via dxcompiler.dll.
            Loaded on demand (LoadLibrary); if absent, view instancing just stays off. dxil.dll (the DXIL signer)
-           is optional -- modern drivers accept unsigned DXIL, so it is not shipped. -->
+           is optional; modern drivers accept unsigned DXIL, so it is not shipped. -->
       <Component Directory="INSTALLFOLDER">
         <File Source="$(GameDir)\dxcompiler.dll" />
       </Component>
 
       <!-- FFEmu.hlsl is NOT shipped: it is baked into the exe as the FFEMU_HLSL RCDATA resource
            (falcon4.rc) and compiled from memory at runtime. An external shaders\FFEmu.hlsl would only
-           SHADOW the embedded one -- kept out of the patch so the two never drift. -->
+           SHADOW the embedded one - kept out of the patch so the two never drift. -->
 
       <!-- config\ + config\profiles\default\  (from installer res\, self-contained) -->
       <Component Directory="dConfig">
@@ -154,7 +168,25 @@
         <File Source="res\art\fonts\FONTS.TXT" />
       </Component>
 
-      <!-- art\uiskin\ff4\ (controls window image resource) -->
+      <!-- art\ and art\resource\ (Artscout - 2026: the campaign's Add Package window).
+           PACKAGE_WIN is defined by art\taceng\package.scf, which CMN_SCF.LST already loads, but
+           the window art it draws with (WIN_PACKAGE and the rest of the FF4 skin) lives in
+           art\uiskin\ff4\win_all below and is named by no image list, so the window opened with no
+           background at all. These three files are what pull it in: an .irc naming that resource,
+           a list that loads the .irc, and a window list adding the Add Flight window, which the
+           campaign screen does not otherwise load. Without them CampaignPackageWindow finds
+           nothing and Add Package is inert, exactly as it was before. -->
+      <Component Directory="dArt">
+        <File Source="res\art\cp_uiskin.lst" />
+      </Component>
+      <Component Directory="dArt">
+        <File Source="res\art\cp_pkg_scf.lst" />
+      </Component>
+      <Component Directory="dResource">
+        <File Source="res\art\resource\uiskin_ff4.irc" />
+      </Component>
+
+      <!-- art\uiskin\ff4\ (controls window image resource, and the Add Package window skin) -->
       <Component Directory="dFf4">
         <File Source="res\art\uiskin\ff4\win_all.idx" />
       </Component>

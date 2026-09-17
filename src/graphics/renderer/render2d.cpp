@@ -27,6 +27,10 @@ extern bool g_bOldFontTexelFix; //Wombat777 4-01-04
 
 int FindBestResolution(); //Wombat778 4-03-04
 
+// Artscout - 2026: see the note in Render2D::ScreenText. A caller brackets its own draws with this to pick a text
+// size off the three-font ladder; 0 = inactive. Always restore it -- it is global state, not a stack.
+float g_fTextScaleOverride = 0.0f;
+
 //Texture Render2D::Font.FontTexture[NUM_FONT_RESOLUTIONS]; //JAM 22Dec03
 
 
@@ -429,6 +433,13 @@ void Render2D::ScreenText(float xLeft, float yTop, const char *string,
     extern bool g_rttBatchActive;
     extern float g_rttFontScale;
     float fS = g_rttBatchActive ? g_rttFontScale : 1.0f;
+
+    // Artscout - 2026: a caller can ask for an arbitrary text size for the span of its own draws. The font set is
+    // only three sizes (6x4, 8x6, 10x7 -- index 3 is warn_font, a DIFFERENT typeface, not a fourth size), so
+    // "slightly bigger than the largest" is otherwise unreachable. Scales glyph quads AND the advance below, so
+    // spacing stays proportional. 0 = inactive; the RTT pass keeps its own scale.
+    if (g_fTextScaleOverride > 0.0f)
+        fS = g_fTextScaleOverride;
 
     // Select font texture here
 

@@ -44,6 +44,7 @@
 #include "graphics/include/loader.h"
 #include "gps.h"
 #include "userids.h"
+#include "fflog.h" // Artscout - 2026: report whether PACKAGE_WIN resolved
 #include "textids.h"
 #include "falcsess.h"
 #include "campaign.h"
@@ -78,6 +79,7 @@ extern IMAGE_RSC *gOccupationMap;
 extern long StopLookingforMission;
 extern C_Base *CurMapTool;
 extern int gTimeModeServer;
+extern bool g_bCampaignPackageWindow; // Artscout - 2026: load the unwired Add Package window
 extern bool g_bServer;
 extern OBJECTINFO Recon;
 extern long gRefreshScoresList;
@@ -146,6 +148,7 @@ void PositionSlider(C_Slider *slider, long value, long minv, long maxv);
 void ClearMapToolStates(long ID);
 void CheckCampaignFlyButton();
 void DisplayView(long ID, short hittype, C_Base *control);
+extern void HookupCommonControls(long ID); // Artscout - 2026: wires the Add Package buttons
 static void HookupCampaignControls(long ID);
 void RemoveMissionCB(TREELIST *item);
 static void MapMgrDrawCB(long ID, short hittype, C_Base *control);
@@ -837,7 +840,11 @@ void SetupMapMgr(bool noawacsmap)
     if (not gMapMgr)
     {
         gMapMgr = new C_Map;
-        gMapMgr->SetMapCenter(1536 / 2, 2048 / 2);
+        // Artscout - 2026: centre on the middle of whatever map is loaded rather than the
+        // painted bitmap's hardcoded 1536x2048 -- a terrain-derived map is a different size,
+        // and these numbers put the initial view in a corner of it.
+        gMapMgr->SetMapCenter(gMapMgr->GetMapWidth() / 2,
+                              gMapMgr->GetMapHeight() / 2);
 
         // 2002-01-30 MN special AWACS map background, e.g. black with country outlines
         // 2002-03-06 MN don't display Awacsmap in TE edit mode
@@ -1634,6 +1641,47 @@ void LoadCampaignWindows()
     }
 
     gMainParser->LoadSoundList("cp_snd.lst");
+
+    // Artscout - 2026: bring in the Add Package window, which nothing has ever loaded.
+    //
+    // art\taceng\package.scf defines PACKAGE_WIN in full -- titlebar, flight list, package type
+    // and priority -- and is named by exactly one list, art\tenew_scf.lst, which appears nowhere
+    // in this source tree. te_scf.lst does not include it. So FindWindow(PACKAGE_WIN) has been
+    // returning NULL on every screen, the Tactical Engagement one included, and every guarded use
+    // of it has been quietly doing nothing since the window was drawn. tenew_scf.lst looks like a
+    // newer TE window set (tac_load\, TAC_TOOL.scf, new_squad.scf, package.scf) that FF6 shipped
+    // and never switched on.
+    //
+    // Its art is stranded the same way: WIN_PACKAGE and the rest of the "FF4 UI version 0.3" skin
+    // live only in art\uiskin\ff4\win_all.idx/.rsc, which no *_art.lst or *_res.lst names. That is
+    // what cp_uiskin.lst is for. Order matters -- the image list has to be loaded before the
+    // window list that references it, because C_Resmgr::LoadIndex is what registers the names
+    // (AddNewID for anything not already in the ID table), and the .scf parse resolves them.
+    //
+    // Both lists are additive: nothing already loaded is replaced, and a missing file is a no-op
+    // in the parser rather than a failure, so an install without the skin behaves exactly as
+    // before and the window simply stays absent.
+    if (g_bCampaignPackageWindow)
+    {
+        gMainParser->LoadImageList("cp_uiskin.lst");
+        gMainParser->LoadWindowList("cp_pkg_scf.lst");
+
+        ID = gMainParser->GetFirstWindowLoaded();
+
+        while (ID)
+        {
+            // HookupCommonControls, not HookupCampaignControls: the package window's buttons are
+            // already wired there -- Open_Flight_WindowCB, EditFlightInPackage,
+            // DeleteFlightFromPackage, tactical_cancel_package, KeepPackage (common.cpp) -- and
+            // that function takes any window ID and attaches whatever controls it finds. The Add
+            // Flight window wires its own OK and Cancel when it opens (tactical_add_flight), so
+            // it needs nothing here beyond existing.
+            HookupCommonControls(ID);
+            HookupCampaignControls(ID);
+            ID = gMainParser->GetNextWindowLoaded();
+        }
+    }
+
     gMainParser->LoadWindowList(
         "cp_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 

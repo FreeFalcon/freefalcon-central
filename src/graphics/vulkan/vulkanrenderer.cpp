@@ -618,6 +618,35 @@ bool VulkanRenderer::Init(const char* shaderDir)
     // Artscout - 2026 (#104): one sampler per (filter, addressing) combination FFMapState can select. Both axes are
     // load-bearing, not cosmetic: FILTER_POINT keeps a font glyph from bilinearly bleeding the next atlas row, and
     // ADDR_CLAMP stops a cell-edge glyph UV from wrapping and pulling that row in anyway (#7, "HUD text floats").
+    // Artscout - 2026: anisotropic filtering, which this path never asked for -- VkSamplerCreateInfo is
+    // value-initialised, so anisotropyEnable stayed VK_FALSE and the graphics option's aniso level was
+    // silently ignored on Vulkan while D3D12 honoured it (see D3D12_FILTER_ANISOTROPIC in d3d12renderer).
+    // It shows up worst exactly where terrain is: a surface seen at a grazing angle has a long, thin pixel
+    // footprint that isotropic trilinear cannot gather, so it over-blurs and the mip transitions become
+    // visible steps that slide around as the camera turns -- which reads as texture "pop", not as blur.
+    // The device feature is already requested at device creation (feats.samplerAnisotropy), so this only
+    // needs the sampler to opt in. Clamped to the device limit; POINT samplers stay unfiltered on purpose
+    // (font atlases -- aniso there would bleed neighbouring glyph cells).
+    float maxAniso = 1.0f;
+    {
+        extern bool g_bAnisoEnable;
+        extern int g_nAnisoSamples;
+        VkPhysicalDeviceProperties props{};
+        vkGetPhysicalDeviceProperties(m->phys, &props);
+        int want = g_nAnisoSamples;
+        if (want < 1)
+            want = 1;
+        if (want > 16)
+            want = 16;
+        if (g_bAnisoEnable && want >= 2 &&
+            props.limits.maxSamplerAnisotropy > 1.0f)
+        {
+            maxAniso = (float)want;
+            if (maxAniso > props.limits.maxSamplerAnisotropy)
+                maxAniso = props.limits.maxSamplerAnisotropy;
+        }
+    }
+
     for (int f = 0; f < 2; ++f)
         for (int a = 0; a < 2; ++a)
         {
@@ -631,6 +660,11 @@ bool VulkanRenderer::Init(const char* shaderDir)
                 (a == ADDR_CLAMP) ? VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE :
                                     VK_SAMPLER_ADDRESS_MODE_REPEAT;
             si.maxLod = VK_LOD_CLAMP_NONE;
+            if (f != FILTER_POINT && maxAniso > 1.0f)
+            {
+                si.anisotropyEnable = VK_TRUE;
+                si.maxAnisotropy = maxAniso;
+            }
             if (vkCreateSampler(m->device, &si, nullptr, &m->samplers[f][a]) !=
                 VK_SUCCESS)
                 return false;

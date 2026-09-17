@@ -134,7 +134,7 @@
       <PrecompiledHeader />
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>..\Falcon4___Win32_Debug\UI95/stdafx.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\Falcon4___Win32_Debug\UI95/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\Falcon4___Win32_Debug\UI95/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\Falcon4___Win32_Debug\UI95/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
@@ -162,10 +162,10 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>..\Falcon4___Win32_Debug\UI95/stdafx.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\Falcon4___Win32_Debug\UI95/</AssemblerListingLocation>
-      <ObjectFileName>.\..\Falcon4___Win32_Debug\UI95/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\Falcon4___Win32_Debug\UI95/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)stdafx.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -198,7 +198,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\UI95/ui95.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\Falcon4___Win32_Release\UI95/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\UI95/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -229,11 +229,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\UI95/ui95.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)ui95.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\Falcon4___Win32_Release\UI95/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\UI95/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -265,7 +265,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\UI95/ui95.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\Falcon4___Win32_Release\UI95/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\UI95/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -296,11 +296,11 @@
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\UI95/ui95.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)ui95.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\Falcon4___Win32_Release\UI95/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\UI95/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

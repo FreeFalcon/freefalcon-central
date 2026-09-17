@@ -1,0 +1,31 @@
+Windows Registry Editor Version 5.00
+
+; FreeFalcon 6 registry keys
+;
+; This build reads its data paths from the Falcon "4.1" key rather than "4.0", so it
+; does not collide with a stock Falcon 4.0 / GOG install that owns the 4.0 key.
+;
+; The paths below assume the install is at C:\FreeFalcon6.
+; IF YOURS IS ELSEWHERE, edit every path below before importing
+; (or just run install-registry.bat, which fills them in automatically).
+;
+; Note the WOW6432Node in the key path: the game opens this key with KEY_WOW64_32KEY,
+; i.e. the 32-bit registry view, even though the exe is 64-bit. That is deliberate --
+; do not "fix" it to the native path or the game will not find its data.
+;
+; Importing writes to HKEY_LOCAL_MACHINE and therefore requires administrator rights.
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\MicroProse\Falcon\4.1]
+"baseDir"="C:\FreeFalcon6"
+"misctexDir"="C:\FreeFalcon6\terrdata\misctex"
+"objectDir"="C:\FreeFalcon6\terrdata\objects"
+"theaterDir"="C:\FreeFalcon6\terrdata\korea"
+"movieDir"="C:\FreeFalcon6"
+"curTheater"="Korea"
+"FFver"="6.0"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\MicroProse\Falcon\4.1\MPR]
+"MPRDetect3Dx"=dword:00000001
+"MPRDetectCPU"=dword:00000001
+"MPRDetectMMX"=dword:00000001
+"MPRDetectXMM"=dword:00000001

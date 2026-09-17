@@ -78,22 +78,30 @@ void C_ScaleBitmap::Cleanup()
         Image_ = NULL;
     }
 
+    // Artscout - 2026: was a scalar `delete` on a `new BYTE[]`, and the pointer was left dangling
+    // afterwards -- a second Cleanup would free it again. Both were survivable while this buffer was
+    // a few MB; a terrain-derived campaign map makes it several times larger and the heap much less
+    // forgiving. Same for the blended palettes just below.
     if (Overlay_)
+    {
 #ifdef USE_SH_POOLS
         MemFreePtr(Overlay_);
-
 #else
-        delete Overlay_;
+        delete[] Overlay_;
 #endif
+        Overlay_ = NULL;
+    }
 
     for (i = 1; i < 16; i++)
         if (Palette_[i])
+        {
 #ifdef USE_SH_POOLS
             MemFreePtr(Palette_[i]);
-
 #else
-            delete Palette_[i];
+            delete[] Palette_[i];
 #endif
+            Palette_[i] = NULL;
+        }
 }
 
 void C_ScaleBitmap::InitOverlay()
@@ -110,12 +118,14 @@ void C_ScaleBitmap::InitOverlay()
         return;
 
     if (Overlay_)
+    {
 #ifdef USE_SH_POOLS
         MemFreePtr(Overlay_);
-
 #else
-        delete Overlay_;
+        delete[] Overlay_; // Artscout - 2026: matches the new BYTE[] below
 #endif
+        Overlay_ = NULL;
+    }
 
 #ifdef USE_SH_POOLS
     Overlay_ = (BYTE *)MemAllocPtr(
@@ -157,12 +167,15 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
 
     for (i = 1; i < 16; i++)
         if (Palette_[i])
+        {
 #ifdef USE_SH_POOLS
             MemFreePtr(Palette_[i]);
-
 #else
-            delete Palette_[i];
+            delete[] Palette_[i]; // Artscout - 2026: matches the new WORD[] below
 #endif
+            Palette_[i] = NULL;
+        }
+
     Palette_[0] = img->GetPalette();
 
     for (i = 1; i < 16; i++)
@@ -203,7 +216,11 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
                       UIColorTable[bperc]
                                   [(Palette_[0][j] >> b_shift_) bitand 0x1f]]];
 
-            Palette_[i][j] = static_cast<short>(r bitor b bitor b);
+            // Artscout - 2026: was `r bitor b bitor b` -- g computed and thrown away,
+            // b folded in twice. Every blended palette therefore lost its green channel,
+            // which is why the threat rings tint toward magenta whatever colour they ask
+            // for. The overlay colours are chosen by the caller; honour all three.
+            Palette_[i][j] = static_cast<short>(r bitor g bitor b);
         }
     }
 }

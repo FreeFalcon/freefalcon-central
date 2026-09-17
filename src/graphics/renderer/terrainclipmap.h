@@ -43,8 +43,13 @@ struct TerrainClipConstants
 
 // Per-frame: stream in whatever the camera uncovered, rebuild the rings and the
 // constants. False = nothing to draw this frame (no device support, no data yet).
+// camPos = the VIEWPOINT position: the theater's block lists are centred on it,
+// so it is what picks the posts and lays out the rings. eyePos = the position
+// the scene's view matrix was actually built for (viewpoint + head/eye offset),
+// and the only thing the vertices may be pre-translated by. The two differ by
+// the head lean / 6DOF / turbulence offset. NULL eyePos reuses camPos.
 bool TerrainClipmap_Update(RViewPoint* vp, const float camPos[3],
-                           float dayNight);
+                           const float eyePos[3], float dayNight);
 
 const TerrainClipConstants& TerrainClipmap_Constants();
 int TerrainClipmap_ChunkCount();

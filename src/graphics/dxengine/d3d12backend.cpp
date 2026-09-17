@@ -81,10 +81,12 @@ D3D12Backend::D3D12Backend()
     : m_hWnd(0), m_nWidth(0), m_nHeight(0), m_bFullscreen(false),
       m_bRecording(false), m_pDevice(0), m_pQueue(0), m_pSwapChain(0),
       m_pRtvHeap(0), m_rtvDescSize(0), m_pDsvHeap(0), m_pDepthTex(0),
+      m_pRttDepthTex(0), m_pRttDsvHeap(0), m_rttDepthW(0), m_rttDepthH(0),
       m_renderEpoch(0), m_pEyeDepthTex(0), m_pEyeDsvHeap(0), m_eyeDepthW(0),
       m_eyeDepthH(0), m_eyeDepthCur(0), m_viColorCur(0), m_viTier(-1),
       m_pList1(0), m_pMenuRtt(0), m_pMenuDepthTex(0), m_pMenuDsvHeap(0),
       m_menuRttW(0), m_menuRttH(0), m_pFpsRtt(0), m_fpsRttW(0), m_fpsRttH(0),
+      m_pSubRtt(0), m_subRttW(0), m_subRttH(0),
       m_pMsaaColorTex(0), m_pMsaaRtvHeap(0), m_pMsaaDepthTex(0),
       m_pMsaaDsvHeap(0), m_msaaSamples(1), m_msaaW(0), m_msaaH(0),
       m_curSampleCount(1), m_pEyeResolveImg(0), m_curRtvPtr(0),
@@ -613,6 +615,257 @@ static void PumpD3D12Messages(ID3D12Device* dev)
     iq->Release();
 }
 
+// Artscout - 2026: a screenshot that actually contains the rendered frame.
+//
+// OTWDriverClass::TakeScreenShot goes to ImageBuffer::BackBufferToRAW, which Lock()s the image
+// buffer and walks it -- and under the GPU backends Lock() returns m_pSysMem, the CPU-side RGB565
+// surface. The 3D scene is rendered on the GPU and never lands there, so what that path writes is
+// whatever 2D happens to be in system memory, not the picture on screen. In a VR session it is
+// worse than useless: the eye images never touch that buffer at all.
+//
+// Read the swap-chain back buffer instead, which is also the VR mirror -- with XrMirror on it holds
+// the eye the compositor was handed, so this is a VR screenshot without a separate capture path.
+//
+// Deliberately deferred to Present rather than run where the key is pressed: only here is the frame
+// finished, the command list submitted, and the back buffer's identity and state known (PRESENT,
+// from the barrier above). Capturing from the key handler would race whatever the frame was doing.
+//
+// One-shot allocator and list, then a full WaitForGpu. That is a hard stall of a few milliseconds
+// and completely wrong for anything per-frame -- fine for a keypress, and it keeps the capture from
+// touching the frame ring or the backend's own fence bookkeeping.
+// Artscout - 2026: open a swap-chain frame for a MENU that is about to render 3D, if one is not
+// already open. Needed because ImageBuffer::BindD3D12RenderTarget refuses to bind an off-screen RTT
+// off-frame -- deliberately, since forcing a BeginFrame from the sim update or between VR eye frames
+// injected an orphan frame and broke xrEndFrame. A menu has the opposite problem: UI95 draws into a
+// CPU surface and only opens a GPU frame inside PresentGpu, at the very end, so when a 3D viewer
+// runs during the UI's draw pass there is no list open, the RTT bind is skipped, and the model is
+// drawn somewhere other than the texture that is about to be read back.
+//
+// Safe here precisely because it is the menu loop: PresentGpu closes and presents whatever is open a
+// moment later. Guarded on IsRecording so it can never reset a list that already holds work.
+bool D3D12_EnsureMenuFrame()
+{
+    if (!g_pD3D12Backend)
+        return false;
+
+    if (g_pD3D12Backend->IsRecording())
+        return true;
+
+    g_pD3D12Backend->BeginFrame(0xFF000000);
+    return g_pD3D12Backend->IsRecording();
+}
+
+static char s_capturePath[MAX_PATH] = {0};
+
+bool D3D12_RequestScreenCapture(const char* path)
+{
+    if (!path || !*path)
+        return false;
+
+    if (s_capturePath[0])
+        return false; // one already queued for the next Present
+
+    strncpy(s_capturePath, path, MAX_PATH - 1);
+    s_capturePath[MAX_PATH - 1] = 0;
+    return true;
+}
+
+static void WriteBmp24(const char* path, const BYTE* src, unsigned rowPitch,
+                       int w, int h, bool bgra)
+{
+    HANDLE f = CreateFileA(path, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                           FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (f == INVALID_HANDLE_VALUE)
+        return;
+
+    // BMP scanlines are 4-byte aligned and stored bottom-up.
+    const unsigned stride = (unsigned)((w * 3 + 3) & ~3);
+    BITMAPFILEHEADER bfh;
+    BITMAPINFOHEADER bih;
+    ZeroMemory(&bfh, sizeof(bfh));
+    ZeroMemory(&bih, sizeof(bih));
+    bih.biSize = sizeof(bih);
+    bih.biWidth = w;
+    bih.biHeight = h;
+    bih.biPlanes = 1;
+    bih.biBitCount = 24;
+    bih.biCompression = BI_RGB;
+    bih.biSizeImage = stride * h;
+    bfh.bfType = 0x4d42;
+    bfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+    bfh.bfSize = bfh.bfOffBits + bih.biSizeImage;
+
+    DWORD wrote = 0;
+    WriteFile(f, &bfh, sizeof(bfh), &wrote, NULL);
+    WriteFile(f, &bih, sizeof(bih), &wrote, NULL);
+
+    BYTE* row = new BYTE[stride];
+
+    if (row)
+    {
+        ZeroMemory(row, stride);
+
+        for (int y = h - 1; y >= 0; --y)
+        {
+            const BYTE* s = src + (size_t)y * rowPitch;
+            BYTE* d = row;
+
+            for (int x = 0; x < w; ++x)
+            {
+                // BMP wants BGR. A BGRA source is already in that order; an RGBA one is reversed.
+                if (bgra)
+                {
+                    d[0] = s[0];
+                    d[1] = s[1];
+                    d[2] = s[2];
+                }
+                else
+                {
+                    d[0] = s[2];
+                    d[1] = s[1];
+                    d[2] = s[0];
+                }
+
+                d += 3;
+                s += 4;
+            }
+
+            WriteFile(f, row, stride, &wrote, NULL);
+        }
+
+        delete[] row;
+    }
+
+    CloseHandle(f);
+}
+
+void D3D12Backend::ServiceScreenCapture()
+{
+    if (!s_capturePath[0] || !m_pDevice || !m_pQueue)
+        return;
+
+    char path[MAX_PATH];
+    strncpy(path, s_capturePath, MAX_PATH - 1);
+    path[MAX_PATH - 1] = 0;
+    s_capturePath[0] = 0; // consume it whatever happens below, so a failure cannot wedge the key
+
+    ID3D12Resource* bb = m_pBackBuffer[m_frameIndex];
+
+    if (!bb)
+        return;
+
+    D3D12_RESOURCE_DESC bd = bb->GetDesc();
+    const int w = (int)bd.Width;
+    const int h = (int)bd.Height;
+
+    if (w < 1 || h < 1)
+        return;
+
+    // The two formats a swap chain is realistically created with here. Anything else (HDR10, a
+    // 16-bit float chain) would need its own conversion, so decline rather than write garbage.
+    bool bgra = false;
+
+    if (bd.Format == DXGI_FORMAT_B8G8R8A8_UNORM ||
+        bd.Format == DXGI_FORMAT_B8G8R8A8_UNORM_SRGB)
+        bgra = true;
+    else if (bd.Format != DXGI_FORMAT_R8G8B8A8_UNORM &&
+             bd.Format != DXGI_FORMAT_R8G8B8A8_UNORM_SRGB)
+        return;
+
+    const unsigned rowPitch = (unsigned)(((unsigned)w * 4u + 255u) & ~255u);
+
+    ID3D12Resource* rb = 0;
+    D3D12_HEAP_PROPERTIES hp;
+    ZeroMemory(&hp, sizeof(hp));
+    hp.Type = D3D12_HEAP_TYPE_READBACK;
+    D3D12_RESOURCE_DESC rd;
+    ZeroMemory(&rd, sizeof(rd));
+    rd.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+    rd.Width = (UINT64)rowPitch * (UINT64)h;
+    rd.Height = 1;
+    rd.DepthOrArraySize = 1;
+    rd.MipLevels = 1;
+    rd.Format = DXGI_FORMAT_UNKNOWN;
+    rd.SampleDesc.Count = 1;
+    rd.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+    if (FAILED(m_pDevice->CreateCommittedResource(
+            &hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_COMMON, NULL,
+            __uuidof(ID3D12Resource), (void**)&rb)) ||
+        !rb)
+        return;
+
+    ID3D12CommandAllocator* alloc = 0;
+    ID3D12GraphicsCommandList* list = 0;
+
+    if (SUCCEEDED(m_pDevice->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator),
+            (void**)&alloc)) &&
+        alloc &&
+        SUCCEEDED(m_pDevice->CreateCommandList(
+            0, D3D12_COMMAND_LIST_TYPE_DIRECT, alloc, NULL,
+            __uuidof(ID3D12GraphicsCommandList), (void**)&list)) &&
+        list)
+    {
+        D3D12_RESOURCE_BARRIER b;
+        ZeroMemory(&b, sizeof(b));
+        b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        b.Transition.pResource = bb;
+        b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+        b.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+        b.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+        list->ResourceBarrier(1, &b);
+
+        D3D12_TEXTURE_COPY_LOCATION dstL, srcL;
+        ZeroMemory(&dstL, sizeof(dstL));
+        dstL.pResource = rb;
+        dstL.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+        dstL.PlacedFootprint.Offset = 0;
+        dstL.PlacedFootprint.Footprint.Format = bd.Format;
+        dstL.PlacedFootprint.Footprint.Width = (UINT)w;
+        dstL.PlacedFootprint.Footprint.Height = (UINT)h;
+        dstL.PlacedFootprint.Footprint.Depth = 1;
+        dstL.PlacedFootprint.Footprint.RowPitch = rowPitch;
+        ZeroMemory(&srcL, sizeof(srcL));
+        srcL.pResource = bb;
+        srcL.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+        srcL.SubresourceIndex = 0;
+        list->CopyTextureRegion(&dstL, 0, 0, 0, &srcL, NULL);
+
+        // Hand it back in the state Present expects to find it, or the next frame's barrier is a lie.
+        b.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+        b.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+        list->ResourceBarrier(1, &b);
+
+        if (SUCCEEDED(list->Close()))
+        {
+            ID3D12CommandList* lists[] = {(ID3D12CommandList*)list};
+            m_pQueue->ExecuteCommandLists(1, lists);
+            WaitForGpu();
+
+            void* mapped = 0;
+
+            if (SUCCEEDED(rb->Map(0, NULL, &mapped)) && mapped)
+            {
+                WriteBmp24(path, (const BYTE*)mapped, rowPitch, w, h, bgra);
+                D3D12_RANGE wr;
+                wr.Begin = 0;
+                wr.End = 0;
+                rb->Unmap(0, &wr);
+            }
+        }
+    }
+
+    if (list)
+        list->Release();
+
+    if (alloc)
+        alloc->Release();
+
+    rb->Release();
+}
+
 void D3D12Backend::Present(bool bVSync)
 {
     if (!m_pDevice || !m_pList || !m_pSwapChain)
@@ -641,7 +894,24 @@ void D3D12Backend::Present(bool bVSync)
         m_bRecording = false;
     }
 
-    m_pSwapChain->Present(bVSync ? 1 : 0, 0);
+    // Artscout - 2026: while a VR session is presenting, the DESKTOP MIRROR must not vsync. Every caller asks for
+    // vsync (correct on a monitor), but in VR the headset compositor already paces the loop through xrWaitFrame --
+    // and the mirror's SyncInterval=1 then caps the WHOLE frame loop at the desktop's refresh, which has nothing to
+    // do with the headset's. Measured: a 60 Hz desktop pinned CPU_FRAME at 16.58ms with only 1.8ms of CPU work, so
+    // the headset ran permanently reprojected -- head-locked content smooth, world-locked terrain and buildings
+    // juddering. Nobody is looking at the mirror; let it tear.
+    bool vsync = bVSync;
+    {
+        extern bool g_bVrFrameActive;   // presenting stereo this frame
+        extern bool g_bVsyncVrMirror;   // cfg escape hatch, default off
+        if (g_bVrFrameActive && !g_bVsyncVrMirror)
+            vsync = false;
+    }
+
+    // Artscout - 2026: the back buffer is finished and still ours until Present hands it over.
+    ServiceScreenCapture();
+
+    m_pSwapChain->Present(vsync ? 1 : 0, 0);
     MoveToNextFrame();
 }
 
@@ -2341,6 +2611,84 @@ void* D3D12Backend::FpsRttTex()
     return (m_pFpsRtt && m_pFpsRtt->tex) ? (void*)m_pFpsRtt : NULL;
 }
 
+// Artscout - 2026: radio-subtitle quad RTT -- a straight copy of the FPS trio above, kept separate because the two
+// quads are live at the same time and at different sizes, so sharing one RTT would thrash it every frame.
+void D3D12Backend::EnsureSubRtt(int w, int h)
+{
+    if (!m_pDevice || w <= 0 || h <= 0)
+        return;
+    if (m_pSubRtt && m_pSubRtt->tex && m_subRttW == w && m_subRttH == h)
+        return; // already at size
+    if (m_pSubRtt)
+    {
+        if (g_pD3D12TextureManager)
+            g_pD3D12TextureManager->Destroy(*m_pSubRtt);
+        delete m_pSubRtt;
+        m_pSubRtt = 0;
+    }
+    m_subRttW = m_subRttH = 0;
+    if (!g_pD3D12TextureManager)
+        return;
+    m_pSubRtt = new D3D12Texture();
+    if (!g_pD3D12TextureManager->CreateRenderTarget(*m_pSubRtt, w, h))
+    {
+        delete m_pSubRtt;
+        m_pSubRtt = 0;
+        return;
+    }
+    m_subRttW = w;
+    m_subRttH = h;
+}
+
+void D3D12Backend::BindSubRtt(bool clear)
+{
+    if (!m_pList || !m_bRecording || !m_pSubRtt || !m_pSubRtt->tex)
+        return;
+    if (m_pSubRtt->rtState != (unsigned)D3D12_RESOURCE_STATE_RENDER_TARGET)
+    {
+        D3D12_RESOURCE_BARRIER b;
+        ZeroMemory(&b, sizeof(b));
+        b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        b.Transition.pResource = m_pSubRtt->tex;
+        b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+        b.Transition.StateBefore = (D3D12_RESOURCE_STATES)m_pSubRtt->rtState;
+        b.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+        m_pList->ResourceBarrier(1, &b);
+        m_pSubRtt->rtState = (unsigned)D3D12_RESOURCE_STATE_RENDER_TARGET;
+    }
+    D3D12_CPU_DESCRIPTOR_HANDLE rtv;
+    rtv.ptr = (SIZE_T)m_pSubRtt->rtvCpuPtr;
+    m_curRtvPtr = (unsigned __int64)rtv.ptr;
+    m_curSampleCount = 1;
+    m_pList->OMSetRenderTargets(1, &rtv, FALSE, NULL); // no depth for 2D text
+    if (g_pD3D12Renderer)
+        g_pD3D12Renderer->SetDepthTargetBound(false);
+    D3D12_VIEWPORT vp;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    vp.Width = (FLOAT)m_subRttW;
+    vp.Height = (FLOAT)m_subRttH;
+    vp.MinDepth = 0;
+    vp.MaxDepth = 1;
+    D3D12_RECT sc;
+    sc.left = 0;
+    sc.top = 0;
+    sc.right = m_subRttW;
+    sc.bottom = m_subRttH;
+    m_pList->RSSetViewports(1, &vp);
+    m_pList->RSSetScissorRects(1, &sc);
+    if (clear)
+    {
+        const float z[4] = {0, 0, 0, 0};
+        m_pList->ClearRenderTargetView(rtv, z, 0, NULL);
+    } // transparent canvas
+}
+
+void* D3D12Backend::SubRttTex()
+{
+    return (m_pSubRtt && m_pSubRtt->tex) ? (void*)m_pSubRtt : NULL;
+}
+
 // #DX12 п.5 (VR): open a command list rendering INTO an XR eye image (bind eye RTV + VR depth, clear both).
 void D3D12Backend::BeginEyeFrame(void* eyeImg, unsigned __int64 eyeRtvPtr,
                                  int w, int h)
@@ -2426,7 +2774,89 @@ void D3D12Backend::EndEyeFrame(void* eyeImg)
 }
 
 // #DX12 п.3 RTT: bind an external render-target texture as the current target (displays draw into it).
-void D3D12Backend::BindSceneRtt(void* handle, int w, int h, bool clear)
+// Artscout - 2026: depth-stencil for an off-screen RTT that holds a 3D SCENE.
+//
+// The scene depth (CreateDepthBuffer above) is sized to the back buffer, and an RTT is not -- the
+// menu model viewer's is the UI surface size. D3D12 expects the bound render target and
+// depth-stencil to agree, so the RTT gets its own, resized on demand. One buffer serves whichever
+// RTT is current, because only one is ever bound at a time.
+//
+// D32_FLOAT_S8X24 and a 0.0 clear to match the scene buffer: this is a reversed-Z pipeline, so 0 is
+// the FAR plane and the comparison is GREATER_EQUAL.
+bool D3D12Backend::EnsureRttDepth(int w, int h)
+{
+    if (!m_pDevice || w < 1 || h < 1)
+        return false;
+
+    if (m_pRttDepthTex && m_rttDepthW == w && m_rttDepthH == h)
+        return true;
+
+    if (m_pRttDepthTex)
+    {
+        WaitForGpu(); // it may still be referenced by frames in flight
+        D12_RELEASE(m_pRttDepthTex);
+    }
+
+    if (!m_pRttDsvHeap)
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC hd;
+        ZeroMemory(&hd, sizeof(hd));
+        hd.NumDescriptors = 1;
+        hd.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+        hd.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+        if (FAILED(m_pDevice->CreateDescriptorHeap(
+                &hd, IID_PPV_ARGS(&m_pRttDsvHeap))))
+        {
+            D12Log("[D3D12] RTT DSV heap failed\n");
+            return false;
+        }
+    }
+
+    D3D12_HEAP_PROPERTIES hp;
+    ZeroMemory(&hp, sizeof(hp));
+    hp.Type = D3D12_HEAP_TYPE_DEFAULT;
+    D3D12_RESOURCE_DESC rd;
+    ZeroMemory(&rd, sizeof(rd));
+    rd.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+    rd.Width = (UINT64)w;
+    rd.Height = (UINT)h;
+    rd.DepthOrArraySize = 1;
+    rd.MipLevels = 1;
+    rd.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+    rd.SampleDesc.Count = 1;
+    rd.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+    rd.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+    D3D12_CLEAR_VALUE cv;
+    ZeroMemory(&cv, sizeof(cv));
+    cv.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+    cv.DepthStencil.Depth = 0.0f;
+    cv.DepthStencil.Stencil = 0;
+
+    if (FAILED(m_pDevice->CreateCommittedResource(
+            &hp, D3D12_HEAP_FLAG_NONE, &rd, D3D12_RESOURCE_STATE_DEPTH_WRITE,
+            &cv, IID_PPV_ARGS(&m_pRttDepthTex))))
+    {
+        D12Log("[D3D12] RTT depth create failed\n");
+        m_pRttDepthTex = 0;
+        return false;
+    }
+
+    D3D12_DEPTH_STENCIL_VIEW_DESC dv;
+    ZeroMemory(&dv, sizeof(dv));
+    dv.Format = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+    dv.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+    m_pDevice->CreateDepthStencilView(
+        m_pRttDepthTex, &dv,
+        m_pRttDsvHeap->GetCPUDescriptorHandleForHeapStart());
+    m_rttDepthW = w;
+    m_rttDepthH = h;
+    return true;
+}
+
+void D3D12Backend::BindSceneRtt(void* handle, int w, int h, bool clear,
+                                bool wantDepth)
 {
     EnsureFrameStarted();
     if (!m_pList || !m_bRecording || !handle)
@@ -2454,10 +2884,36 @@ void D3D12Backend::BindSceneRtt(void* handle, int w, int h, bool clear)
             .ptr; // #DX12: the RTT atlas is now the current RTV (ClearCurrentRTV clears IT)
     m_curSampleCount =
         1; // the RTT atlas is single-sample -> single-sample PSOs
-    m_pList->OMSetRenderTargets(1, &rtv, FALSE, NULL); // 2D displays: no depth
-    if (g_pD3D12Renderer)
-        g_pD3D12Renderer->SetDepthTargetBound(
-            false); // no DSV -> force depth-off PSOs (#615)
+    // Artscout - 2026: a 3D scene in an RTT needs depth, and this path had none -- it was written
+    // for the 2D display panels, which do not. Without a DSV the renderer is forced onto depth-off
+    // PSOs, so every triangle lands in submission order and far surfaces paint over near ones. That
+    // is why the menu model viewer's aircraft looked see-through: the engines and the far side of
+    // the fuselage drawing straight through the near skin, which reads as a wireframe.
+    const bool rttDepth =
+        wantDepth &&
+        EnsureRttDepth(w > 0 ? w : t->width, h > 0 ? h : t->height);
+
+    if (rttDepth)
+    {
+        D3D12_CPU_DESCRIPTOR_HANDLE dsv =
+            m_pRttDsvHeap->GetCPUDescriptorHandleForHeapStart();
+        m_pList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+        // Reversed-Z: 0 is the far plane, so that is what a cleared buffer holds.
+        m_pList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, 0.0f, 0, 0,
+                                       NULL);
+
+        if (g_pD3D12Renderer)
+            g_pD3D12Renderer->SetDepthTargetBound(true);
+    }
+    else
+    {
+        m_pList->OMSetRenderTargets(1, &rtv, FALSE,
+                                    NULL); // 2D displays: no depth
+
+        if (g_pD3D12Renderer)
+            g_pD3D12Renderer->SetDepthTargetBound(
+                false); // no DSV -> force depth-off PSOs (#615)
+    }
     if (w < 1)
         w = t->width;
     if (h < 1)
@@ -2860,6 +3316,13 @@ void D3D12Backend::Release()
         delete m_pFpsRtt;
         m_pFpsRtt = 0;
     }
+    if (m_pSubRtt)
+    {
+        if (g_pD3D12TextureManager)
+            g_pD3D12TextureManager->Destroy(*m_pSubRtt);
+        delete m_pSubRtt;
+        m_pSubRtt = 0;
+    }
     D12_RELEASE(m_pMenuDepthTex);
     D12_RELEASE(m_pMenuDsvHeap);
     D12_RELEASE(m_pDepthSrvHeap); // Artscout - 2026: #13 cloud depth-read SRV
@@ -2867,6 +3330,8 @@ void D3D12Backend::Release()
     m_pSceneDepthRes = 0;
     m_sceneDepthReadable = false;
     D12_RELEASE(m_pDsvHeap);
+    D12_RELEASE(m_pRttDepthTex); // Artscout - 2026: off-screen RTT depth
+    D12_RELEASE(m_pRttDsvHeap);
     D12_RELEASE(m_pRtvHeap);
     D12_RELEASE(m_pFence);
     D12_RELEASE(m_pSwapChain);

@@ -1485,10 +1485,15 @@ void VirtualDisplay::SetFont(int newfont)
 {
     ShiAssert(newfont >= 0 and newfont < NUM_FONT_RESOLUTIONS);
 
+    // Artscout - 2026: clamp AND apply. The old form computed the clamped index and then threw it away -- the
+    // assignment sat in the else branch -- so asking for a font the loaded set does not have silently kept
+    // whatever font was current instead of falling back to the largest one. A dead store either way.
     if (newfont >= pFontSet->totalFont)
         newfont = pFontSet->totalFont - 1;
-    else
-        pFontSet->fontNum = newfont;
+    if (newfont < 0)
+        newfont = 0;
+
+    pFontSet->fontNum = newfont;
 }
 // ASSO: BEGIN ---------------------------------------------------------------------------------------------
 bool VirtualDisplay::SetupRttTarget(int tXres_, int tYres_, int tBpp_)
@@ -1889,11 +1894,29 @@ void VirtualDisplay::DrawRttQuad()
     // STATE_RTT_SOFT (BLEND_ADDITIVE) ALWAYS. Chroma cut the SSAA AA-gradient at a threshold -> a 'rim'/
     // bulk around lines and text. Additive composites the symbology emissively (like a real HUD/BMS):
     // the atlas's black background = 0, the gradient fades smoothly -> flat clean lines without bulk.
+    extern bool g_bRttHudClip;
+    extern IRenderer* g_pRenderer;
+    const bool hudClip =
+        g_bUseGpu && g_bRttHudClip &&
+        g_pRenderer; // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
+
+    // Artscout - 2026 (HUD occlusion): the stencil clips the symbology to the combiner's SHAPE, which is
+    // all it can do -- a stencil has no idea what is standing between your eye and the glass. So the
+    // canopy bow and the rail were drawn through, most obviously when you slide right in the seat and
+    // the frame crosses the combiner. Depth-testing fixes that, but not on its own: this HUD is
+    // COLLIMATED (g_rttWorldOfs = headOrigin cancels the eye offset), so it projects as if at infinity
+    // and would fail a depth test against the entire cockpit. Test it at the depth of the GLASS instead,
+    // keeping the collimated direction -- then a bar in front of the combiner wins and the glass itself
+    // still passes. The depth comes from re-transforming the same canvas with the collimation removed,
+    // further down, once the screen positions are in hand.
+    extern bool g_bHudCanopyOcclude;
+    const bool hudOcclude = hudClip && g_bHudCanopyOcclude;
+
     int compositeState = rttBlendMode;
     // Artscout - 2026 (D3D11 purge): additive-emissive RTT composite on ANY GPU backend (FF_RTTSOFT is in the
     // shared FFEmu.hlsl). Was g_bUseD3D11-only; g_bUseGpu enables it under D3D12 too (matches "additive on both").
     if (g_bUseGpu && rttBlendMode == STATE_CHROMA_TEXTURE_GOURAUD2)
-        compositeState = STATE_RTT_SOFT;
+        compositeState = hudOcclude ? STATE_RTT_SOFT_DEPTH : STATE_RTT_SOFT;
     r3d->context.RestoreState(compositeState);
     r3d->context.SelectTexture1(
         (DWORD_PTR)renderTexture); // Artscout - 2026 (x64): pointer-sized
@@ -1901,11 +1924,6 @@ void VirtualDisplay::DrawRttQuad()
     // Artscout - 2026 (VR HUD 3D glass): clip the collimated HUD to the combiner aperture via STENCIL --
     // the glass plate (drawn just before, DrawGlassPlate) wrote the aperture bit, so the symbology draws
     // only where that bit is set. Armed AFTER RestoreState so it isn't clobbered; cleared after the draw.
-    extern bool g_bRttHudClip;
-    extern IRenderer* g_pRenderer;
-    const bool hudClip =
-        g_bUseGpu && g_bRttHudClip &&
-        g_pRenderer; // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
     if (hudClip)
         g_pRenderer->SetHudStencil(HUD_STENCIL_TEST);
 
@@ -1961,6 +1979,56 @@ void VirtualDisplay::DrawRttQuad()
     v0.b = v1.b = v2.b = v3.b = 1.0f;
     v0.a = v1.a = v2.a = v3.a = rttAlpha;
 
+    // Artscout - 2026 (HUD occlusion): swap the depth for the PHYSICAL glass while the screen positions
+    // stay collimated. Re-transform the same four canvas corners with the collimation offset removed and
+    // nothing else changed -- g_rttWorldScale is set once per frame and shared, so zeroing the offset
+    // reproduces exactly the transform DrawGlassPlate used a moment ago, which is the real combiner.
+    //
+    // Only q is taken, because q is what the vertex emit turns into depth (context.cpp). x and y are left
+    // as the collimated transform produced them, so the symbology still sits at infinity, still does not
+    // converge per eye, and still stays conformal with the world. It is only the number the depth test
+    // compares that moves.
+    //
+    // One known imperfection: q also feeds rhw, so the texture's perspective interpolation shifts
+    // slightly. Scaling all four w's by one constant would not change it at all, and across a combiner
+    // this small the corners are near enough proportional that what remains is sub-pixel -- but it is a
+    // real coupling, not a free lunch.
+    if (hudOcclude)
+    {
+        extern Tpoint g_rttWorldOfs;
+        const Tpoint savedOfs = g_rttWorldOfs;
+        g_rttWorldOfs.x = g_rttWorldOfs.y = g_rttWorldOfs.z = 0.0f;
+
+        ThreeDVertex g0, g1, g2, g3;
+        Tpoint gs;
+        gs.x = canUL.x, gs.y = canUL.y, gs.z = canUL.z;
+        RttWorldXform(&gs);
+        r3d->TransformPoint(&gs, &g0);
+        gs.x = canUR.x, gs.y = canUR.y, gs.z = canUR.z;
+        RttWorldXform(&gs);
+        r3d->TransformPoint(&gs, &g1);
+        gs.x = canLL.x, gs.y = canUR.y, gs.z = canLL.z;
+        RttWorldXform(&gs);
+        r3d->TransformPoint(&gs, &g2);
+        gs.x = canLL.x, gs.y = canLL.y, gs.z = canLL.z;
+        RttWorldXform(&gs);
+        r3d->TransformPoint(&gs, &g3);
+
+        g_rttWorldOfs = savedOfs;
+
+        v0.q = g0.csZ * Q_SCALE;
+        v1.q = g1.csZ * Q_SCALE;
+        v2.q = g2.csZ * Q_SCALE;
+        v3.q = g3.csZ * Q_SCALE;
+    }
+
+    // Tell the vertex emit to derive depth from q for THIS primitive only. The 2D path otherwise pins
+    // screen prims to the far plane, and several of them want to stay there.
+    extern bool g_bScreenPrimDepthFromQ;
+
+    if (hudOcclude)
+        g_bScreenPrimDepthFromQ = true;
+
     r3d->DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL, false);
 
     // #7 SSAA: flush the panel quad in THIS draw (while per-sample is on), then turn it off so
@@ -1973,6 +2041,11 @@ void VirtualDisplay::DrawRttQuad()
     if (g_bUseGpu)
         r3d->context
             .FlushPending(); // the same context that draws the quad (else per-sample won't apply)
+
+    // Disarm AFTER the flush -- the emit happens inside DrawSquare, but nothing downstream of
+    // here should inherit q-derived depth.
+    g_bScreenPrimDepthFromQ = false;
+
     if (hudClip)
         g_pRenderer->SetHudStencil(HUD_STENCIL_OFF); // done clipping the HUD
 }

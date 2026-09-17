@@ -121,6 +121,17 @@ bool FFMapState(int s, FFStateDesc& out)
                    /*depthTest*/ false);
         return true;
 
+    case STATE_RTT_SOFT_DEPTH: // Artscout - 2026: the same composite, but depth-TESTED
+        // Identical to STATE_RTT_SOFT except the test. Write stays OFF: the symbology is a
+        // composite, not geometry, and must not leave depth behind for anything drawn after
+        // it. The test is what lets the canopy bow and the rail occlude the collimated HUD,
+        // which the aperture stencil alone cannot do -- the stencil knows the shape of the
+        // combiner, not what is standing in front of it.
+        out = Make(FF_TEXTURE0 | FF_RTTSOFT | FF_VERTEXCOLOR, BLEND_ADDITIVE,
+                   FILTER_LINEAR, ADDR_CLAMP, /*depthWrite*/ false,
+                   /*depthTest*/ true);
+        return true;
+
     // ---- alpha-blended textures ----
     // Artscout - 2026: #36/#31: depthTest=false (6th arg) -- the same screen effects with sz=1.0 (explosions/smoke/
     // tracers/particles/clouds/sky via RestoreState(STATE_ALPHA_TEXTURE_*)). All calls are the

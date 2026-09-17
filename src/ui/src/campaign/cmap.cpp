@@ -7,6 +7,7 @@
 \***************************************************************************/
 #include <ciso646>
 #include <windows.h>
+#include <math.h>
 #include "unit.h"
 #include "team.h"
 #include "cmpglobl.h"
@@ -32,6 +33,13 @@
 #include "gps.h"
 #include "urefresh.h"
 #include "battalion.h"
+#include "tmap.h" // Artscout - 2026: terrain-derived campaign map
+#include "fflog.h" // Artscout - 2026: producer census diagnostic
+#include "tlevel.h"
+#include "tdskpost.h"
+#include "ttypes.h"
+#include "camplist.h" // Artscout - 2026: AllObjList, for the campaign overlays
+#include "find.h"
 
 enum
 {
@@ -50,7 +58,23 @@ void UnitCB(long ID, short hittype, C_Base *ctrl);
 int IsValidWP(WayPointClass *wp, Flight flt);
 void Uni_Float(_TCHAR *buffer);
 
-#define FEET_PER_PIXEL (FEET_PER_KM / 2.0f)
+// Artscout - 2026: see s_mapFeetPerPixel below -- this was a fixed FEET_PER_KM / 2.0f,
+// baking the shipped bitmap's 2-px-per-km scale into every icon coordinate.
+#define FEET_PER_PIXEL (s_mapFeetPerPixel)
+
+// Artscout - 2026: feet of theater per map-image pixel. Was a fixed
+// FEET_PER_KM / 2.0f, which silently assumed the shipped 2-px-per-km bitmap --
+// generating a finer map means the whole icon coordinate system has to follow it or
+// every unit lands at a fraction of its correct position. Set once when the image is
+// built; the stock value is the old constant, so nothing moves if the build is off.
+static float s_mapFeetPerPixel = FEET_PER_KM / 2.0f;
+
+// Pixels per km, for the few places that need the ratio the other way up (the threat
+// rings scale their radii by it).
+static float MapPixelsPerKm()
+{
+    return (s_mapFeetPerPixel > 0.0f) ? (FEET_PER_KM / s_mapFeetPerPixel) : 2.0f;
+}
 
 #define ICON_UKN 10126 // 2002-02-21 S.G.
 extern int gShowUnknown; // 2002-02-21 S.G.
@@ -88,6 +112,7 @@ C_Map::C_Map()
     NavalUnitMask_ = 0;
     AirUnitMask_ = 0;
     ThreatMask_ = 0;
+    CampOverlay_ = CAMP_OVERLAY_OFF;
 
     SmallMapCtrl_ = NULL;
     DrawWindow_ = NULL;
@@ -391,6 +416,212 @@ void C_Map::CalculateDrawingParams()
                     (TheCampaign.TheaterSizeY - y) * FEET_PER_KM);
         DrawMap();
     }
+}
+
+/***************************************************************************\
+    Artscout - 2026: build the campaign map image out of the theater's OWN terrain.
+
+    The shipped map is a painted bitmap at 2 pixels per km, and zooming in only
+    magnifies those pixels. But the terrain database already holds a colour for every
+    post -- TdiskPost::color, an index into TMap::ColorTable, the same pair otw.cpp
+    uses to shade untextured ground -- so the map you fly over can be drawn from the
+    ground you actually fly over, at whatever post spacing the theater ships.
+
+    Three things make this fit unusually cleanly:
+
+      * The palette is an exact match. This builds an 8-bit paletted IMAGE_RSC, and
+        ColorTable is exactly 256 entries, so post colour indices become pixels
+        verbatim and the table becomes the palette. No conversion, no quantisation.
+      * Paletted is also what the overlay system needs: C_ScaleBitmap::PreparePalette
+        derives its 16 blended palettes from the base image's palette, so the
+        Logistics layers keep working. A truecolour map would break them.
+      * The terrain is already open. TheMap.Setup runs from
+        DeviceIndependentGraphicsSetup at startup, long before the campaign UI.
+
+    Read straight from the files rather than through TLevel's streaming loader: this
+    wants every block exactly once, not an async working set, and the format is
+    simple. Theater.o<lod> is one 32-bit byte-offset per block, row-major over
+    BlocksWide x BlocksHigh; at each offset in Theater.l<lod> sit POSTS_PER_BLOCK
+    posts, row-major 16x16 (TBlock::Post), sized by g_LargeTerrainFormat.
+\***************************************************************************/
+extern char FalconTerrainDataDir[];
+// Builds an empty 8-bit paletted IMAGE_RSC of any size (cpselect.cpp) -- the same helper
+// the occupation map uses, reused here for the terrain image.
+extern IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize);
+
+IMAGE_RSC *BuildTerrainMapImage(long ID, int lod)
+{
+    extern bool g_bCampMapFlipNS, g_bCampMapFlipEW;
+
+    if (not TheMap.IsReady())
+        return NULL;
+
+    if (lod < 0)
+        lod = 0;
+
+    if (lod >= TheMap.NumLevels())
+        lod = TheMap.NumLevels() - 1;
+
+    TLevel *lv = TheMap.Level(lod);
+
+    if (not lv)
+        return NULL;
+
+    const long bw = (long)lv->BlocksWide();
+    const long bh = (long)lv->BlocksHigh();
+
+    if (bw < 1 or bh < 1)
+        return NULL;
+
+    const long w = bw * POSTS_ACROSS_BLOCK;
+    const long h = bh * POSTS_ACROSS_BLOCK;
+
+    // Sanity bound. A theater this size would be ~256 MB of 8-bit image and something
+    // has gone wrong with the header rather than us genuinely having that much ground.
+    if (w < 16 or h < 16 or (double)w * (double)h > 2.5e8)
+        return NULL;
+
+    char base[MAX_PATH], fn[MAX_PATH];
+    sprintf(base, "%s/terrain", FalconTerrainDataDir);
+
+    // Block offsets.
+    sprintf(fn, "%s/Theater.o%0d", base, lod);
+    FILE *fo = fopen(fn, "rb");
+
+    if (not fo)
+        return NULL;
+
+    const long nBlocks = bw * bh;
+    DWORD *offs = new DWORD[nBlocks];
+
+    if (not offs)
+    {
+        fclose(fo);
+        return NULL;
+    }
+
+    const size_t gotOffs = fread(offs, sizeof(DWORD), (size_t)nBlocks, fo);
+    fclose(fo);
+
+    if (gotOffs not_eq (size_t)nBlocks)
+    {
+        delete[] offs;
+        return NULL;
+    }
+
+    sprintf(fn, "%s/Theater.l%0d", base, lod);
+    FILE *fl = fopen(fn, "rb");
+
+    if (not fl)
+    {
+        delete[] offs;
+        return NULL;
+    }
+
+    IMAGE_RSC *rsc = CreateOccupationMap(ID, w, h, 256);
+
+    if (not rsc)
+    {
+        delete[] offs;
+        fclose(fl);
+        return NULL;
+    }
+
+    // Palette straight off the terrain's own table. Entry 0 stays black -- it is what
+    // an unread block leaves behind, and black reads as "no data" rather than as some
+    // arbitrary terrain colour smeared across a gap.
+    WORD *pal = rsc->GetPalette();
+
+    if (pal)
+    {
+        for (int i = 0; i < 256; i++)
+        {
+            const Tcolor &c = TheMap.ColorTable[i];
+            long r = (long)(c.r * 255.0f), g = (long)(c.g * 255.0f),
+                 b = (long)(c.b * 255.0f);
+            r = (r < 0) ? 0 : (r > 255) ? 255 : r;
+            g = (g < 0) ? 0 : (g > 255) ? 255 : g;
+            b = (b < 0) ? 0 : (b > 255) ? 255 : b;
+            pal[i] = UI95_RGB24Bit((r << 16) bitor (g << 8) bitor b);
+        }
+    }
+
+    uchar *img = (uchar *)rsc->GetImage();
+
+    if (not img)
+    {
+        delete[] offs;
+        fclose(fl);
+        return NULL;
+    }
+
+    const size_t postSize =
+        g_LargeTerrainFormat ? sizeof(TNewdiskPost) : sizeof(TdiskPost);
+    uchar *blockBuf = new uchar[postSize * POSTS_PER_BLOCK];
+
+    if (not blockBuf)
+    {
+        delete[] offs;
+        fclose(fl);
+        return NULL;
+    }
+
+    for (long br = 0; br < bh; br++)
+    {
+        for (long bc = 0; bc < bw; bc++)
+        {
+            const DWORD off = offs[br * bw + bc];
+
+            if (fseek(fl, (long)off, SEEK_SET) not_eq 0)
+                continue;
+
+            if (fread(blockBuf, postSize, POSTS_PER_BLOCK, fl) not_eq
+                POSTS_PER_BLOCK)
+                continue; // short read: leave the block black rather than guess
+
+            for (int r = 0; r < POSTS_ACROSS_BLOCK; r++)
+            {
+                for (int c = 0; c < POSTS_ACROSS_BLOCK; c++)
+                {
+                    const uchar *p =
+                        blockBuf + (size_t)(r * POSTS_ACROSS_BLOCK + c) * postSize;
+                    // color sits after texID and z in both layouts; the only difference
+                    // is texID's width (UInt16 vs UInt32).
+                    const uchar col = g_LargeTerrainFormat ?
+                                          ((const TNewdiskPost *)p)->color :
+                                          ((const TdiskPost *)p)->color;
+
+                    long px = bc * POSTS_ACROSS_BLOCK + c;
+                    long py = br * POSTS_ACROSS_BLOCK + r;
+
+                    // Orientation is the one thing here that cannot be settled by
+                    // reading: which way the post grid runs against the map's
+                    // north-up, east-right convention. Both axes are switchable so a
+                    // mirrored theater is a config line, not a rebuild.
+                    if (g_bCampMapFlipEW)
+                        px = w - 1 - px;
+
+                    if (g_bCampMapFlipNS)
+                        py = h - 1 - py;
+
+                    if (px >= 0 and px < w and py >= 0 and py < h)
+                        img[py * w + px] = col;
+                }
+            }
+        }
+    }
+
+    delete[] blockBuf;
+    delete[] offs;
+    fclose(fl);
+
+    // The whole coordinate system keys off this. LEVEL_POST_TO_WORLD gives the feet
+    // between posts at this LOD, and one post is now one pixel, so that IS the new
+    // feet-per-pixel -- derived, never assumed, so a different LOD or a theater with
+    // different post spacing stays correctly registered against the icons.
+    s_mapFeetPerPixel = LEVEL_POST_TO_WORLD(1, lod);
+
+    return rsc;
 }
 
 THREAT_LIST *C_Map::AddThreat(CampEntity ent)
@@ -2348,6 +2579,711 @@ void C_Map::HideNavalUnitType(long mask)
     NavalUnitMask_ and_eq compl offflag;
 }
 
+/***************************************************************************\
+    Artscout - 2026: campaign overlays -- draw what the supply model is already doing.
+
+    The campaign runs a real economy (campupd/supply.cpp) and none of it was ever shown. Every
+    tick ProduceSupplies walks the objective list: factories, army bases, depots and ports make
+    supply and replacement vehicles, refineries make fuel, each at DataRate * status/100 -- and
+    then, with PowerGrid on, multiplied AGAIN by the status of its nearest non-hostile power
+    plant. SupplyUnits then pathfinds from a supply source to each unit and SendSupply deposits a
+    running total at every road, intersection, railroad and bridge it crosses, skimming
+    (node losses + 2)% off at each one. Those per-objective totals are live, replicated as dirty
+    data (objSetSupply), and until now read by exactly one thing: the campaign tool's debug dialog.
+
+    So there is a whole logistics picture sitting in memory with no way to see it. These three
+    layers put it on the map, reusing the raster overlay the SAM and radar rings already use.
+
+    Only one can be up at a time, because C_ScaleBitmap keeps a single blended palette -- the same
+    reason the threat rings are a radio group and not checkboxes. Selecting a campaign layer takes
+    the overlay from the rings and vice versa; the menu code keeps the two groups in step.
+\***************************************************************************/
+
+// The overlay is one byte per map pixel used as a 4-bit index into C_ScaleBitmap's palette table,
+// but PreparePalette only fills entries 1..9 -- 10 through 15 are allocated and left uninitialised,
+// so writing them would read whatever was in that memory. Everything below clamps into 1..9, and 0
+// means "leave the map alone".
+#define CAMP_TINT_MAX 9
+
+// Stamp a filled disc into the overlay. Brightest contributor wins rather than accumulating, so a
+// cluster of overlapping nodes reads as its strongest member instead of saturating to a solid blob
+// the moment two of them touch.
+static void StampOverlayDisc(BYTE *overlay, long w, long h, long cx, long cy,
+                             long r, BYTE tint)
+{
+    if (not overlay or r < 1 or tint < 1)
+        return;
+
+    long y0 = cy - r, y1 = cy + r;
+
+    if (y0 < 0)
+        y0 = 0;
+
+    if (y1 > h - 1)
+        y1 = h - 1;
+
+    const long r2 = r * r;
+
+    for (long y = y0; y <= y1; y++)
+    {
+        const long dy = y - cy;
+        const long span = static_cast<long>(sqrt(static_cast<double>(r2 - dy * dy)));
+        long x0 = cx - span, x1 = cx + span;
+
+        if (x0 < 0)
+            x0 = 0;
+
+        if (x1 > w - 1)
+            x1 = w - 1;
+
+        BYTE *row = overlay + y * w;
+
+        for (long x = x0; x <= x1; x++)
+            if (row[x] < tint)
+                row[x] = tint;
+    }
+}
+
+// Stamp a line into the overlay, thickness in pixels. Plain DDA -- the longer axis is stepped one
+// pixel at a time and the other interpolated -- which is all a tint needs, and it avoids pulling in
+// a clipper: every write goes through the bounds check.
+static void StampOverlayLine(BYTE *overlay, long w, long h, long x0, long y0,
+                             long x1, long y1, long thick, BYTE tint)
+{
+    if (not overlay or tint < 1)
+        return;
+
+    const long dx = x1 - x0, dy = y1 - y0;
+    long steps = (labs(dx) > labs(dy)) ? labs(dx) : labs(dy);
+
+    if (steps < 1)
+        steps = 1;
+
+    if (thick < 1)
+        thick = 1;
+
+    const float sx = (float)dx / (float)steps;
+    const float sy = (float)dy / (float)steps;
+    float fx = (float)x0, fy = (float)y0;
+    const long r = thick / 2;
+
+    for (long i = 0; i <= steps; i++)
+    {
+        const long px = (long)fx, py = (long)fy;
+
+        for (long oy = -r; oy <= r; oy++)
+        {
+            const long yy = py + oy;
+
+            if (yy < 0 or yy >= h)
+                continue;
+
+            BYTE *row = overlay + yy * w;
+
+            for (long ox = -r; ox <= r; ox++)
+            {
+                const long xx = px + ox;
+
+                if (xx < 0 or xx >= w)
+                    continue;
+
+                if (row[xx] < tint)
+                    row[xx] = tint;
+            }
+        }
+
+        fx += sx;
+        fy += sy;
+    }
+}
+
+// Campaign grid -> overlay pixel. AddThreat flips y against Map_Max_Y and BuildOverlay then scales
+// by a hardcoded 2 px per grid unit; derive the scale from the actual bitmap instead so a theater
+// whose map is not exactly twice its grid still lands correctly, and fall back to the 2 the threat
+// rings assume if the extents are not set up yet.
+static void CampGridToOverlay(long w, long h, GridIndex gx, GridIndex gy,
+                              long *px, long *py)
+{
+    extern short Map_Max_X;
+    extern short Map_Max_Y;
+
+    const float sx = (Map_Max_X > 0) ? (float)w / (float)Map_Max_X : 2.0f;
+    const float sy = (Map_Max_Y > 0) ? (float)h / (float)Map_Max_Y : 2.0f;
+
+    *px = static_cast<long>(gx * sx);
+    *py = static_cast<long>((Map_Max_Y - gy) * sy);
+}
+
+// How many power plants we will consider for the coverage map. A theater has a few dozen; the cap
+// only exists so the per-pixel nearest search below stays bounded no matter what gets loaded.
+#define CAMP_MAX_PLANTS 128
+
+// Artscout - 2026: the forward line of own troops, as a polyline.
+//
+// FLOTList is built and kept current by the campaign already -- RebuildFLOTList (camplist.cpp)
+// takes the midpoint of every link between two frontline objectives on opposing teams, drops any
+// point within 30 km of one it already has, and gamemgr.cpp rebuilds it as the war moves. It has
+// only ever been read for distance-to-front arithmetic; nothing has ever drawn it.
+//
+// The list is sorted along one axis -- FLOTSortDirection picks x or y -- and RebuildFLOTList's own
+// comment warns that this "will look very bad in some situations", which is honest: a front that
+// doubles back on itself cannot be traced correctly by sorting on a single coordinate, and will
+// show a zigzag where the line crosses itself. In Korea the front runs broadly east-west, so
+// sorting west-to-east follows it. Nothing here can improve on that without replacing the sort,
+// which is campaign code that other things depend on.
+static void StampFlotLine(BYTE *overlay, long w, long h)
+{
+    extern bool g_bLogCampMenu;
+    extern void RebuildFLOTList(void);
+
+    if (not overlay or not FLOTList)
+        return;
+
+    // Build the list before reading it. RebuildFLOTList has exactly one live caller
+    // (gamemgr.cpp, as the player is put into a vehicle), so in the campaign UI the list is empty
+    // until you have actually flown -- which is why this drew nothing at all on the first attempt
+    // and the blobs being blamed on it were steerpoint markers.
+    //
+    // Cheap enough to do here: ShowCampaignOverlay is reached only from menu actions, never per
+    // frame, and the walk is over FrontList, which StandardRebuild keeps current. Doing it on
+    // every overlay build also means the line follows the front as the war moves rather than
+    // freezing at whatever it was when it was first drawn.
+    RebuildFLOTList();
+
+    ListElementClass *lp = FLOTList->GetFirstElement();
+    long lastx = 0, lasty = 0;
+    bool have = false;
+    long n = 0;
+
+    if (g_bLogCampMenu)
+    {
+        extern short Map_Max_X;
+        extern short Map_Max_Y;
+        _TCHAR hd[160];
+        sprintf(hd, "[FLOT] overlay %ldx%ld  gridMax %dx%d\n", w, h,
+                (int)Map_Max_X, (int)Map_Max_Y);
+        FFDebugLog(hd);
+    }
+
+    while (lp)
+    {
+        GridIndex gx = 0, gy = 0;
+        UnpackXY(lp->GetUserData(), &gx, &gy);
+
+        long px, py;
+        CampGridToOverlay(w, h, gx, gy, &px, &py);
+
+        // The whole question is whether consecutive points are far apart. A polyline that comes
+        // out as isolated blobs means each segment is a pixel or two long, which would say the
+        // list is not what this assumes -- so print the step, not just the point.
+        if (g_bLogCampMenu and n < 16)
+        {
+            _TCHAR ln[160];
+            sprintf(ln, "[FLOT] %2ld grid=(%d,%d) px=(%ld,%ld) step=%ld\n", n,
+                    (int)gx, (int)gy, px, py,
+                    have ? (labs(px - lastx) + labs(py - lasty)) : -1);
+            FFDebugLog(ln);
+        }
+
+        if (have)
+            StampOverlayLine(overlay, w, h, lastx, lasty, px, py, 3,
+                             CAMP_TINT_MAX);
+
+        lastx = px;
+        lasty = py;
+        have = true;
+        n++;
+        lp = lp->GetNext();
+    }
+
+    if (g_bLogCampMenu)
+    {
+        _TCHAR tl[80];
+        sprintf(tl, "[FLOT] %ld points total\n", n);
+        FFDebugLog(tl);
+    }
+}
+
+void C_Map::ShowCampaignOverlay(long which)
+{
+    F4CSECTIONHANDLE *Leave;
+    extern bool g_bCampFlotLine;
+    extern bool g_bLogCampMenu;
+
+    if (not Map_)
+        return;
+
+    CampOverlay_ = which;
+
+    // No campaign loaded (dogfight, tactical engagement, the menus before a save is opened)
+    // means no objective list to read -- every layer below would iterate a null list.
+    if (not AllObjList)
+        which = CampOverlay_ = CAMP_OVERLAY_OFF;
+
+    // The FLOT is a toggle, not one of the radio layers, so it has to survive "no layer selected".
+    // With every layer off and the FLOT on there is still an overlay to build -- just this one
+    // thing in it.
+    const bool flot = g_bCampFlotLine and FLOTList and AllObjList;
+
+    if (which == CAMP_OVERLAY_OFF and not flot)
+    {
+        Map_->NoOverlay();
+        flags_ or_eq I_NEED_TO_DRAW_MAP;
+        return;
+    }
+
+    // The rings and these layers cannot both own the palette. Give it up here so the menu's two
+    // radio groups and the map agree about which one is live.
+    ThreatMask_ = 0;
+
+    Leave = UI_Enter(DrawWindow_);
+
+    const long w = Map_->GetW();
+    const long h = Map_->GetH();
+
+    switch (which)
+    {
+    case CAMP_OVERLAY_OFF:
+        // FLOT only. Its own hue, since no layer is claiming one.
+        Map_->PreparePalette(RGB(245, 245, 245));
+        break;
+
+    case CAMP_OVERLAY_POWER:
+        // One blended palette per overlay, so the links, the hubs and the damage all share a hue and
+        // differ only in strength: quiet red is a working feed, bright red is a plant that has
+        // stopped delivering and every consumer still tied to it.
+        Map_->PreparePalette(RGB(255, 40, 40));
+        break;
+
+    case CAMP_OVERLAY_SUPPLY:
+        Map_->PreparePalette(RGB(255, 176, 0));
+        break;
+
+    case CAMP_OVERLAY_DAMAGE:
+        Map_->PreparePalette(RGB(255, 80, 220));
+        break;
+
+    default:
+        Map_->PreparePalette(RGB(48, 255, 48));
+        break;
+    }
+
+    Map_->ClearOverlay();
+    BYTE *overlay = Map_->GetOverlay();
+
+    if (not overlay or w < 1 or h < 1)
+    {
+        UI_Leave(Leave);
+        return;
+    }
+
+    if (which == CAMP_OVERLAY_POWER)
+    {
+        // Draw the dependency itself -- a line from each thing that needs power to the plant that
+        // supplies it -- rather than the Voronoi cells this used to shade.
+        //
+        // The cells were correct and unreadable. A Voronoi BOUNDARY lies midway between two plants,
+        // so the marks always appeared where there was no plant at all, which is the opposite of the
+        // question being asked. A link tells you the thing directly: every line leaving a plant is a
+        // factory, refinery, depot, port or army base whose output is scaled by that plant's status
+        // in ProduceSupplies, and the fan of lines IS the answer to "what does knocking this out
+        // cost me".
+        //
+        // And it is exact now, not an approximation. Iterating producers rather than pixels means
+        // each one can be matched using its OWN team relations -- the same GetTTRelations test
+        // FindNearestFriendlyPowerStation applies -- instead of the all-plants-at-once nearest
+        // neighbour the cell fill had to use. No more hand-waving near the FLOT.
+        struct
+        {
+            long x, y, lost;
+            Team team;
+        } plants[CAMP_MAX_PLANTS];
+        int n = 0;
+
+        {
+            VuListIterator it(AllObjList);
+
+            for (Objective o = GetFirstObjective(&it); o and n < CAMP_MAX_PLANTS;
+                 o = GetNextObjective(&it))
+            {
+                const int t = o->GetType();
+
+                if (t not_eq TYPE_NUCLEAR and t not_eq TYPE_POWERPLANT)
+                    continue;
+
+                GridIndex gx, gy;
+                o->GetLocation(&gx, &gy);
+                CampGridToOverlay(w, h, gx, gy, &plants[n].x, &plants[n].y);
+                long status = o->GetObjectiveStatus();
+
+                if (status < 0)
+                    status = 0;
+                else if (status > 100)
+                    status = 100;
+
+                plants[n].lost = 100 - status;
+                plants[n].team = o->GetTeam();
+                n++;
+            }
+        }
+
+        if (n > 0)
+        {
+            VuListIterator it(AllObjList);
+
+            for (Objective o = GetFirstObjective(&it); o; o = GetNextObjective(&it))
+            {
+                const int t = o->GetType();
+
+                if (t not_eq TYPE_FACTORY and t not_eq TYPE_REFINERY and
+                    t not_eq TYPE_DEPOT and t not_eq TYPE_PORT and
+                    t not_eq TYPE_ARMYBASE)
+                    continue;
+
+                GridIndex gx, gy;
+                o->GetLocation(&gx, &gy);
+                long px, py;
+                CampGridToOverlay(w, h, gx, gy, &px, &py);
+
+                // Same choice the sim makes: nearest plant this objective's team is not hostile to.
+                const Team mine = o->GetTeam();
+                int best = -1;
+                long bd = 0;
+
+                for (int i = 0; i < n; i++)
+                {
+                    if (GetTTRelations(plants[i].team, mine) > Neutral)
+                        continue;
+
+                    const long ddx = px - plants[i].x;
+                    const long ddy = py - plants[i].y;
+                    const long d = ddx * ddx + ddy * ddy;
+
+                    if (best < 0 or d < bd)
+                    {
+                        bd = d;
+                        best = i;
+                    }
+                }
+
+                if (best < 0)
+                    continue;
+
+                // A healthy link is drawn, but quietly; a link whose plant is down is drawn loudly.
+                // The point is to read "this one has stopped feeding these" at a glance without the
+                // intact grid shouting at you on day one.
+                const BYTE tint =
+                    static_cast<BYTE>(4 + plants[best].lost * 5 / 100);
+                StampOverlayLine(overlay, w, h, px, py, plants[best].x,
+                                 plants[best].y, 2, tint);
+                StampOverlayDisc(overlay, w, h, px, py, 3, tint);
+            }
+
+            // The plants themselves, always at full strength so the hubs are findable even when
+            // every link into them is healthy and faint.
+            for (int i = 0; i < n; i++)
+                StampOverlayDisc(overlay, w, h, plants[i].x, plants[i].y, 7,
+                                 CAMP_TINT_MAX);
+        }
+    }
+    else if (which == CAMP_OVERLAY_SUPPLY)
+    {
+        // What SendSupply left behind on its way through -- drawn as the NETWORK it is, not as a
+        // scatter of points.
+        //
+        // Two things were making it read as unconnected circles. Objectives sit kilometres apart,
+        // so discs were never going to merge into a route however large; and the tint was scaled
+        // against the uchar's 255 ceiling while real road traffic is single digits, so every
+        // conduit came out at the faintest step and only the sources looked like anything.
+        //
+        // Both fixed here. Objectives carry their own links -- GetNeighbor is the same graph
+        // SendSupply walks when it pathfinds -- so an edge between two nodes that both carry
+        // traffic IS a stretch of supply route, and drawing it gives the arteries. And the tint
+        // scales against the busiest thing actually on the map, conduits and sources ranked
+        // separately so the roads are not crushed flat by a depot two orders of magnitude busier.
+        struct
+        {
+            long maxNode, maxSrc;
+        } peak = {1, 1};
+
+        {
+            VuListIterator it(AllObjList);
+
+            for (Objective o = GetFirstObjective(&it); o; o = GetNextObjective(&it))
+            {
+                const int t = o->GetType();
+                const bool node = (t == TYPE_ROAD or t == TYPE_INTERSECT or
+                                   t == TYPE_RAILROAD or t == TYPE_BRIDGE);
+                const bool src = (t == TYPE_CITY or t == TYPE_PORT or
+                                  t == TYPE_DEPOT or t == TYPE_ARMYBASE);
+
+                if (not node and not src)
+                    continue;
+
+                const long traffic =
+                    o->GetObjectiveSupply() + o->GetObjectiveFuel();
+
+                if (node and traffic > peak.maxNode)
+                    peak.maxNode = traffic;
+
+                if (src and traffic > peak.maxSrc)
+                    peak.maxSrc = traffic;
+            }
+        }
+
+        VuListIterator it(AllObjList);
+
+        for (Objective o = GetFirstObjective(&it); o; o = GetNextObjective(&it))
+        {
+            const int t = o->GetType();
+
+            // The road network carries the flow, but it does not originate it. SendSupply calls
+            // AddSupply on the SOURCE before it walks the path, so the depots, ports, army bases
+            // and cities that IsSupplySource names accumulate traffic too. They are where the
+            // chain starts.
+            const bool isNode = (t == TYPE_ROAD or t == TYPE_INTERSECT or
+                                 t == TYPE_RAILROAD or t == TYPE_BRIDGE);
+            const bool isSource = (t == TYPE_CITY or t == TYPE_PORT or
+                                   t == TYPE_DEPOT or t == TYPE_ARMYBASE);
+
+            if (not isNode and not isSource)
+                continue;
+
+            const long traffic = o->GetObjectiveSupply() + o->GetObjectiveFuel();
+
+            if (traffic < 1)
+                continue;
+
+            GridIndex gx, gy;
+            o->GetLocation(&gx, &gy);
+            long px, py;
+            CampGridToOverlay(w, h, gx, gy, &px, &py);
+
+            const long peakFor = isSource ? peak.maxSrc : peak.maxNode;
+            long step = traffic * (CAMP_TINT_MAX - 1) / (peakFor ? peakFor : 1);
+
+            if (step > CAMP_TINT_MAX - 1)
+                step = CAMP_TINT_MAX - 1;
+
+            const BYTE tint = static_cast<BYTE>(1 + step);
+
+            // The edges. A link between two objectives that BOTH carry traffic is a stretch of
+            // supply route, so draw it -- that is what turns a scatter of marks into arteries.
+            // Tinted by the weaker end, because a route is only carrying what its thinnest
+            // stretch carries. Each edge gets drawn from both ends; the disc stamper keeps the
+            // brightest value, so doing it twice costs a little time and changes nothing.
+            const int nLinks = o->NumLinks();
+
+            for (int li = 0; li < nLinks; li++)
+            {
+                Objective nb = o->GetNeighbor(li);
+
+                if (not nb)
+                    continue;
+
+                const long ntraffic =
+                    nb->GetObjectiveSupply() + nb->GetObjectiveFuel();
+
+                if (ntraffic < 1)
+                    continue;
+
+                GridIndex nx, ny;
+                nb->GetLocation(&nx, &ny);
+                long npx, npy;
+                CampGridToOverlay(w, h, nx, ny, &npx, &npy);
+
+                const long weaker = (ntraffic < traffic) ? ntraffic : traffic;
+                long estep =
+                    weaker * (CAMP_TINT_MAX - 1) / (peak.maxNode ? peak.maxNode : 1);
+
+                if (estep > CAMP_TINT_MAX - 1)
+                    estep = CAMP_TINT_MAX - 1;
+
+                StampOverlayLine(overlay, w, h, px, py, npx, npy, 3,
+                                 static_cast<BYTE>(1 + estep));
+            }
+
+            // Bridges larger than plain road, being single points of failure; sources larger
+            // still, since everything downstream of one depends on it.
+            const long radius = isSource ? 12 : ((t == TYPE_BRIDGE) ? 9 : 6);
+            StampOverlayDisc(overlay, w, h, px, py, radius, tint);
+        }
+    }
+    else if (which == CAMP_OVERLAY_DAMAGE)
+    {
+        // What is left of everything, so you can tell a target still worth the sortie from one you
+        // already flattened -- without flying a recon over each to find out.
+        //
+        // The polarity is deliberate: tint is damage TAKEN, so an untouched theater starts clean and
+        // fills in as the campaign goes. Bright means wrecked, i.e. do not bother; anything still dark
+        // is still standing. Showing remaining health instead would light the whole map on day one and
+        // tell you nothing.
+        //
+        // GetObjectiveStatus is the same percentage the production maths uses -- rolled up from the
+        // per-feature damage states -- so what you see here is exactly what the campaign is scoring,
+        // not a separate guess at it.
+        VuListIterator it(AllObjList);
+
+        for (Objective o = GetFirstObjective(&it); o; o = GetNextObjective(&it))
+        {
+            long status = o->GetObjectiveStatus();
+
+            if (status < 0)
+                status = 0;
+            else if (status >= 100)
+                continue; // untouched: leave the map alone
+
+            const long lost = 100 - status;
+            GridIndex gx, gy;
+            o->GetLocation(&gx, &gy);
+            long px, py;
+            CampGridToOverlay(w, h, gx, gy, &px, &py);
+
+            // Radius carries the same signal as the tint so a flattened objective reads at a glance
+            // from a zoomed-out map, where a 3-pixel dot of any colour does not.
+            StampOverlayDisc(overlay, w, h, px, py, 3 + lost * 5 / 100,
+                             static_cast<BYTE>(1 + lost * (CAMP_TINT_MAX - 1) / 100));
+        }
+    }
+    else
+    {
+        // Who actually makes the stuff, sized against the biggest producer in the theater, so one
+        // refinery carrying a third of the fuel stands out from a dozen small ones. GetObjectiveDataRate
+        // already folds in battle damage, so a half-wrecked factory draws half as bright.
+        // Artscout - 2026: one-off census of what the campaign actually treats as a producer.
+        // ProduceSupplies names TYPE_FACTORY, TYPE_ARMYBASE, TYPE_DEPOT and TYPE_PORT together,
+        // but each one's output is class_data->DataRate from the theater's class table -- so a type
+        // the loop mentions still contributes nothing if its data says zero. This reports what the
+        // data says rather than what the code implies.
+        {
+            extern bool g_bLogCampProducers;
+
+            if (g_bLogCampProducers)
+            {
+                // The network types are here as well as the producers because of a second
+                // question the code cannot answer on its own: whether a ROAD objective has any
+                // bombable features. Damage only registers through CalcStatus, which walks
+                // class_data->Features -- a type with none can never drop below 100 however much
+                // ordnance lands on it, and the supply loss now derived from status (NodeSupplyLoss,
+                // supply.cpp) would then be a bridges-only mechanic no matter what the knob says.
+                // The campaign asks for AMIS_INT against roads with no targetID, which hints that
+                // way, but the class table is data and this reports what it actually holds.
+                const int types[9] = {TYPE_FACTORY,  TYPE_REFINERY, TYPE_DEPOT,
+                                      TYPE_PORT,     TYPE_ARMYBASE, TYPE_ROAD,
+                                      TYPE_INTERSECT, TYPE_RAILROAD, TYPE_BRIDGE};
+                const char *names[9] = {"FACTORY",  "REFINERY", "DEPOT",
+                                        "PORT",     "ARMYBASE", "ROAD",
+                                        "INTERSECT", "RAILROAD", "BRIDGE"};
+
+                for (int ti = 0; ti < 9; ti++)
+                {
+                    long count = 0, rate = 0, status = 0, feats = 0, hurt = 0;
+                    VuListIterator cit(AllObjList);
+
+                    for (Objective co = GetFirstObjective(&cit); co;
+                         co = GetNextObjective(&cit))
+                    {
+                        if (co->GetType() not_eq types[ti])
+                            continue;
+
+                        count++;
+                        rate += co->GetObjectiveDataRate();
+                        feats += co->GetTotalFeatures();
+
+                        const long st = co->GetObjectiveStatus();
+                        status += st;
+
+                        if (st < 100)
+                            hurt++;
+                    }
+
+                    char lb[200];
+                    sprintf(lb,
+                            "[CENSUS] %-9s count=%ld dataRate=%ld "
+                            "avgFeatures=%ld avgStatus=%ld damaged=%ld\n",
+                            names[ti], count, rate,
+                            count ? (feats / count) : 0,
+                            count ? (status / count) : 0, hurt);
+                    FFDebugLog(lb);
+                }
+            }
+        }
+
+        long maxRate = 0;
+
+        {
+            VuListIterator it(AllObjList);
+
+            for (Objective o = GetFirstObjective(&it); o; o = GetNextObjective(&it))
+            {
+                const int t = o->GetType();
+
+                if (t not_eq TYPE_FACTORY and t not_eq TYPE_REFINERY and
+                    t not_eq TYPE_DEPOT and t not_eq TYPE_PORT and
+                    t not_eq TYPE_ARMYBASE)
+                    continue;
+
+                const long r = o->GetObjectiveDataRate();
+
+                if (r > maxRate)
+                    maxRate = r;
+            }
+        }
+
+        if (maxRate > 0)
+        {
+            VuListIterator it(AllObjList);
+
+            for (Objective o = GetFirstObjective(&it); o; o = GetNextObjective(&it))
+            {
+                const int t = o->GetType();
+
+                if (t not_eq TYPE_FACTORY and t not_eq TYPE_REFINERY and
+                    t not_eq TYPE_DEPOT and t not_eq TYPE_PORT and
+                    t not_eq TYPE_ARMYBASE)
+                    continue;
+
+                const long r = o->GetObjectiveDataRate();
+
+                if (r < 1)
+                    continue;
+
+                GridIndex gx, gy;
+                o->GetLocation(&gx, &gy);
+                long px, py;
+                CampGridToOverlay(w, h, gx, gy, &px, &py);
+                const long share = r * (CAMP_TINT_MAX - 1) / maxRate;
+                // 8..24 px rather than the original 4..12: at theater zoom the small end of
+                // that range was a dot you had to hunt for, which defeats a layer whose whole
+                // job is showing relative weight at a glance.
+                StampOverlayDisc(overlay, w, h, px, py, 8 + share * 2,
+                                 static_cast<BYTE>(1 + share));
+            }
+        }
+    }
+
+    // Last, so it reads over whatever layer is underneath rather than being buried by it. The
+    // front is the one line you want to keep your bearings by while looking at something else.
+    if (flot)
+    {
+        // Which layer is underneath matters to reading the result: Production draws large discs
+        // sized by output, and those look nothing like a front line but everything like the
+        // "circles instead of a line" this is being blamed for.
+        if (g_bLogCampMenu)
+        {
+            _TCHAR wl[96];
+            sprintf(wl, "[FLOT] drawn over layer %ld (0=off)\n", which);
+            FFDebugLog(wl);
+        }
+
+        StampFlotLine(overlay, w, h);
+    }
+
+    Map_->UseOverlay();
+    flags_ or_eq I_NEED_TO_DRAW_MAP;
+    UI_Leave(Leave);
+}
+
 void C_Map::ShowThreatType(long mask)
 {
     short i, j;
@@ -2356,6 +3292,9 @@ void C_Map::ShowThreatType(long mask)
 
     ThreatMask_ =
         (1 << FindTypeIndex(mask, THR_TypeList, _MAP_NUM_THREAT_TYPES_));
+    // Artscout - 2026: one blended palette, one owner -- taking it for the rings drops
+    // whichever campaign layer had it (MenuSetCirclesCB clears that group's check mark).
+    CampOverlay_ = CAMP_OVERLAY_OFF;
 
     timestamp = GetCurrentTime();
     MonoPrint("Start at %1ld...", timestamp);
@@ -2385,7 +3324,8 @@ void C_Map::ShowThreatType(long mask)
                 if (Team_[i].Threats->Flags[_THREAT_SAM_LOW_])
                 {
                     Team_[i].Threats->Type[_THREAT_SAM_LOW_]->BuildOverlay(
-                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(), 2);
+                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(),
+                        MapPixelsPerKm());
                 }
             }
 
@@ -2402,7 +3342,8 @@ void C_Map::ShowThreatType(long mask)
                 if (Team_[i].Threats->Flags[_THREAT_SAM_HIGH_])
                 {
                     Team_[i].Threats->Type[_THREAT_SAM_HIGH_]->BuildOverlay(
-                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(), 2);
+                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(),
+                        MapPixelsPerKm());
                 }
             }
 
@@ -2419,7 +3360,8 @@ void C_Map::ShowThreatType(long mask)
                 if (Team_[i].Threats->Flags[_THREAT_RADAR_LOW_])
                 {
                     Team_[i].Threats->Type[_THREAT_RADAR_LOW_]->BuildOverlay(
-                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(), 2);
+                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(),
+                        MapPixelsPerKm());
                 }
             }
 
@@ -2436,7 +3378,8 @@ void C_Map::ShowThreatType(long mask)
                 if (Team_[i].Threats->Flags[_THREAT_RADAR_HIGH_])
                 {
                     Team_[i].Threats->Type[_THREAT_RADAR_HIGH_]->BuildOverlay(
-                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(), 2);
+                        Map_->GetOverlay(), Map_->GetW(), Map_->GetH(),
+                        MapPixelsPerKm());
                 }
             }
 
@@ -2504,10 +3447,51 @@ void C_Map::SetMapImage(long ID)
         Map_->Setup(5551200, 0, MapID);
     }
 
-    Map_->SetImage(MapID);
+    // Artscout - 2026: prefer a map built from the theater's terrain. Built once and kept
+    // -- it is the same picture for every map view -- and the painted resource is used
+    // unchanged if the terrain files cannot be read, so a missing or odd theater degrades
+    // to exactly the old behaviour rather than to a blank map.
+    {
+        extern bool g_bCampMapFromTerrain;
+        extern int g_nCampMapTerrainLod;
+        static IMAGE_RSC *s_terrainMap = NULL;
+        static bool s_terrainMapTried = false;
+
+        if (g_bCampMapFromTerrain and not s_terrainMapTried)
+        {
+            s_terrainMapTried = true;
+            s_terrainMap =
+                BuildTerrainMapImage(5551300, g_nCampMapTerrainLod);
+        }
+
+        if (g_bCampMapFromTerrain and s_terrainMap)
+            Map_->SetImage(s_terrainMap);
+        else
+            Map_->SetImage(MapID);
+    }
+
     maxy = (float)(Map_->GetH()) * FEET_PER_PIXEL;
     MinZoomLevel_ = Map_->GetW() / _MIN_ZOOM_LEVEL_;
     MaxZoomLevel_ = Map_->GetW() / _MAX_ZOOM_LEVEL_;
+
+    // Artscout - 2026: let a finer map actually be zoomed into. ZoomLevel_ counts SOURCE pixels
+    // across the view, and the closest zoom was Map width / 32 -- which scales with the map, so a
+    // map with twice the pixels per km still stopped at the same patch of ground and simply
+    // downsampled its extra detail back out. The whole point of building it from terrain was to see
+    // that detail, so allow zooming proportionally closer: at 4 posts/km against the painted map's
+    // 2 px/km, twice as close. Floored so a very fine future map cannot zoom into a handful of
+    // pixels, and left exactly as it was when the painted map is in use (ratio 1).
+    {
+        const float detail = MapPixelsPerKm() / 2.0f;
+
+        if (detail > 1.0f)
+        {
+            MaxZoomLevel_ = (long)((float)MaxZoomLevel_ / detail);
+
+            if (MaxZoomLevel_ < 32)
+                MaxZoomLevel_ = 32;
+        }
+    }
     ZoomStep_ = (MinZoomLevel_ - MaxZoomLevel_) / 64;
 
     if (Map_ and DrawWindow_)
@@ -2533,6 +3517,16 @@ void C_Map::SetWindow(C_Window *win)
             CalculateDrawingParams();
         }
     }
+}
+
+long C_Map::GetMapWidth()
+{
+    return Map_ ? Map_->GetW() : 1536;
+}
+
+long C_Map::GetMapHeight()
+{
+    return Map_ ? Map_->GetH() : 2048;
 }
 
 void C_Map::SetupOverlay()

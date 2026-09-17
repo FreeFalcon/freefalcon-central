@@ -22,6 +22,8 @@ extern bool
 //#define DRAW_USING_2D_FANS
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
+extern int
+    g_nBillboardMode; // Artscout - 2026: per-quad billboard basis -- see DX2D_TransformBB
 
 
 #undef DEBUG_2D_ENGINE
@@ -542,7 +544,7 @@ inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
 void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3* Pos,
                              D3DDYNVERTEX* Quad, float Radius,
-                             DWORD_PTR TexHandle)
+                             DWORD_PTR TexHandle, bool Radial)
 {
     // #27 D3D11: accumulate in the CPU VbPtr (DX2D_Init), draw in DX2D_Flush2DObjects via DrawDynamic2D.
     _MM_ALIGN16 XMMVector V[4];
@@ -622,7 +624,8 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3* Pos,
     // * BILLBOARD VERTICES * - go directly into Vertex Buffer
     if (Flags bitand POLY_BB)
         DX2D_TransformBB(&XMMPos, V,
-                         &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 4);
+                         &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 4,
+                         Radial);
     // if not BillBoarded, add Distance here and put into Vertex Buffer
     else
     {
@@ -1800,11 +1803,73 @@ void CDXEngine::DX2D_SetDrawOrder(DWORD* Order)
     memcpy(DrawOrder, Order, sizeof(DrawOrder));
 }
 
+// Artscout - 2026: build the billboard basis PER QUAD instead of once per frame.
+//
+// The stock basis is BBMatrix = RotY(pitch) * RotZ(yaw), assembled once in Render3D::SetCamera from
+// Euler angles back-computed out of the camera matrix, and every billboard in the scene then gets
+// that same one. Two things go wrong with it, and both only really bite at a headset's field of view:
+//
+//   * It aims each quad along the direction the camera is LOOKING, not along the direction the quad
+//     actually lies in. A cloud fifty degrees off to the side is turned to face the middle of the
+//     view, so turning your head re-aims every cloud at once and they appear to rotate in place.
+//     Across a 40-degree monitor FOV that error stays small; across ~100 degrees it does not.
+//   * pitch = -asin(M13) and yaw = atan2(M12, M11) are a Z-Y-X Euler decomposition, singular when
+//     you look straight up or down. Near the vertical M11 and M12 both go to zero and the extracted
+//     yaw swings wildly from a few degrees of head movement, spinning every billboard with it.
+//     Looking up at the clouds is exactly where that happens.
+//
+// Pos is already this quad's camera-relative position (DX2D_GetDistance subtracts the camera before
+// storing it), so the fix costs one normalise: point the quad's local X down the ray to the quad,
+// keep local Z as world down, derive local Y from the two. Note what the result does NOT read: the
+// camera's ORIENTATION. Turn your head and nothing in this basis changes -- no Euler angles, no
+// singularity, nothing to spin. For a quad on the camera axis it reduces to exactly the stock matrix.
+//
+// Radial is the per-call opt-in; g_nBillboardMode picks how widely it applies (0 off, 1 opt-in only,
+// 2 every billboard). Off-axis quads are the only ones that move, so anything drawn near the middle
+// of the view looks the same under all three.
 void CDXEngine::DX2D_TransformBB(XMMVector* Pos, XMMVector* Coord,
-                                 D3DDYNVERTEX* Dest, DWORD Nr)
+                                 D3DDYNVERTEX* Dest, DWORD Nr, bool Radial)
 {
     _MM_ALIGN16 XMMVector XMMStore;
     _MM_ALIGN16 __m128 C0 = BBCx[0].Xmm, C1 = BBCx[1].Xmm, C2 = BBCx[2].Xmm;
+
+    if (g_nBillboardMode >= 2 or (g_nBillboardMode == 1 and Radial))
+    {
+        float fx = Pos->d3d.x, fy = Pos->d3d.y, fz = Pos->d3d.z;
+        const float len = sqrtf(fx * fx + fy * fy + fz * fz);
+
+        if (len > 1e-4f)
+        {
+            const float inv = 1.0f / len;
+            fx *= inv, fy *= inv, fz *= inv;
+
+            // local Y, the quad's horizontal = world down x forward: level, and square to the ray.
+            // It degenerates only for a quad dead overhead or underfoot, where the azimuth is
+            // arbitrary anyway -- fall back to a WORLD-fixed axis there, never a camera-relative
+            // one, so that case cannot spin with the head either.
+            float rx = -fy, ry = fx;
+            const float rlen = sqrtf(rx * rx + ry * ry);
+
+            if (rlen > 1e-3f)
+            {
+                const float rinv = 1.0f / rlen;
+                rx *= rinv, ry *= rinv;
+            }
+            else
+                rx = 0.0f, ry = 1.0f;
+
+            // local Z, the quad's vertical = forward x local Y: world down, tilted just enough to
+            // stay square to the ray. Right-handed with the other two, so the winding is unchanged.
+            const float dx = -fz * ry;
+            const float dy = fz * rx;
+            const float dz = fx * ry - fy * rx;
+
+            // Same column layout SetCamera feeds BBCx: lane k of Cn is basis row k's n'th component.
+            C0 = _mm_set_ps(0.0f, dx, rx, fx);
+            C1 = _mm_set_ps(0.0f, dy, ry, fy);
+            C2 = _mm_set_ps(0.0f, dz, 0.0f, fz);
+        }
+    }
 
     while (Nr--)
     {

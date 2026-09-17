@@ -72,8 +72,13 @@ enum
 
     STATE_WATER, // #12: animated water terrain tile (D3D11 only)
 
+    // Artscout - 2026: STATE_RTT_SOFT with the depth TEST on (write still off). For the
+    // collimated HUD only, so cockpit structure in front of the combiner occludes the
+    // symbology instead of being drawn through. See VirtualDisplay::DrawRttQuad.
+    STATE_RTT_SOFT_DEPTH,
+
     //
-    MAXIMUM_MPR_STATE = 41
+    MAXIMUM_MPR_STATE = 42
 };
 
 #endif // _FFSTATES_H_

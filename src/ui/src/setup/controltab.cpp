@@ -235,11 +235,15 @@ UIInputStuff_t UIInputStuff[AXIS_MAX] = {
     {AXIS_YAW, SETUP_ADVANCED_RUDDER_AXIS, SETUP_ADVANCED_RUDDER_VAL,
      SETUP_ADVANCED_RUDDER_AXIS_DEADZONE, SETUP_ADVANCED_SAT_YAW,
      SETUP_ADVANCED_REVERSE_RUDDER, &AxisMap.Yaw},
+    // Artscout - 2026: the two throttles now carry an invert button like every other
+    // axis. Their controls are cloned into the window at open (CloneAxisReverseButton),
+    // so by the time either loop over this table runs, FindControl resolves them.
     {AXIS_THROTTLE, SETUP_ADVANCED_THROTTLE_AXIS, SETUP_ADVANCED_THROTTLE_VAL,
-     0, SETUP_ADVANCED_SAT_THROTTLE, 0, &AxisMap.Throttle},
+     0, SETUP_ADVANCED_SAT_THROTTLE, SETUP_ADVANCED_REVERSE_THROTTLE,
+     &AxisMap.Throttle},
     {AXIS_THROTTLE2, SETUP_ADVANCED_THROTTLE2_AXIS,
-     SETUP_ADVANCED_THROTTLE2_VAL, 0, SETUP_ADVANCED_SAT_THROTTLE2, 0,
-     &AxisMap.Throttle2},
+     SETUP_ADVANCED_THROTTLE2_VAL, 0, SETUP_ADVANCED_SAT_THROTTLE2,
+     SETUP_ADVANCED_REVERSE_THROTTLE2, &AxisMap.Throttle2},
     // #53 trim roll/pitch/yaw axes removed from the UI (rarely mapped to an axis; trim is on the stick/HOTAS buttons).
     {AXIS_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT_VAL,
      0, SETUP_ADVANCED_SAT_BRAKELEFT, SETUP_ADVANCED_REVERSE_BRAKE_LEFT,
@@ -1310,6 +1314,72 @@ void AxisChangeCB(long, short hittype, C_Base *me)
 /************************************************************************/
 /* prepares the advanced win and displays it */
 /************************************************************************/
+/************************************************************************/
+// Artscout - 2026: build an axis invert button that the window resource does not have.
+//
+// Every axis row on this page that offers "invert" gets its button from the .scf resource, which
+// is game data and not ours to edit -- and the two throttle rows were never given one. Rather than
+// leave the feature to a config file, clone a button that IS in the resource: take its type, its
+// four state images, its size, its client and its cluster, so the new one is the same control in
+// every respect that matters, then move it to the throttle row's line. Position comes from the two
+// controls themselves -- the invert COLUMN from the template's x, the ROW from the axis listbox's
+// y -- so it lands correctly whatever the window layout, instead of hard-coded coordinates that a
+// re-skin would silently break.
+//
+// Returns the existing control if one is already there, so reopening the page does not stack
+// duplicates. Refuses to build if template and row sit in different clients, where their
+// coordinates are not comparable and the button would land somewhere arbitrary.
+/************************************************************************/
+static C_Button *CloneAxisReverseButton(C_Window *win, long newID, long tmplID,
+                                        long rowID)
+{
+    if (not win)
+        return NULL;
+
+    C_Button *existing = (C_Button *)win->FindControl(newID);
+
+    if (existing)
+        return existing;
+
+    C_Button *tmpl = (C_Button *)win->FindControl(tmplID);
+    C_Base *row = win->FindControl(rowID);
+
+    if (not tmpl or not row)
+        return NULL;
+
+    if (tmpl->GetClient() not_eq row->GetClient())
+        return NULL;
+
+    C_Button *btn = new C_Button;
+
+    if (not btn)
+        return NULL;
+
+    btn->Setup(newID, tmpl->GetType(), tmpl->GetX(), row->GetY());
+
+    // The four button states (up / down / disabled / current). A state the template does not use
+    // simply has no image and is skipped, which leaves the clone with the same gaps.
+    for (short st = 0; st < 4; st++)
+    {
+        O_Output *img = tmpl->GetImage(st);
+
+        if (img and img->GetImage())
+            btn->SetImage(st, img->GetImage());
+    }
+
+    // Centre on the row rather than aligning tops: the invert button and the axis listbox are
+    // different heights, and the column reads as ragged otherwise.
+    long y = row->GetY() + (row->GetH() - tmpl->GetH()) / 2;
+    btn->SetXYWH(tmpl->GetX(), y, tmpl->GetW(), tmpl->GetH());
+    btn->SetFont(tmpl->GetFont());
+    btn->SetFlags(tmpl->GetFlags());
+    btn->SetClient(tmpl->GetClient());
+    btn->SetCluster(tmpl->GetCluster());
+    btn->SetState(C_STATE_0);
+    win->AddControl(btn);
+    return btn;
+}
+
 void AdvancedControlCB(long, short hittype, C_Base *)
 {
 
@@ -1453,6 +1523,17 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         else
             ShiAssert(false);
     }
+
+    // Artscout - 2026: give the throttles the invert button the resource never drew for them.
+    // Left brake is the template -- same page, same unipolar kind of axis, so the same artwork is
+    // the right artwork. Do this BEFORE the loop below, which is what reads each button's state
+    // back out of IO and would otherwise find nothing to set.
+    CloneAxisReverseButton(win, SETUP_ADVANCED_REVERSE_THROTTLE,
+                           SETUP_ADVANCED_REVERSE_BRAKE_LEFT,
+                           SETUP_ADVANCED_THROTTLE_AXIS);
+    CloneAxisReverseButton(win, SETUP_ADVANCED_REVERSE_THROTTLE2,
+                           SETUP_ADVANCED_REVERSE_BRAKE_LEFT,
+                           SETUP_ADVANCED_THROTTLE2_AXIS);
 
     C_Button *button;
 

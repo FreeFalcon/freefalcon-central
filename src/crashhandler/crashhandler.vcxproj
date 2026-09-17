@@ -127,7 +127,7 @@
       <PrecompiledHeader />
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Debug\crashhandler/crashhandler.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\Falcon4___Win32_Debug\crashhandler/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\Falcon4___Win32_Debug\crashhandler/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\Falcon4___Win32_Debug\crashhandler/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
@@ -153,10 +153,10 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Debug\crashhandler/crashhandler.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\Falcon4___Win32_Debug\crashhandler/</AssemblerListingLocation>
-      <ObjectFileName>.\..\Falcon4___Win32_Debug\crashhandler/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\Falcon4___Win32_Debug\crashhandler/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)crashhandler.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -189,7 +189,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\crashhandler/crashhandler.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\Falcon4___Win32_Release\crashhandler/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\crashhandler/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -221,11 +221,11 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\crashhandler/crashhandler.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)crashhandler.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\Falcon4___Win32_Release\crashhandler/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\crashhandler/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -257,7 +257,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\crashhandler/crashhandler.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\Falcon4___Win32_Release\crashhandler/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\crashhandler/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -289,11 +289,11 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\..\Falcon4___Win32_Release\crashhandler/crashhandler.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)crashhandler.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\Falcon4___Win32_Release\crashhandler/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\Falcon4___Win32_Release\crashhandler/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

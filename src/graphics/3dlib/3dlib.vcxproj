@@ -134,7 +134,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/3DLib.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
@@ -159,10 +159,10 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/3DLib.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Debug\Graphics\3Dlib/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)3DLib.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -195,7 +195,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/3DLib.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -226,11 +226,11 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/3DLib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)3DLib.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -262,7 +262,7 @@
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/3DLib.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
@@ -293,11 +293,11 @@
       <StructMemberAlignment>4Bytes</StructMemberAlignment>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <PrecompiledHeaderOutputFile>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/3DLib.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)3DLib.pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <AssemblerListingLocation>.\</AssemblerListingLocation>
-      <ObjectFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ObjectFileName>
-      <ProgramDataBaseFileName>.\..\..\Falcon4___Win32_Release\Graphics\3Dlib/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

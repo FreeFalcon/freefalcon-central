@@ -368,6 +368,7 @@ public:
     // #78: knob on, plus SM 6.5 / MeshShaderTier1 / the bindless prerequisites.
     bool MeshShaderSupported() const;
     bool MeshTerrainAvailable() const;
+    void SetObjectDepthBias(int level);
     bool CreateTerrainClipmap(int texels, int levels, int chunksPerSide);
     void UpdateTerrainClipmap(int level, int x, int y, int w, int h,
                               const void* postRgba32f, const void* infoR32u);
@@ -501,6 +502,7 @@ private:
         m_depthTargetBound; // false when the bound target has NO DSV (RTT atlas) -> force depth-off PSOs (#615)
     int m_hudStencil; // #76 HUD aperture stencil: 0 OFF / 1 MARK (write 0x80) / 2 TEST (draw where (s&0xC0)==0x80)
     int m_cull; // 0 none, 1 back, 2 front
+    int m_objZBias; // per-surface dwzBias bucket 0..3 (object pass only)
     int m_bias; // 0 none, 1 object (#16 depth-bias toward camera)
     bool m_forcePerSample;
 

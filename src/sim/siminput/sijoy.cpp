@@ -475,16 +475,54 @@ void GetJoystickInput()
     // Copy and process throttle data (if available)
     // engrVal goes from 0 to 1.5
     /*******************************************************************************/
+    // Artscout - 2026: throttle invert, the option every other axis already had.
+    //
+    // IO.analog[].isReversed is read for every axis from AXIS_TRIM_PITCH up, in the generic loop
+    // further down, but the two throttles sit BELOW that in the enum and are processed by the
+    // hand-written block here -- the one that knows about the AB detent and the idle cutoff -- so
+    // the flag was simply never applied to them. The value is already persisted per axis in
+    // axismapping.xml (ControlsXml_WriteAxes writes "reversed" for all of AXIS_MAX), so nothing
+    // needs to change about storage; only the reading.
+    //
+    // Both throttles are unipolar, so reversing one is the same mirror the generic loop uses:
+    // 15000 - raw. Take it ONCE here into a local that the whole block reads, including the
+    // setABdetent / setIdleCutoff captures -- if the detent were captured raw while engrValue is
+    // computed inverted, the two would live in opposite spaces and the AB gate would land at the
+    // wrong end of the travel. Changing the setting after calibrating therefore mirrors your
+    // detent, so re-set it afterwards.
+    //
+    // The left throttle's value is read whenever EITHER throttle is live, because under
+    // SYMMETRIC_THROTTLEDETENTS (defined above) throttle2 takes its detent and cutoff from the
+    // left one -- that capture stays in the left throttle's space, so with two throttles mapped
+    // set both inverts the same way or the shared detent will not match throttle2's travel.
+    long thrRaw = 0, thr2Raw = 0;
+
+    if (IO.AnalogIsUsed(AXIS_THROTTLE) or IO.AnalogIsUsed(AXIS_THROTTLE2))
+    {
+        thrRaw =
+            device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis];
+
+        if (IO.analog[AXIS_THROTTLE].isReversed)
+            thrRaw = 15000 - thrRaw;
+    }
+
+    if (IO.AnalogIsUsed(AXIS_THROTTLE2))
+    {
+        thr2Raw = device_axis_values[AxisMap.Throttle2.Device]
+                                    [AxisMap.Throttle2.Axis];
+
+        if (IO.analog[AXIS_THROTTLE2].isReversed)
+            thr2Raw = 15000 - thr2Raw;
+    }
+
     if (IO.AnalogIsUsed(AXIS_THROTTLE))
     {
         ProcessJoystickInput(AXIS_THROTTLE,
-                             &device_axis_values[AxisMap.Throttle.Device]
-                                                [AxisMap.Throttle.Axis]);
+                             &thrRaw);
 
         if ((not UseKeyboardThrottle) or
             (abs(JoyOutput[AXIS_THROTTLE][OldInput] -
-                 device_axis_values[AxisMap.Throttle.Device]
-                                   [AxisMap.Throttle.Axis]) > 500.0F))
+                 thrRaw) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
 #ifdef USE_IDLE_CUTOFF
@@ -493,20 +531,17 @@ void GetJoystickInput()
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
             if ((IO.analog[AXIS_THROTTLE].center) and
-                (device_axis_values[AxisMap.Throttle.Device]
-                                   [AxisMap.Throttle.Axis] >
+                (thrRaw >
                  IO.analog[AXIS_THROTTLE].center))
             {
 #ifndef USE_IDLE_CUTOFF
                 IO.analog[AXIS_THROTTLE].engrValue =
-                    (15000.0F - device_axis_values[AxisMap.Throttle.Device]
-                                                  [AxisMap.Throttle.Axis]) /
+                    (15000.0F - thrRaw) /
                     (15000.0F - IO.analog[AXIS_THROTTLE].center);
 #else
                 IO.analog[AXIS_THROTTLE].engrValue =
                     ((float)maxThrottleVal -
-                     device_axis_values[AxisMap.Throttle.Device]
-                                       [AxisMap.Throttle.Axis]) /
+                     thrRaw) /
                     ((float)maxThrottleVal - IO.analog[AXIS_THROTTLE].center);
                 IO.analog[AXIS_THROTTLE].engrValue =
                     max(IO.analog[AXIS_THROTTLE].engrValue, 0.0F);
@@ -517,8 +552,7 @@ void GetJoystickInput()
             {
                 IO.analog[AXIS_THROTTLE].engrValue =
                     1.0F + (IO.analog[AXIS_THROTTLE].center -
-                            device_axis_values[AxisMap.Throttle.Device]
-                                              [AxisMap.Throttle.Axis]) /
+                            thrRaw) /
                                (IO.analog[AXIS_THROTTLE].center * 2.0F);
             }
             // no abdetent set ?? throttle scales linearly between 0.0F and 1.5F - OK
@@ -526,14 +560,12 @@ void GetJoystickInput()
             {
 #ifndef USE_IDLE_CUTOFF
                 IO.analog[AXIS_THROTTLE].engrValue =
-                    (15000.0F - device_axis_values[AxisMap.Throttle.Device]
-                                                  [AxisMap.Throttle.Axis]) /
+                    (15000.0F - thrRaw) /
                     10000.0F;
 #else
                 IO.analog[AXIS_THROTTLE].engrValue =
                     ((float)maxThrottleVal -
-                     device_axis_values[AxisMap.Throttle.Device]
-                                       [AxisMap.Throttle.Axis]) /
+                     thrRaw) /
                     (float)maxThrottleVal * 1.5F;
 #endif
             }
@@ -543,8 +575,7 @@ void GetJoystickInput()
             if (throttleInactive == true)
             {
                 if (abs(throttleInactiveValue -
-                        device_axis_values[AxisMap.Throttle.Device]
-                                          [AxisMap.Throttle.Axis]) < 5000)
+                        thrRaw) < 5000)
                     IO.analog[AXIS_THROTTLE].engrValue =
                         0.0F; // no throttle ouput before the user moves the stick..
                 else
@@ -558,15 +589,13 @@ void GetJoystickInput()
         if (setABdetent)
         {
             IO.analog[AXIS_THROTTLE].center =
-                device_axis_values[AxisMap.Throttle.Device]
-                                  [AxisMap.Throttle.Axis];
+                thrRaw;
         }
 
         if (setIdleCutoff)
         {
             IO.analog[AXIS_THROTTLE].cutoff =
-                device_axis_values[AxisMap.Throttle.Device]
-                                  [AxisMap.Throttle.Axis];
+                thrRaw;
         }
     }
 
@@ -577,13 +606,11 @@ void GetJoystickInput()
     if (IO.AnalogIsUsed(AXIS_THROTTLE2))
     {
         ProcessJoystickInput(AXIS_THROTTLE2,
-                             &device_axis_values[AxisMap.Throttle2.Device]
-                                                [AxisMap.Throttle2.Axis]);
+                             &thr2Raw);
 
         if ((not UseKeyboardThrottle) or
             (abs(JoyOutput[AXIS_THROTTLE2][OldInput] -
-                 device_axis_values[AxisMap.Throttle2.Device]
-                                   [AxisMap.Throttle2.Axis]) > 500.0F))
+                 thr2Raw) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
 #ifdef USE_IDLE_CUTOFF
@@ -592,20 +619,17 @@ void GetJoystickInput()
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
             if ((IO.analog[AXIS_THROTTLE2].center) and
-                (device_axis_values[AxisMap.Throttle2.Device]
-                                   [AxisMap.Throttle2.Axis] >
+                (thr2Raw >
                  IO.analog[AXIS_THROTTLE2].center))
             {
 #ifndef USE_IDLE_CUTOFF
                 IO.analog[AXIS_THROTTLE2].engrValue =
-                    (15000.0F - device_axis_values[AxisMap.Throttle2.Device]
-                                                  [AxisMap.Throttle2.Axis]) /
+                    (15000.0F - thr2Raw) /
                     (15000.0F - IO.analog[AXIS_THROTTLE2].center);
 #else
                 IO.analog[AXIS_THROTTLE2].engrValue =
                     ((float)maxThrottleVal -
-                     device_axis_values[AxisMap.Throttle2.Device]
-                                       [AxisMap.Throttle2.Axis]) /
+                     thr2Raw) /
                     ((float)maxThrottleVal - IO.analog[AXIS_THROTTLE2].center);
                 IO.analog[AXIS_THROTTLE2].engrValue =
                     max(IO.analog[AXIS_THROTTLE2].engrValue, 0.0F);
@@ -616,8 +640,7 @@ void GetJoystickInput()
             {
                 IO.analog[AXIS_THROTTLE2].engrValue =
                     1.0F + (IO.analog[AXIS_THROTTLE2].center -
-                            device_axis_values[AxisMap.Throttle2.Device]
-                                              [AxisMap.Throttle2.Axis]) /
+                            thr2Raw) /
                                (IO.analog[AXIS_THROTTLE2].center * 2.0F);
             }
             // no abdetent set ?? throttle scales linearly between 0.0F and 1.5F - OK
@@ -625,14 +648,12 @@ void GetJoystickInput()
             {
 #ifndef USE_IDLE_CUTOFF
                 IO.analog[AXIS_THROTTLE2].engrValue =
-                    (15000.0F - device_axis_values[AxisMap.Throttle2.Device]
-                                                  [AxisMap.Throttle2.Axis]) /
+                    (15000.0F - thr2Raw) /
                     10000.0F;
 #else
                 IO.analog[AXIS_THROTTLE2].engrValue =
                     ((float)maxThrottleVal -
-                     device_axis_values[AxisMap.Throttle2.Device]
-                                       [AxisMap.Throttle2.Axis]) /
+                     thr2Raw) /
                     (float)maxThrottleVal * 1.5F;
 #endif
             }
@@ -642,12 +663,10 @@ void GetJoystickInput()
         {
 #ifndef SYMMETRIC_THROTTLEDETENTS
             IO.analog[AXIS_THROTTLE2].center =
-                device_axis_values[AxisMap.Throttle2.Device]
-                                  [AxisMap.Throttle2.Axis];
+                thr2Raw;
 #else
             IO.analog[AXIS_THROTTLE2].center =
-                device_axis_values[AxisMap.Throttle.Device]
-                                  [AxisMap.Throttle.Axis];
+                thrRaw;
 #endif
         }
 
@@ -655,12 +674,10 @@ void GetJoystickInput()
         {
 #ifndef SYMMETRIC_THROTTLEDETENTS
             IO.analog[AXIS_THROTTLE2].cutoff =
-                device_axis_values[AxisMap.Throttle2.Device]
-                                  [AxisMap.Throttle2.Axis];
+                thr2Raw;
 #else
             IO.analog[AXIS_THROTTLE2].cutoff =
-                device_axis_values[AxisMap.Throttle.Device]
-                                  [AxisMap.Throttle.Axis];
+                thrRaw;
 #endif
         }
     }

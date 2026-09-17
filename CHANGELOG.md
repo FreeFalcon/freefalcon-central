@@ -147,6 +147,35 @@ The long‑term goal of the render work, now shipped.
 * **Differential braking** (per‑wheel brakes + steering).
 * **Audio**: restored radio chatter / ST80 voice codec.
 
+## 6b. Campaign — planning and the map
+
+* **Build a package by right‑clicking a target.** A submenu of the squadrons that could
+  actually fly a mission against what you clicked, nearest first, with a two‑ or four‑ship
+  choice. Which squadrons are offered is the engine's own judgement (`GetMissionFromTarget`),
+  and squadrons that can engage the target sort above ones that can only bring a generic
+  sortie. Knob: `CampaignAddMission`.
+* **Add Package works in the campaign.** The full planning dialog — flight tree, per‑flight
+  targets and roles, takeoff / time‑on‑target with locks — which previously did nothing on
+  any screen, the Tactical Engagement editor included, because nothing loaded `PACKAGE_WIN`'s
+  window art. Knob: `CampaignPackageWindow`.
+* **Hand‑built flights are scheduled against the right hour.** `FindAvailableAircraft` walks
+  the ATM's 32‑block schedule, and nothing on the hand‑built path had ever set which blocks
+  to ask about — every flight asked about block 0 regardless of its takeoff time. Fixed, and
+  a request that cannot be crewed now slides to the next block that can rather than being
+  refused.
+* **Campaign packages are pinned to takeoff, not to an exact time on target.** The window
+  opened demanding the flight be over the target at precisely the displayed second, which is
+  right when authoring a scenario and wrong in a running war. Knob:
+  `CampaignPackageTakeoffLock`.
+* **The player's team comes from the session**, not from the Tactical Engagement editor's
+  `gSelectedTeam`, which the campaign never kept in step.
+* **Logistics map overlays** — power coverage, supply flow, production and target damage.
+* **FLOT line** — the forward line of own troops, drawn from the campaign's own `FLOTList`.
+  Knob: `CampFlotLine`.
+* **Campaign map built from terrain**, with zoom detail.
+* **Supply interdiction** — a damaged bridge or road costs the supply run crossing it,
+  scaled by objective status so repair re‑opens the route. Knob: `SupplyInterdiction`.
+
 ## 7. Stability (corruption / hangs / crashes)
 
 * **Object‑list lifetime overhaul** — recursive lock serializing render vs sim/campaign access,

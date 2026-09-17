@@ -358,9 +358,12 @@ inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex,
 
 #endif
 
-    // Draw the Cloud
+    // Draw the Cloud. Artscout - 2026: the trailing true asks the 2D engine for a basis built from
+    // the ray to THIS puff rather than the single global camera-facing matrix -- see DX2D_TransformBB.
+    // Cumulus are the worst case for that matrix (big, far off, and spread right across the field of
+    // view), so they are the one caller opted in by default; g_nBillboardMode 2 extends it to the rest.
     TheDXEngine.DX2D_AddQuad(LAYER_GROUND, POLY_BB, (D3DXVECTOR3 *)position,
-                             Quad, Radius, CumulusTextures.TexHandle());
+                             Quad, Radius, CumulusTextures.TexHandle(), true);
 }
 
 

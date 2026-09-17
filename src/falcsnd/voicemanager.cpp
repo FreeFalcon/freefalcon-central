@@ -13,6 +13,7 @@
 
 #include <windows.h>
 #include <process.h>
+#include "../graphics/include/fflog.h" // one-off PCM voice-bank build reports here
 #include "fsound.h"
 #include "f4thread.h"
 #include "debuggr.h"
@@ -139,11 +140,110 @@ BOOL VoiceManager::VMBegin(void)
     return (TRUE);
 }
 
+// Artscout - 2026: build the PCM voice bank on first run.
+//
+// The voice data is ST80-compressed (Lernout & Hauspie StreamTalk80), and ST80 has no 64-bit build --
+// on x64 hAccess stays NULL and LHSP::ReadLHSPFile returns 0 forever, so radio chatter is silent and
+// only the subtitles come through. The engine already prefers a pre-transcoded PCM bank
+// (falcon_pcm.tlk) which needs no codec at all, but somebody had to generate it by hand.
+//
+// Do it automatically instead: if the PCM bank is missing, run the small 32-bit helper st80conv.exe,
+// which CAN load the codec, and wait for it. Roughly 8 seconds once, ever. The bank is large (a few
+// hundred MB against a 29MB source -- raw PCM versus a 1996 speech codec), which is exactly why it is
+// generated locally rather than shipped.
+//
+// Every failure path is soft: no helper, no source bank, a failed spawn or a non-zero exit just leaves
+// the PCM bank absent, and VoiceOpen falls back to the ST80 path exactly as before.
+static void EnsurePcmVoiceBank(void)
+{
+    extern bool g_bAutoBuildVoiceBank;
+    if (not g_bAutoBuildVoiceBank)
+        return;
+
+    char pcmPath[MAX_PATH], srcPath[MAX_PATH];
+    _snprintf(pcmPath, sizeof(pcmPath) - 1, "%s/falcon_pcm.tlk",
+              FalconSoundThrDirectory);
+    _snprintf(srcPath, sizeof(srcPath) - 1, "%s/falcon.tlk",
+              FalconSoundThrDirectory);
+    pcmPath[sizeof(pcmPath) - 1] = 0;
+    srcPath[sizeof(srcPath) - 1] = 0;
+
+    if (GetFileAttributesA(pcmPath) not_eq INVALID_FILE_ATTRIBUTES)
+        return; // already built
+    if (GetFileAttributesA(srcPath) == INVALID_FILE_ATTRIBUTES)
+        return; // nothing to transcode
+
+    // The helper ships beside the executable; so does ST80W.dll, which it needs, so run it from there.
+    char exeDir[MAX_PATH];
+    const DWORD n = GetModuleFileNameA(NULL, exeDir, (DWORD)sizeof(exeDir));
+    if (n == 0 or n >= sizeof(exeDir))
+        return;
+    char *slash = strrchr(exeDir, '\\');
+    if (not slash)
+        return;
+    *slash = 0;
+
+    char helperPath[MAX_PATH];
+    _snprintf(helperPath, sizeof(helperPath) - 1, "%s" "\\" "st80conv.exe", exeDir);
+    helperPath[sizeof(helperPath) - 1] = 0;
+
+    if (GetFileAttributesA(helperPath) == INVALID_FILE_ATTRIBUTES)
+    {
+        FFDebugLog("[voice] falcon_pcm.tlk missing and st80conv.exe not found "
+                   "beside the exe -- radio chatter will be silent on x64" "\n");
+        return;
+    }
+
+    char cmd[MAX_PATH * 3];
+    _snprintf(cmd, sizeof(cmd) - 1, "\"%s\" \"%s\" \"%s\"", helperPath, srcPath,
+              pcmPath);
+    cmd[sizeof(cmd) - 1] = 0;
+
+    FFDebugLog("[voice] building the PCM voice bank (one-off, ~8s)..." "\n");
+
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+    ZeroMemory(&pi, sizeof(pi));
+
+    if (not CreateProcessA(NULL, cmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL,
+                           exeDir, &si, &pi))
+    {
+        FFDebugLog("[voice] could not start st80conv.exe" "\n");
+        return;
+    }
+
+    // Synchronous on purpose: the voice bank is needed by the VoiceOpen immediately below, and a
+    // one-off pause during load is better than the first mission running silent. Bounded so a wedged
+    // helper cannot hang startup for good.
+    const DWORD w = WaitForSingleObject(pi.hProcess, 300000);
+    DWORD code = 1;
+    if (w == WAIT_OBJECT_0)
+        GetExitCodeProcess(pi.hProcess, &code);
+    else
+        TerminateProcess(pi.hProcess, 1);
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+
+    char msg[160];
+    _snprintf(msg, sizeof(msg) - 1, "[voice] st80conv exit=%lu built=%d" "\n",
+              (unsigned long)code,
+              (int)(GetFileAttributesA(pcmPath) not_eq INVALID_FILE_ATTRIBUTES));
+    msg[sizeof(msg) - 1] = 0;
+    FFDebugLog(msg);
+}
+
 int VoiceManager::VoiceOpen(void)
 {
     char filename[MAX_PATH];
     extern bool
         g_bVoicePcmMode; // Artscout - 2026: PCM voice bank in use (see lhsp.cpp)
+
+    // Generate it if this is the first run on a fresh install.
+    EnsurePcmVoiceBank();
 
     // Artscout - 2026: prefer the pre-transcoded PCM voice bank falcon_pcm.tlk (data = already
     // decoded PCM, no ST80). Works on BOTH x86 and x64. Fall back to the ST80 falcon.tlk only if

@@ -329,6 +329,28 @@ void OTWDriverClass::TakeScreenShot(void)
     sprintf(fileName, "%s/%s", FalconPictureDirectory, tmpStr);
 #endif
 
+    // Artscout - 2026: BackBufferToRAW reads ImageBuffer::Lock(), which under the GPU backends
+    // is the CPU-side RGB565 surface -- the 3D scene is rendered on the GPU and never lands
+    // there, and in VR the eye images never touch it at all. Ask the backend to copy the real
+    // back buffer at the end of this frame instead; with XrMirror on that IS the eye the
+    // compositor was handed, so it doubles as the VR screenshot. The old path stays for any
+    // build that is not on D3D12.
+#ifdef _WIN32
+    {
+        extern bool g_bUseD3D12;
+        extern bool D3D12_RequestScreenCapture(const char* path);
+
+        if (g_bUseD3D12)
+        {
+            char bmpName[_MAX_PATH];
+            sprintf(bmpName, "%s.bmp", fileName);
+
+            if (D3D12_RequestScreenCapture(bmpName))
+                return;
+        }
+    }
+
+#endif // _WIN32
     OTWImage->BackBufferToRAW(fileName);
 }
 
