@@ -164,6 +164,7 @@ static int MessageReceive(VU_ID targetId,
                           int size, VU_TIME timestamp)
 {
     VuMessage* event = 0;
+    VU_BYTE* bodyEnd = *data + size;
 
 #ifdef DEBUG_COMMS
     VU_PRINT("VU: Receive [%d]", type);
@@ -269,21 +270,39 @@ static int MessageReceive(VU_ID targetId,
         {
             long rem = size;
 
-            if (event->Read(data, &rem))
+            try
             {
-                event->SetPostTime(timestamp);
-                VuMessageQueue::PostVuMessage(event);
+                if (event->Read(data, &rem))
+                {
+                    event->SetPostTime(timestamp);
+                    VuMessageQueue::PostVuMessage(event);
+                }
+                else
+                {
+                    delete event;
+                    event = 0;
+                }
             }
+            catch (const InvalidBufferException&)
+            {
+                delete event;
+                event = 0;
+            }
+        }
+        else
+        {
+            delete event;
+            event = 0;
         }
     }
     else
     {
-        *data += size;
 #ifdef DEBUG_COMMS
         VU_PRINT(": dest = 0x%x -- not posted\n", (short)targetId.creator_);
 #endif
     }
 
+    *data = bodyEnd;
     return (event ? 1 : 0);
 }
 
@@ -321,11 +340,29 @@ static int MessagePoll(VuCommsContext* ctxt)
 
             data = (VU_BYTE*)readBuf;
             end = data + length;
+            if (length < static_cast<int>(PACKET_HDR_SIZE))
+            {
+                readBuf = ComAPIRecvBufferGet(ch);
+                continue;
+            }
             data += ReadPacketHeader(data, &phdr);
 
             while (data < end)
             {
+                if ((end - data) < MIN_MSG_HDR_SIZE)
+                {
+                    break;
+                }
+                if ((data[1] bitand 0x80) and
+                    ((end - data) < MAX_MSG_HDR_SIZE))
+                {
+                    break;
+                }
                 data += ReadMessageHeader(data, &mhdr);
+                if (mhdr.length_ > (end - data))
+                {
+                    break;
+                }
                 count +=
                     MessageReceive(phdr.targetId_, senderAddress, senderid,
                                    mhdr.type_, &data, mhdr.length_, timestamp);
